@@ -16,7 +16,7 @@
   <meta name="description" content="">
   <meta name="author" content="Ye hongzhi">
   <meta name="keywords" content="">
-  <title>Hello World - 叶洪智的技术分享</title>
+  <title>SpringBoot系列之自定义spring-boot-starter - 叶洪智的技术分享</title>
 
   <link rel="stylesheet" href="/lib/font-awesome/css/all.min.css"  >
 <link rel="stylesheet" href="/lib/bootstrap/css/bootstrap.min.css"  >
@@ -76,14 +76,6 @@
           
           
           <li class="nav-item">
-            <a class="nav-link" href="/categories/">分类</a>
-          </li>
-        
-          
-          
-          
-          
-          <li class="nav-item">
             <a class="nav-link" href="/tags/">标签</a>
           </li>
         
@@ -121,7 +113,7 @@
               
                 <p class="mt-3">
                   <i class="fas fa-calendar-alt" aria-hidden="true"></i>&nbsp;
-                  星期三, 二月 12日 2020, 9:52 晚上
+                  星期一, 二月 17日 2020, 9:53 晚上
                 </p>
               
 
@@ -130,7 +122,7 @@
                   
                   &nbsp;<i class="far fa-chart-bar"></i>
                   <span class="post-count">
-                    75 字
+                    1.2k 字
                   </span>&nbsp;
                 
 
@@ -138,7 +130,7 @@
                   
                   &nbsp;<i class="far fa-clock"></i>
                   <span class="post-count">
-                      1 分钟
+                      5 分钟
                   </span>&nbsp;
                 
 
@@ -175,15 +167,213 @@
       <div class="py-5 z-depth-3" id="board">
         <div class="post-content mx-auto" id="post">
           <div class="markdown-body">
-            <p>Welcome to <a href="https://hexo.io/" target="_blank" rel="noopener">Hexo</a>! This is your very first post. Check <a href="https://hexo.io/docs/" target="_blank" rel="noopener">documentation</a> for more info. If you get any problems when using Hexo, you can find the answer in <a href="https://hexo.io/docs/troubleshooting.html" target="_blank" rel="noopener">troubleshooting</a> or you can ask me on <a href="https://github.com/hexojs/hexo/issues" target="_blank" rel="noopener">GitHub</a>.</p>
-<h2 id="Quick-Start"><a href="#Quick-Start" class="headerlink" title="Quick Start"></a>Quick Start</h2><h3 id="Create-a-new-post"><a href="#Create-a-new-post" class="headerlink" title="Create a new post"></a>Create a new post</h3><pre><code class="bash">$ hexo new &quot;My New Post&quot;</code></pre>
-<p>More info: <a href="https://hexo.io/docs/writing.html" target="_blank" rel="noopener">Writing</a></p>
-<h3 id="Run-server"><a href="#Run-server" class="headerlink" title="Run server"></a>Run server</h3><pre><code class="bash">$ hexo server</code></pre>
-<p>More info: <a href="https://hexo.io/docs/server.html" target="_blank" rel="noopener">Server</a></p>
-<h3 id="Generate-static-files"><a href="#Generate-static-files" class="headerlink" title="Generate static files"></a>Generate static files</h3><pre><code class="bash">$ hexo generate</code></pre>
-<p>More info: <a href="https://hexo.io/docs/generating.html" target="_blank" rel="noopener">Generating</a></p>
-<h3 id="Deploy-to-remote-sites"><a href="#Deploy-to-remote-sites" class="headerlink" title="Deploy to remote sites"></a>Deploy to remote sites</h3><pre><code class="bash">$ hexo deploy</code></pre>
-<p>More info: <a href="https://hexo.io/docs/one-command-deployment.html" target="_blank" rel="noopener">Deployment</a></p>
+            <h1 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h1><p>传统的 Maven项目一般将需要被复用的组件做成 Module来进行管理，以便二次调用；而在 Spring Boot项目中我们则可以使用更加优雅的 Spring Boot Starter来完成这一切。</p>
+<a id="more"></a>
+
+<p>这个开箱即用的魔法特性很大程度上来源于各式各样 Spring Boot Starter的加持，而且随着版本的迭代 Starter家族成员日益庞大，而且各种优秀开源作者也提供了很多非常好用的Spring Boot Starter。</p>
+<p>本文尝试自定义一个Spring Boot Starter用于图片链接转换BASE64编码。</p>
+<h1 id="构建过程"><a href="#构建过程" class="headerlink" title="构建过程"></a>构建过程</h1><ol>
+<li>在GItHub上创建base64util-spring-boot-starter项目，然后clone下来本地进行开发。</li>
+</ol>
+<p><img src="https://static.lovebilibili.com/Github_Create.png" srcset="/img/loading.gif" alt=""></p>
+<ol start="2">
+<li>pom.xml文件配置如下</li>
+</ol>
+<pre><code class="xml">&lt;modelVersion&gt;4.0.0&lt;/modelVersion&gt;
+&lt;parent&gt;
+    &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;
+    &lt;artifactId&gt;spring-boot-starter-parent&lt;/artifactId&gt;
+    &lt;version&gt;2.2.2.RELEASE&lt;/version&gt;
+&lt;/parent&gt;
+&lt;groupId&gt;com.github.yehongzhi&lt;/groupId&gt;
+&lt;artifactId&gt;base64util-spring-boot-starter&lt;/artifactId&gt;
+&lt;version&gt;0.0.1&lt;/version&gt;
+&lt;dependencies&gt;
+    &lt;!-- 引入SpringBoot自动配置jar包 --&gt;
+    &lt;dependency&gt;
+        &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;
+        &lt;artifactId&gt;spring-boot-autoconfigure&lt;/artifactId&gt;
+    &lt;/dependency&gt;
+&lt;/dependencies&gt;</code></pre>
+<ol start="3">
+<li>业务代码</li>
+</ol>
+<pre><code class="java">import com.sun.org.apache.xerces.internal.impl.dv.util.Base64;
+import sun.misc.BASE64Decoder;
+import sun.misc.BASE64Encoder;
+import java.io.ByteArrayOutputStream;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
+
+/**
+ * @author Ye Hongzhi
+ * @program Base64Util
+ * @description
+ * @date 2020-02-17 14:04
+ **/
+public class Base64Util {
+
+    /**
+     * 本地图片转为BASE64编码
+     *
+     * @param imgFile 本地图片地址
+     * @return BASE64 解码后的字符串编码
+     * @description: 根据图片地址转换为base64编码字符串
+     * @author: Ye Hongzhi
+     * @createTime: 2020/02/17
+     */
+    public static String getImageFile(String imgFile) {
+        byte[] data = null;
+        try (InputStream inputStream = new FileInputStream(imgFile)) {
+            data = new byte[inputStream.available()];
+            int length = inputStream.read(data);
+            if (length == -1) {
+                return null;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        // 加密
+        BASE64Encoder encoder = new BASE64Encoder();
+        if (data != null) {
+            return encoder.encode(data);
+        } else {
+            return null;
+        }
+    }
+
+    public static String image2Base64(String imgUrl) throws Exception {
+        URL url = new URL(imgUrl);
+        HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
+        try(InputStream inputStream = urlConnection.getInputStream();
+            ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
+            urlConnection.connect();
+            byte[] buffer = new byte[1024];
+            int len;
+            //使用一个输入流从buffer里把数据读取出来
+            while ((len = inputStream.read(buffer)) != -1) {
+                //用输出流往buffer里写入数据，中间参数代表从哪个位置开始读，len代表读取的长度
+                baos.write(buffer, 0, len);
+            }
+            // 对字节数组Base64编码
+            return Base64.encode(baos.toByteArray());
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            if (urlConnection != null) {
+                urlConnection.disconnect();
+            }
+        }
+        return imgUrl;
+    }
+
+    /**
+     * BASE64编码转为图片
+     * 注意：&quot;data:image/jpeg;base64,&quot; 解码之前得去掉。
+     *
+     * @param imgStr base64编码字符串
+     * @param path   图片路径-具体到文件
+     * @return 是否转换成功
+     * @description: 将base64编码字符串转换为图片
+     * @author: Ye Hongzhi
+     * @createTime: 2020/02/17
+     */
+    public static boolean generateImage(String imgStr, String path) {
+        if (imgStr == null) {
+            return false;
+        }
+        try (OutputStream out = new FileOutputStream(path)) {
+            BASE64Decoder decoder = new BASE64Decoder();
+            // 解密
+            byte[] b = decoder.decodeBuffer(imgStr);
+            // 处理数据
+            for (int i = 0; i &lt; b.length; ++i) {
+                if (b[i] &lt; 0) {
+                    b[i] += 256;
+                }
+            }
+            out.write(b);
+            out.flush();
+            return true;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+}</code></pre>
+<ol start="4">
+<li>创建一个service调用，这里为了简单，就不定义为接口的形式</li>
+</ol>
+<pre><code class="java">public class Base64Service {
+
+    /**
+     * 本地图片转为BASE64编码
+     */
+    public String getImageFile(String imgFile) {
+        return Base64Util.getImageFile(imgFile);
+    }
+
+    /**
+     * BASE64编码转为图片
+     * */
+    public boolean generateImage(String imgStr, String path) {
+        return Base64Util.generateImage(imgStr,path);
+    }
+    /**
+     * 在线图片转为BASE64编码
+     * */
+    public String image2Base64(String imgUrl) throws Exception{
+        return Base64Util.image2Base64(imgUrl);
+    }
+}</code></pre>
+<ol start="5">
+<li>关键的一步，使用配置类，把service定义成bean，加入到spring容器中管理</li>
+</ol>
+<pre><code class="java">@Configuration
+public class Base64AutoConfiguration {
+    @Bean
+    Base64Service base64Service(){
+        return new Base64Service();
+    }
+}</code></pre>
+<ol start="6">
+<li>最关键一步在于需要在resources文件夹下创建<code>META-INF/spring.factories</code>，<code>spring.factories</code>里的代码如下:</li>
+</ol>
+<pre><code class="yaml">org.springframework.boot.autoconfigure.EnableAutoConfiguration=com.lovebilibili.me.config.Base64AutoConfiguration</code></pre>
+<p>这一步是重点，因为Spring Boot应用在启动过程中会通过 <code>SpringFactoriesLoader</code> 加载所有 <code>META-INF/spring.factories</code> 文件，通过一系列的处理流程最终将 spring.factories 文件中的定义的各种 <code>beans</code> 装载入 ApplicationContext容器。</p>
+<blockquote>
+<p>至此，自定义的用于base64转码工具的spring-boot-starter就完成了</p>
+<p>可以通过使用maven命令<code>mvn install</code>打包，传到私有/公有Maven仓库使用。</p>
+<p>形成一个公共的模块，供有需要的项目使用。</p>
+</blockquote>
+<ol start="7">
+<li>完成后把代码推送到Github仓库中，方便以后继续优化。</li>
+</ol>
+<h1 id="测试"><a href="#测试" class="headerlink" title="测试"></a>测试</h1><ol>
+<li>在其他项目中的pom文件加入以下依赖：</li>
+</ol>
+<pre><code class="xml">&lt;dependency&gt;
+    &lt;groupId&gt;com.github.yehongzhi&lt;/groupId&gt;
+    &lt;artifactId&gt;base64util-spring-boot-starter&lt;/artifactId&gt;
+    &lt;version&gt;0.0.1&lt;/version&gt;
+&lt;/dependency&gt;</code></pre>
+<ol start="2">
+<li>在Controller层中，我们可以引入base64Service。</li>
+</ol>
+<pre><code class="java">@Resource
+private Base64Service base64Service;</code></pre>
+<ol start="3">
+<li>然后在Controller层中的@RequestMapping对应的方法中使用</li>
+</ol>
+<pre><code class="java">//把在线图片转为BASE64编码
+String base64 = base64Service.image2Base64(imgUrl);</code></pre>
+<h1 id="后记"><a href="#后记" class="headerlink" title="后记"></a>后记</h1><blockquote>
+<p>能力有限，如果有什么错误或者不当之处，请大家批评指正，一起学习交流！</p>
+</blockquote>
 
             <hr>
           </div>
@@ -191,6 +381,15 @@
           <div>
             <p>
             
+            
+              <span>
+                <i class="iconfont icon-tag"></i>
+                
+                  <a class="hover-with-bg" href="/tags/SpringBoot">SpringBoot</a>
+                
+                  <a class="hover-with-bg" href="/tags/java">java</a>
+                
+              </span>
             
             </p>
             
@@ -344,7 +543,7 @@
     var typed = new Typed('#subtitle', {
       strings: [
         '  ',
-        "Hello World&nbsp;",
+        "SpringBoot系列之自定义spring-boot-starter&nbsp;",
       ],
       cursorChar: "_",
       typeSpeed: 70,
