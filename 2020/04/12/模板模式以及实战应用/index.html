@@ -1,0 +1,689 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/apple-touch-icon.png">
+  <link rel="icon" type="image/png" href="/img/favicon.png">
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="description" content="">
+  <meta name="author" content="Ye hongzhi">
+  <meta name="keywords" content="">
+  <title>模板模式以及实战应用 - 叶洪智的技术分享</title>
+
+  <link rel="stylesheet" href="/lib/font-awesome/css/all.min.css"  >
+<link rel="stylesheet" href="/lib/bootstrap/css/bootstrap.min.css"  >
+<link rel="stylesheet" href="/lib/mdbootstrap/css/mdb.min.css"  >
+<link rel="stylesheet" href="/lib/github-markdown/github-markdown.min.css"  >
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1067060_qzomjdt8bmp.css">
+
+
+
+  <link rel="stylesheet" href="/lib/prettify/tomorrow-night-eighties.min.css"  >
+
+<link rel="stylesheet" href="/css/main.css"  >
+
+
+  <link rel="stylesheet" href="/lib/fancybox/jquery.fancybox.min.css"  >
+
+
+<meta name="generator" content="Hexo 4.2.0"></head>
+
+
+<body>
+  <header style="height: 70vh;">
+    <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand"
+       href="/">&nbsp;<strong>YeHongzhi's Blog</strong>&nbsp;</a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+          <li class="nav-item">
+            <a class="nav-link" href="/">首页</a>
+          </li>
+        
+          
+          
+          
+          
+          <li class="nav-item">
+            <a class="nav-link" href="/archives/">归档</a>
+          </li>
+        
+          
+          
+          
+          
+          <li class="nav-item">
+            <a class="nav-link" href="/tags/">标签</a>
+          </li>
+        
+          
+          
+          
+          
+          <li class="nav-item">
+            <a class="nav-link" href="/about/">关于</a>
+          </li>
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" data-toggle="modal" data-target="#modalSearch">&nbsp;&nbsp;<i
+                class="iconfont icon-search"></i>&nbsp;&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+    <div class="view intro-2" id="background" false
+         style="background: url('/img/post.png')no-repeat center center;
+           background-size: cover;">
+      <div class="full-bg-img">
+        <div class="mask rgba-black-light flex-center">
+          <div class="container text-center white-text fadeInUp">
+            <span class="h2" id="subtitle">
+              
+            </span>
+
+            
+              <br>
+              
+                <p class="mt-3">
+                  <i class="fas fa-calendar-alt" aria-hidden="true"></i>&nbsp;
+                  星期日, 四月 12日 2020, 4:28 下午
+                </p>
+              
+
+              <p>
+                
+                  
+                  &nbsp;<i class="far fa-chart-bar"></i>
+                  <span class="post-count">
+                    1.9k 字
+                  </span>&nbsp;
+                
+
+                
+                  
+                  &nbsp;<i class="far fa-clock"></i>
+                  <span class="post-count">
+                      8 分钟
+                  </span>&nbsp;
+                
+
+                
+                  <!-- 不蒜子统计文章PV -->
+                  
+                  &nbsp;<i class="far fa-eye" aria-hidden="true"></i>&nbsp;
+                  <span id="busuanzi_container_page_pv">
+                    <span id="busuanzi_value_page_pv"></span> 次
+                  </span>&nbsp;
+                
+              </p>
+            
+          </div>
+
+          
+            <div class="scroll-down-bar">
+              <i class="fas fa-angle-down scroll-down-arrow"></i>
+            </div>
+          
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid">
+  <div class="row">
+    <div class="d-none d-lg-block col-lg-2"></div>
+    <div class="col-lg-8 nopadding-md">
+      <div class="py-5 z-depth-3" id="board">
+        <div class="post-content mx-auto" id="post">
+          <div class="markdown-body">
+            <h1 id="写在前面"><a href="#写在前面" class="headerlink" title="写在前面"></a>写在前面</h1><p>上一篇讲了策略模式，知道了可以使用策略模式对多重if-else进行优化，而且符合开闭原则。那么除了策略模式，还有什么设计模式比较好用而且常用的呢。这就是今天要讲的模板模式。</p>
+<a id="more"></a>
+
+<p>模板模式解决什么问题呢？</p>
+<h1 id="正片开始"><a href="#正片开始" class="headerlink" title="正片开始"></a>正片开始</h1><p>首先我们使用SpringBoot来搭建一个工程。</p>
+<pre><code class="xml">    &lt;!-- maven配置 --&gt;
+    &lt;dependency&gt;
+        &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;
+        &lt;artifactId&gt;spring-boot-starter-web&lt;/artifactId&gt;
+        &lt;/dependency&gt;
+        &lt;dependency&gt;
+        &lt;groupId&gt;commons-lang&lt;/groupId&gt;
+        &lt;artifactId&gt;commons-lang&lt;/artifactId&gt;
+        &lt;version&gt;2.6&lt;/version&gt;
+    &lt;/dependency&gt;
+    &lt;dependency&gt;
+        &lt;groupId&gt;mysql&lt;/groupId&gt;
+        &lt;artifactId&gt;mysql-connector-java&lt;/artifactId&gt;
+        &lt;scope&gt;runtime&lt;/scope&gt;
+    &lt;/dependency&gt;</code></pre>
+<p>application.yml配置如下：</p>
+<pre><code class="yaml">server:
+  port: 8888
+spring:
+  datasource:
+    url: jdbc:mysql://127.0.0.1:3306/test?useUnicode=true&amp;characterEncoding=UTF-8
+    username: 账号
+    password: 密码
+    driver-class-name: com.mysql.jdbc.Driver</code></pre>
+<p>创建一个全局配置类<code>GlobalProperties</code>，我们通过这个类可以获取yml的配置信息</p>
+<pre><code class="java">@Component(&quot;globalProperties&quot;)
+public class GlobalProperties {
+
+    @Value(&quot;${spring.datasource.driver-class-name}&quot;)
+    private String driverClass;
+
+    @Value(&quot;${spring.datasource.url}&quot;)
+    private String url;
+
+    @Value(&quot;${spring.datasource.username}&quot;)
+    private String username;
+
+    @Value(&quot;${spring.datasource.password}&quot;)
+    private String password;
+
+    //字段对应的getter、setter方法...</code></pre>
+<p>创建一个连接工厂类<code>ConnectFactory</code>，获取数据库连接</p>
+<pre><code class="java">public class ConnectFactory {
+
+    public static Connection getConnection() throws Exception{
+        //获取yml文件的配置，SpringContextUtil工具类在上一篇文章有介绍，可以参考上一篇文章的代码
+        GlobalProperties properties = SpringContextUtil
+                .getBean(&quot;globalProperties&quot;, GlobalProperties.class);
+        //加载数据驱动
+        Class.forName(properties.getDriverClass());
+        //获取数据库连接，返回数据库连接对象
+        return DriverManager.getConnection(properties.getUrl(),
+                properties.getUsername(), properties.getPassword());
+    }
+}</code></pre>
+<p>创建实体类<code>User</code></p>
+<pre><code class="java">public class User {
+
+    private Integer id;
+
+    private String name;
+
+    private Integer age;
+
+    private String job;
+
+    //字段对应的getter、setter方法...</code></pre>
+<p>接着在mysql对应的数据库创建数据表<code>tb_user</code>，sql语句如下：</p>
+<pre><code class="sql">CREATE TABLE `tb_user` (
+  `id` bigint(10) NOT NULL AUTO_INCREMENT COMMENT &#39;主键&#39;,
+  `name` varchar(255) NOT NULL COMMENT &#39;名称&#39;,
+  `age` tinyint(4) NOT NULL COMMENT &#39;年龄&#39;,
+  `job` varchar(255) DEFAULT NULL COMMENT &#39;工作&#39;,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8mb4</code></pre>
+<p>插入一些测试数据</p>
+<pre><code class="sql">INSERT INTO tb_user(`name`,`age`,`job`) VALUES(&#39;大司马&#39;,36,&#39;厨师&#39;);
+INSERT INTO tb_user(`name`,`age`,`job`) VALUES(&#39;朴老师&#39;,36,&#39;主播&#39;);
+INSERT INTO tb_user(`name`,`age`,`job`) VALUES(&#39;王刚&#39;,30,&#39;厨师&#39;);
+INSERT INTO tb_user(`name`,`age`,`job`) VALUES(&#39;大sao&#39;,32,&#39;美食up主&#39;);
+INSERT INTO tb_user(`name`,`age`,`job`) VALUES(&#39;姚大秋&#39;,35,&#39;主持人&#39;);</code></pre>
+<p>假设我们有一张user表，我们通过原生的JDBC来进行数据库操作，那么需要在dao层完成以下几步。</p>
+<p>1.装载相应的数据库的JDBC驱动并进行初始化</p>
+<p>2.建立JDBC和数据库之间的Connection连接</p>
+<p>3.创建Statement或者PreparedStatement接口，执行SQL语句</p>
+<p>4.处理和显示结果</p>
+<p>5.释放资源</p>
+<p>例子如下：</p>
+<pre><code class="java">    private static final String GET_USER_BY_NAME_SQL = &quot;SELECT `id`,`name`,`age`,`job` FROM `tb_user` WHERE `name` = &#39;%s&#39;&quot;;
+
+    @Override
+    public User getUserByName(String name) throws Exception {
+        User user = new User();
+        //获取数据连接
+        try (Connection connection = ConnectFactory.getConnection();
+             Statement statement = connection.createStatement();
+             ResultSet resultSet = statement
+             .executeQuery(String.format(GET_USER_BY_NAME_SQL, name))
+        ) {
+            while (resultSet.next()) {
+                //获取id
+                user.setId(resultSet.getInt(&quot;id&quot;));
+                //获取名称
+                user.setName(resultSet.getString(&quot;name&quot;));
+                //获取年龄
+                user.setAge(resultSet.getInt(&quot;age&quot;));
+                //获取工作
+                user.setJob(resultSet.getString(&quot;job&quot;));
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return user;
+    }
+
+    private static final String GET_USER_BY_ID_SQL = &quot;SELECT `id`,`name`,`age`,`job` FROM `tb_user` WHERE `id` = &#39;%s&#39;&quot;;
+    @Override
+    public User getUserById(Integer id) throws Exception {
+        User user = new User();
+        //获取数据库连接
+        try (Connection connection = ConnectFactory.getConnection();
+             Statement statement = connection.createStatement();
+             ResultSet resultSet =
+             statement.executeQuery(String.format(GET_USER_BY_ID_SQL, id))
+        ) {
+            while (resultSet.next()) {
+                //获取id
+                user.setId(resultSet.getInt(&quot;id&quot;));
+                //获取名称
+                user.setName(resultSet.getString(&quot;name&quot;));
+                //获取年龄
+                user.setAge(resultSet.getInt(&quot;age&quot;));
+                //获取工作
+                user.setJob(resultSet.getString(&quot;job&quot;));
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return user;
+    }</code></pre>
+<p>PS:这里为了简单一点就直接把参数拼接sql语句，不采用预编译来处理sql的参数。</p>
+<h2 id="问题分析"><a href="#问题分析" class="headerlink" title="问题分析"></a>问题分析</h2><p>通过上面的代码，我们很明显可以看到是有很大的问题的。</p>
+<p>1.每次在进行数据库操作都需要获取<code>Connection</code>对象，创建<code>Statement</code>对象。</p>
+<p>2.每次获取结果后，都要进行结果处理，而且如果是同一张表的查询，会很重复。每次都需要把结果值set回到对象的字段中。</p>
+<p>模板模式就可以解决这个问题！</p>
+<h2 id="使用模板模式重构代码"><a href="#使用模板模式重构代码" class="headerlink" title="使用模板模式重构代码"></a>使用模板模式重构代码</h2><h3 id="第一步"><a href="#第一步" class="headerlink" title="第一步"></a>第一步</h3><p>创建一个模板类<code>DaoTemplate</code>，如下：</p>
+<pre><code class="java">/**
+ * @author Ye Hongzhi
+ * @program DaoTemplate
+ * @description
+ * @date 2020-04-12 17:04
+ **/
+@Component
+public class DaoTemplate {
+
+    public &lt;T&gt; T query(String sql, Class&lt;T&gt; clazz) throws Exception {
+        //通过clazz创建返回值对象
+        T t = clazz.newInstance();
+        //获取数据库连接
+        try (Connection connection = ConnectFactory.getConnection();
+             Statement statement = connection.createStatement();
+             ResultSet resultSet = statement.executeQuery(sql)
+        ) {
+            while (resultSet.next()) {
+                //获取所有字段
+                Field[] fields = clazz.getDeclaredFields();
+                //获取所有方法
+                Method[] methods = clazz.getDeclaredMethods();
+                Map&lt;String, Method&gt; methodNameMap = Arrays.stream(methods)
+                        .collect(Collectors.toMap(Method::getName, Function.identity()));
+                //把数据库对应的列的值赋值给 泛型T对象的 对应的字段
+                for (Field field : fields) {
+                    //获取字段名
+                    String fieldName = field.getName();
+                    //获取set方法
+                    Method method = methodNameMap.get(&quot;set&quot; + change(fieldName));
+                    //获取数据库的列的值
+                    Object fieldValue = null;
+                    if (field.getType() == String.class) {
+                        fieldValue = resultSet.getString(fieldName);
+                    }
+                    if (field.getType() == Integer.class) {
+                        fieldValue = resultSet.getInt(fieldName);
+                    }
+                    if (field.getType() == Boolean.class) {
+                        fieldValue = resultSet.getBoolean(fieldName);
+                    }
+                    if (field.getType() == Long.class) {
+                        fieldValue = resultSet.getLong(fieldName);
+                    }
+                    if(field.getType() == Double.class){
+                        fieldValue = resultSet.getDouble(fieldName);
+                    }
+                    if(field.getType() == BigDecimal.class){
+                        fieldValue = resultSet.getBigDecimal(fieldName);
+                    }
+                    if (field.getType() == Date.class) {
+                        fieldValue = resultSet.getDate(fieldName);
+                    }
+                    //设置更多的字段类型...
+                    //利用反射执行对象的set方法，把数据库的值设置到对象的字段中
+                    method.invoke(t, fieldValue);
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return t;
+    }
+
+    /**
+     * 将一个字符串首字母大写，其它字母小写
+     *
+     * @param str 字符串
+     * @return
+     */
+    private static String change(String str) {
+        return str.substring(0, 1).toUpperCase() + str.substring(1).toLowerCase();
+    }
+}</code></pre>
+<h3 id="第二步"><a href="#第二步" class="headerlink" title="第二步"></a>第二步</h3><p>创建模板后，可以在<code>DAO</code>层引入模板，然后使用。如下：</p>
+<pre><code class="java">    //引入模板    
+    @Resource
+    private DaoTemplate daoTemplate;
+
+    private static final String GET_USER_BY_ID_SQL = &quot;SELECT `id`,`name`,`age`,`job` FROM `tb_user` WHERE `id` = &#39;%s&#39;&quot;;
+
+    @Override
+    public User getUserById(Integer id) throws Exception {
+        //使用模板的方法，查询
+        return daoTemplate.query(String.format(GET_USER_BY_ID_SQL, id), User.class);
+    }
+
+    private static final String GET_USER_BY_NAME_SQL = &quot;SELECT `id`,`name`,`age`,`job` FROM `tb_user` WHERE `name` = &#39;%s&#39;&quot;;
+
+    @Override
+    public User getUserByName(String name) throws Exception {
+        //使用模板的方法，查询
+        return daoTemplate.query(String.format(GET_USER_BY_NAME_SQL, name), User.class);
+    }</code></pre>
+<p>哇喔！突然间代码就显得清爽很多了！</p>
+<p>小伙伴们看到这里，get到新的技能了吗？</p>
+<h1 id="扩展知识"><a href="#扩展知识" class="headerlink" title="扩展知识"></a>扩展知识</h1><p>实际上在Spring框架就有提供<code>JDBC</code>模板</p>
+<p>我们可以在<code>MAVEN</code>中引入以下配置：</p>
+<pre><code class="xml">        &lt;dependency&gt;
+            &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;
+            &lt;artifactId&gt;spring-boot-starter-jdbc&lt;/artifactId&gt;
+        &lt;/dependency&gt;</code></pre>
+<p>创建一个映射类<code>UserRowMapper</code></p>
+<pre><code class="java">public class UserRowMapper implements RowMapper&lt;User&gt; {
+    @Override
+    public User mapRow(ResultSet resultSet, int i) throws SQLException {
+        User user = new User();
+        user.setId(resultSet.getInt(&quot;id&quot;));
+        user.setName(resultSet.getString(&quot;name&quot;));
+        user.setAge(resultSet.getInt(&quot;age&quot;));
+        user.setJob(resultSet.getString(&quot;job&quot;));
+        return user;
+    }
+}</code></pre>
+<p>然后在<code>DAO</code>层的<code>UserDaoImpl</code>，我们就可以引入<code>JdbcTemplate</code></p>
+<pre><code class="java">    @Resource
+    private JdbcTemplate jdbcTemplate;
+
+    //使用jdbcTemplate查询
+    @Override
+    public User getUserByName(String name) throws Exception {
+        return jdbcTemplate.queryForObject(String.format(GET_USER_BY_NAME_SQL, name), new UserRowMapper());
+    }</code></pre>
+<p>从这里可以看出实际上<code>Spring</code>框架就是采用这种思想来实现<code>JdbcTemplate</code>模板。</p>
+<h1 id="结束语"><a href="#结束语" class="headerlink" title="结束语"></a>结束语</h1><p>所以在实际项目的开发中，我们有时候遇到某些代码块的前后都有重复操作时，可以采用模板模式去重构代码，使代码更加简洁，容易维护。</p>
+<p>更多的设计模式实战经验的分享，就关注java技术小牛吧。</p>
+<img src="https://me.lovebilibili.com/img/wechat.jpg-slim" srcset="/img/loading.gif" alt="100" style="zoom:50%;" />
+
+<blockquote>
+<p>能力有限，如果有什么错误或者不当之处，请大家批评指正，一起学习交流！</p>
+</blockquote>
+
+            <hr>
+          </div>
+          <br>
+          <div>
+            <p>
+            
+            
+              <span>
+                <i class="iconfont icon-tag"></i>
+                
+                  <a class="hover-with-bg" href="/tags/java">java</a>
+                
+                  <a class="hover-with-bg" href="/tags/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F">设计模式</a>
+                
+              </span>
+            
+            </p>
+            
+              <p class="note note-warning">本博客所有文章除特别声明外，均采用 <a href="https://zh.wikipedia.org/wiki/Wikipedia:CC_BY-SA_3.0%E5%8D%8F%E8%AE%AE%E6%96%87%E6%9C%AC" target="_blank" rel="nofollow noopener noopener">CC BY-SA 3.0协议</a> 。转载请注明出处！</p>
+            
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="d-none d-lg-block col-lg-2 toc-container">
+      
+  <div id="toc">
+    <p class="h4"><i class="far fa-list-alt"></i>&nbsp;目录</p>
+    <div id="tocbot"></div>
+  </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- custom -->
+
+
+<!-- Comments -->
+<div class="col-lg-7 mx-auto nopadding-md">
+  <div class="container comments mx-auto" id="comments">
+    
+  </div>
+</div>
+
+    
+  </main>
+
+  
+    <a class="z-depth-1" id="scroll-top-button" href="#" role="button">
+      <i class="fa fa-chevron-up scroll-top-arrow" aria-hidden="true"></i>
+    </a>
+  
+
+  
+    <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v"
+                 for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+  
+
+  <footer class="mt-5">
+  <div class="text-center py-3">
+    <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><b>Hexo</b></a>
+    <i class="iconfont icon-love"></i>
+    <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"> <b>Fluid</b></a>
+    <br>
+
+    
+  
+    <!-- 不蒜子统计PV -->
+    
+    &nbsp;<span id="busuanzi_container_site_pv"></span>总访问量 
+          <span id="busuanzi_value_site_pv"></span> 次&nbsp;
+  
+  
+    <!-- 不蒜子统计UV -->
+    
+    &nbsp;<span id="busuanzi_container_site_uv"></span>总访客数 
+            <span id="busuanzi_value_site_uv"></span> 人&nbsp;
+  
+  <br>
+
+
+
+    
+
+
+    <!-- cnzz Analytics icon -->
+    
+
+  </div>
+</footer>
+
+<!-- SCRIPTS -->
+<script src="/lib/jquery/jquery.min.js" ></script>
+<script src="/lib/popper/popper.min.js" ></script>
+<script src="/lib/bootstrap/js/bootstrap.min.js" ></script>
+<script src="/lib/mdbootstrap/js/mdb.min.js" ></script>
+<script src="/js/main.js" ></script>
+
+
+  <script src="/js/lazyload.js" ></script>
+
+
+
+  
+    <script src="/lib/tocbot/tocbot.min.js" ></script>
+  
+  <script src="/js/post.js" ></script>
+
+
+
+  <script src="/lib/smooth-scroll/smooth-scroll.min.js" ></script>
+
+
+
+  <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" ></script>
+
+
+<!-- Plugins -->
+
+
+  
+
+  
+
+  
+
+  
+
+  <!-- cnzz Analytics -->
+  
+
+
+
+  <script src="/lib/prettify/prettify.min.js" ></script>
+  <script>
+    $(document).ready(function () {
+      $('pre').addClass('prettyprint  linenums');
+      prettyPrint();
+    })
+  </script>
+
+
+
+  <script src="/lib/typed/typed.min.js" ></script>
+  <script>
+    var typed = new Typed('#subtitle', {
+      strings: [
+        '  ',
+        "模板模式以及实战应用&nbsp;",
+      ],
+      cursorChar: "_",
+      typeSpeed: 70,
+      loop: false,
+    });
+    typed.stop();
+    $(document).ready(function () {
+      $(".typed-cursor").addClass("h2");
+      typed.start();
+    });
+  </script>
+
+
+
+  <script src="/lib/anchor/anchor.min.js" ></script>
+  <script>
+    anchors.options = {
+      placement: "right",
+      visible: "false",
+      
+    };
+    var el = "h1,h2,h3,h4,h5,h6".split(",");
+    var res = [];
+    for (item of el) {
+      res.push(".markdown-body > " + item)
+    }
+    anchors.add(res.join(", "))
+  </script>
+
+
+
+  <script src="/js/local-search.js" ></script>
+  <script>
+    var path = "/local-search.xml";
+    var inputArea = document.querySelector("#local-search-input");
+    inputArea.onclick = function () {
+      getSearchFile(path);
+      this.onclick = null
+    }
+  </script>
+
+
+
+  <script src="/lib/fancybox/jquery.fancybox.min.js" ></script>
+  <script>
+    $("#post img:not(.no-zoom img, img[no-zoom])").each(
+      function () {
+        var element = document.createElement("a");
+        $(element).attr("data-fancybox", "images");
+        $(element).attr("href", $(this).attr("src"));
+        $(this).wrap(element);
+      }
+    );
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+</body>
+</html>
