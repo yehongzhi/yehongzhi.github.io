@@ -1,0 +1,633 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/apple-touch-icon.png">
+  <link rel="icon" type="image/png" href="/img/favicon.png">
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="description" content="">
+  <meta name="author" content="Ye hongzhi">
+  <meta name="keywords" content="">
+  <title>代理模式以及应用 - 叶洪智的技术分享</title>
+
+  <link rel="stylesheet" href="/lib/font-awesome/css/all.min.css"  >
+<link rel="stylesheet" href="/lib/bootstrap/css/bootstrap.min.css"  >
+<link rel="stylesheet" href="/lib/mdbootstrap/css/mdb.min.css"  >
+<link rel="stylesheet" href="/lib/github-markdown/github-markdown.min.css"  >
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1067060_qzomjdt8bmp.css">
+
+
+
+  <link rel="stylesheet" href="/lib/prettify/tomorrow-night-eighties.min.css"  >
+
+<link rel="stylesheet" href="/css/main.css"  >
+
+
+  <link rel="stylesheet" href="/lib/fancybox/jquery.fancybox.min.css"  >
+
+
+<meta name="generator" content="Hexo 4.2.0"></head>
+
+
+<body>
+  <header style="height: 70vh;">
+    <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand"
+       href="/">&nbsp;<strong>YeHongzhi's Blog</strong>&nbsp;</a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+          <li class="nav-item">
+            <a class="nav-link" href="/">首页</a>
+          </li>
+        
+          
+          
+          
+          
+          <li class="nav-item">
+            <a class="nav-link" href="/archives/">归档</a>
+          </li>
+        
+          
+          
+          
+          
+          <li class="nav-item">
+            <a class="nav-link" href="/tags/">标签</a>
+          </li>
+        
+          
+          
+          
+          
+          <li class="nav-item">
+            <a class="nav-link" href="/about/">关于</a>
+          </li>
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" data-toggle="modal" data-target="#modalSearch">&nbsp;&nbsp;<i
+                class="iconfont icon-search"></i>&nbsp;&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+    <div class="view intro-2" id="background" false
+         style="background: url('/img/post.png')no-repeat center center;
+           background-size: cover;">
+      <div class="full-bg-img">
+        <div class="mask rgba-black-light flex-center">
+          <div class="container text-center white-text fadeInUp">
+            <span class="h2" id="subtitle">
+              
+            </span>
+
+            
+              <br>
+              
+                <p class="mt-3">
+                  <i class="fas fa-calendar-alt" aria-hidden="true"></i>&nbsp;
+                  星期日, 四月 19日 2020, 2:56 下午
+                </p>
+              
+
+              <p>
+                
+                  
+                  &nbsp;<i class="far fa-chart-bar"></i>
+                  <span class="post-count">
+                    2.5k 字
+                  </span>&nbsp;
+                
+
+                
+                  
+                  &nbsp;<i class="far fa-clock"></i>
+                  <span class="post-count">
+                      10 分钟
+                  </span>&nbsp;
+                
+
+                
+                  <!-- 不蒜子统计文章PV -->
+                  
+                  &nbsp;<i class="far fa-eye" aria-hidden="true"></i>&nbsp;
+                  <span id="busuanzi_container_page_pv">
+                    <span id="busuanzi_value_page_pv"></span> 次
+                  </span>&nbsp;
+                
+              </p>
+            
+          </div>
+
+          
+            <div class="scroll-down-bar">
+              <i class="fas fa-angle-down scroll-down-arrow"></i>
+            </div>
+          
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid">
+  <div class="row">
+    <div class="d-none d-lg-block col-lg-2"></div>
+    <div class="col-lg-8 nopadding-md">
+      <div class="py-5 z-depth-3" id="board">
+        <div class="post-content mx-auto" id="post">
+          <div class="markdown-body">
+            <h1 id="代理模式"><a href="#代理模式" class="headerlink" title="代理模式"></a>代理模式</h1><p><strong>代理模式的定义：</strong>代理模式给某一个对象提供一个代理对象，并由代理对象控制对原对象的引用。</p>
+<a id="more"></a>
+
+<p>通俗点说，就是一个中介，比如有一个广州人，是个本地人，有两套房，他要租出去收租，但是除了收租，他还要去找租客，带租客看房，还要准备租房合同，核算水电费等等，很麻烦。这个本地人他也不想这么折腾，他只想<strong>完成他的核心业务(收钱)</strong>,其他杂七杂八的事情就不想管，但是总要有人去做，那就找<strong>租房中介</strong>，也就是二手房东。二手房东就代理这个广州本地人把房子租给租客。这个道理就是这么简单。</p>
+<p>他们这些在广州有房子的本地人都可以找中介公司去代理租房是一样的。因为很多广州本地人都有这个需求，干脆就搞一个中介公司来专门去做租房子的事情。</p>
+<p><strong>代理模式，运用在编程里，也是这个道理，有一些非核心业务的代码，在很多地方都需要用到的逻辑，可以交给代理对象完成，程序员只需要关心核心业务的逻辑即可。</strong></p>
+<h1 id="实现代理模式的三种方式"><a href="#实现代理模式的三种方式" class="headerlink" title="实现代理模式的三种方式"></a>实现代理模式的三种方式</h1><p>项目就基于上一篇<code>模板模式</code>的文章的项目进行试验。</p>
+<h2 id="静态代理"><a href="#静态代理" class="headerlink" title="静态代理"></a>静态代理</h2><p>假设原来有一个接口<code>UserService</code>，controller层调用<code>userService</code>的<code>getAllUser()</code>方法。如下所示：</p>
+<pre><code class="java">public interface UserService {
+    /**
+     * 获取所有用户信息
+     *
+     * @return List
+     * @author Ye hongzhi
+     * @date 2020/4/12
+     */
+    List&lt;User&gt; getAllUser() throws Exception;
+}</code></pre>
+<pre><code class="java">@RestController
+@RequestMapping(&quot;/xiaoniu&quot;)
+public class UserController {
+
+    @Resource(name = &quot;userService&quot;)
+    private UserService userService;
+
+    @RequestMapping(&quot;/getAllUser&quot;)
+    public List&lt;User&gt; getAllUser()throws Exception{
+        return userService.getAllUser();
+    }
+}</code></pre>
+<p>如果用静态代理实现记录日志信息，怎么记录呢？</p>
+<p>首先创建一个代理类<code>UserServiceProxy</code>，实现<code>UserService</code>接口，然后在<code>UserServiceProxy</code>里面创建一个成员变量<code>userService</code>，再写一个有参构造器来初始化<code>userService</code>。代码如下：</p>
+<pre><code class="java">public class UserServiceProxy implements UserService {
+
+    private UserService userService;
+
+    public UserServiceProxy(UserService userService) {
+        this.userService = userService;
+    }
+
+    @Override
+    public List&lt;User&gt; getAllUser() throws Exception {
+        System.out.println(&quot;记录日志：执行getAllUser()方法前&quot;);
+        List&lt;User&gt; userList = userService.getAllUser();
+        System.out.println(userList);
+        System.out.println(&quot;记录日志：执行getAllUser()方法后&quot;);
+        return userList;
+    }
+}</code></pre>
+<p>所以在controller层调用的方式就要改一下，是用代理类<code>UserServiceProxy</code>调用<code>getAllUser()</code>方法。如下：</p>
+<pre><code class="java">@RestController
+@RequestMapping(&quot;/xiaoniu&quot;)
+public class UserController {
+
+    @Resource(name = &quot;userService&quot;)
+    private UserService userService;
+
+    @RequestMapping(&quot;/getAllUser&quot;)
+    public List&lt;User&gt; getAllUser()throws Exception{
+        return new UserServiceProxy(userService).getAllUser();
+    }
+}</code></pre>
+<p>然后启动项目，调用一下接口，就可以看到控制台打印如下日志：</p>
+<pre><code class="java">/*
+记录日志：执行getAllUser()方法前
+[User{id=1, name=&#39;大司马&#39;, age=36, job=&#39;厨师&#39;}, User{id=2, name=&#39;朴老师&#39;, age=36, job=&#39;主播&#39;}, User{id=3, name=&#39;王刚&#39;, age=30, job=&#39;厨师&#39;}, User{id=4, name=&#39;大sao&#39;, age=32, job=&#39;美食up主&#39;}, User{id=5, name=&#39;姚大秋&#39;, age=35, job=&#39;主持人&#39;}]
+记录日志：执行getAllUser()方法后
+*/</code></pre>
+<p>这就是静态代理的实现思路，很简单。但是一般我们肯定是不用这种方式。因为这种方式太笨了，很容易就可以看出几个缺点。</p>
+<p><strong>1.要实现接口，也就是目标的方法要定义一个接口方法，实际上是运用了java多态的特性</strong></p>
+<p><strong>2.第一点还不是致命的，因为JDK动态代理也是必须要定义接口；致命的是每一个你想代理的接口你都要去创建一个代理类去实现，假设有很多要代理的接口，那就创建很多代理类，这样显得很臃肿</strong></p>
+<p>假设还是不理解为什么要动态代理，不妨我们再多加一个支付接口<code>PayService</code>，这个支付接口我们也要加上日志记录。</p>
+<p>用静态代理怎么做？很简单呀，再创建一个<code>PayServiceProxy</code>类不就完了吗，如果还有<code>OrderService</code>(订单),</p>
+<p><code>WarehouseService</code>(仓库)等等。那就要创建很多<code>XXXServiceProxy</code>类。如果使用动态代理，就没必要创建这么多代理类，创建一个代理类就够了！</p>
+<blockquote>
+<p>动态代理就是为了解决静态代理的这个缺点产生的。</p>
+</blockquote>
+<h2 id="JDK动态代理"><a href="#JDK动态代理" class="headerlink" title="JDK动态代理"></a>JDK动态代理</h2><p>JDK本身就带有动态代理，必须要满足一个条件，就是要有接口。原理其实和静态代理是一样的，也是用代理类去实现接口，但是代理类不是一开始就写好的，而是在程序运行时通过反射创建字节码文件然后加载到JVM。也就是动态生成的代理类对象。</p>
+<p>下面就是用<code>JDK动态代理</code>实现代理模式。</p>
+<pre><code class="java">public class LogRecordProxy&lt;T&gt; implements InvocationHandler {
+
+    private T target;
+
+    public LogRecordProxy(T t) {
+        this.target = t;
+    }
+
+    @Override
+    public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
+        System.out.println(&quot;记录日志：执行&quot; + method.getName() + &quot;方法前&quot;);
+        Object result = method.invoke(target, args);
+        System.out.println(result);
+        System.out.println(&quot;记录日志：执行&quot; + method.getName() + &quot;方法后&quot;);
+        return result;
+    }
+
+    /**
+     * 获取代理对象的方法
+     * */
+    @SuppressWarnings(&quot;unchecked&quot;)
+    public &lt;T&gt; T getProxy() throws Exception {
+        return (T) Proxy.newProxyInstance(target.getClass().getClassLoader(), target.getClass().getInterfaces(), this);
+    }
+}</code></pre>
+<p>在controller层，就要改成这样。</p>
+<pre><code class="java">@RestController
+@RequestMapping(&quot;/xiaoniu&quot;)
+public class UserController {
+
+    @Resource
+    private UserService userService;
+
+    @RequestMapping(&quot;/getAllUser&quot;)
+    public List&lt;User&gt; getAllUser() throws Exception {
+        //获取代理对象
+        UserService userServiceProxy = new LogRecordProxy&lt;&gt;(userService).getProxy();
+        return userServiceProxy.getAllUser();
+    }
+}</code></pre>
+<p>假设有一个<code>PayService</code>也要做日志记录，就可以直接使用。</p>
+<pre><code class="java">    @Resource(name = &quot;payService&quot;)
+    private PayService payService;    
+
+    @RequestMapping(&quot;/pay&quot;)
+    public String pay(@RequestParam(name = &quot;channel&quot;) String channel,
+                      @RequestParam(name = &quot;amount&quot;) String amount
+    )throws Exception{
+        //获取代理对象，实际上就在构造器上改一下传入的参数即可
+        PayService payServiceProxy = new LogRecordProxy&lt;&gt;(payService).getProxy();
+        return payServiceProxy.pay(channel,amount);
+    }</code></pre>
+<p>很多文章给的例子都不带泛型，也可以，就是获取的代理对象需要强转一下，强转成对应的接口类。</p>
+<p><strong>注意：这里一定要用接口接收代理对象，不能用实现类！</strong></p>
+<p>因为返回的对象已经不是实现类的对象，而是和实现类有共同的接口类的代理类对象，所以当然只能用接口类去接收。</p>
+<blockquote>
+<p>这也是为什么一再强调要面向接口编程的原因，因为面向接口编程可以做更多的扩展。假设是面向实现类去编程，那就不能用JDK动态代理去扩展了！</p>
+</blockquote>
+<h2 id="CGLB动态代理"><a href="#CGLB动态代理" class="headerlink" title="CGLB动态代理"></a>CGLB动态代理</h2><p>那如果有些场景真的没有接口呢，我们怎么运用代理模式？</p>
+<p>首先引入maven配置</p>
+<pre><code class="xml">&lt;dependency&gt;
+    &lt;groupId&gt;cglib&lt;/groupId&gt;
+    &lt;artifactId&gt;cglib&lt;/artifactId&gt;
+    &lt;version&gt;2.2.2&lt;/version&gt;
+&lt;/dependency&gt;</code></pre>
+<p>然后创建一个方法拦截器<code>LogRecordInterceptor</code>，要实现<code>MethodInterceptor</code>类，如下：</p>
+<pre><code class="java">public class LogRecordInterceptor implements MethodInterceptor {
+
+    private Object target;
+
+    public LogRecordInterceptor(Object target) {
+        this.target = target;
+    }
+
+    @Override
+    public Object intercept(Object object, Method method, Object[] args, MethodProxy methodProxy) throws Throwable {
+        System.out.println(&quot;记录日志：执行&quot; + method.getName() + &quot;方法前,参数：&quot; + Arrays.toString(args));
+        Object result = method.invoke(target, args);
+        System.out.println(result);
+        System.out.println(&quot;记录日志：执行&quot; + method.getName() + &quot;方法后,参数：&quot; + Arrays.toString(args));
+        return result;
+    }
+}</code></pre>
+<p>然后再创建一个工厂类<code>InterceptorFactory</code>，用于创建代理对象。</p>
+<pre><code class="java">public class InterceptorFactory {
+
+    @SuppressWarnings(&quot;unchecked&quot;)
+    public static &lt;T&gt; T getInterceptor(Class&lt;T&gt; clazz, MethodInterceptor methodInterceptor) {
+        Enhancer enhancer = new Enhancer();
+        enhancer.setSuperclass(clazz);
+        enhancer.setCallback(methodInterceptor);
+        return (T) enhancer.create();
+    }
+}</code></pre>
+<p>接着我们就可以创建一个没有接口的类，我这里就创建一个数学工具类进行测试</p>
+<pre><code class="java">public class MathUtil {
+    /**
+     * 获取一个数的平方
+     * */
+    public String getSquare(int num) {
+        return String.valueOf(num * num);
+    }
+}</code></pre>
+<p>然后在controller层定义一个接口来测试</p>
+<pre><code class="java">@RequestMapping(&quot;/getSquare&quot;)
+    public String getSquare(@RequestParam(name = &quot;num&quot;) Integer num) throws Exception {
+        MathUtil mathUtil = InterceptorFactory.getInterceptor(MathUtil.class, new LogRecordInterceptor(new MathUtil()));
+        return mathUtil.getSquare(num);
+    }</code></pre>
+<p>用浏览器或者<code>POSTMAN</code>工具调用接口，就可以在控制台看到以下输出：</p>
+<pre><code class="java">/*
+记录日志：执行getSquare方法前,参数：[2]
+4
+记录日志：执行getSquare方法后,参数：[2]
+*/</code></pre>
+<p>这样就实现没有定义接口也可以实现动态代理！</p>
+<p>实际上，定义接口的也可以用这种方法来进行扩展，比如上面的<code>userService</code>接口</p>
+<pre><code class="java">@RestController
+@RequestMapping(&quot;/xiaoniu&quot;)
+public class UserController {
+
+    @Resource
+    private UserService userService;
+
+    @RequestMapping(&quot;/getAllUser&quot;)
+    public List&lt;User&gt; getAllUser() throws Exception {
+        UserServiceImpl userServiceProxy = InterceptorFactory
+            .getInterceptor(UserServiceImpl.class,
+                            new LogRecordInterceptor(userService));
+        return userServiceProxy.getAllUser();
+    }
+}</code></pre>
+<p>调用接口我们在控制台也是可以看到以下输出日志：</p>
+<pre><code class="java">/*
+记录日志：执行getAllUser方法前,参数：[]
+[User{id=1, name=&#39;大司马&#39;, age=36, job=&#39;厨师&#39;}, User{id=2, name=&#39;朴老师&#39;, age=36, job=&#39;主播&#39;}, User{id=3, name=&#39;王刚&#39;, age=30, job=&#39;厨师&#39;}, User{id=4, name=&#39;大sao&#39;, age=32, job=&#39;美食up主&#39;}, User{id=5, name=&#39;姚大秋&#39;, age=35, job=&#39;主持人&#39;}]
+记录日志：执行getAllUser方法后,参数：[]
+*/</code></pre>
+<h1 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h1><p><strong>以上就是代理模式的一些通俗的解释，还有三种实现的方式的学习</strong></p>
+<p>多说几句，我们都知道<code>Spring</code>框架有两个核心技术，一个叫控制反转<code>IOC</code>，另一个叫切面编程<code>AOP</code>。切面编程大家都很熟悉，用的就是代理模式，那么<code>AOP</code>实现的代理模式用的是<code>JDK动态代理</code>还是<code>CLB动态代理</code>？</p>
+<p>答曰：<strong>两个都用！</strong></p>
+<p>最简单的，我们看<code>Spring</code>的事务管理，就是用代理模式实现的，如果有兴趣，其实我们自己也可以通过<code>JDK动态代理</code>手写实现事务管理，其实不是很难。篇幅有限，以后可以单独写一篇文章详细说明<code>Spring</code>的事务管理，敬请期待。更多的设计模式实战经验的分享，就关注java技术小牛吧。</p>
+<img src="https://me.lovebilibili.com/img/wechat.jpg-slim" srcset="/img/loading.gif" alt="100" style="zoom:50%;" />
+
+<blockquote>
+<p>能力有限，如果有什么错误或者不当之处，请大家批评指正，一起学习交流！</p>
+</blockquote>
+
+            <hr>
+          </div>
+          <br>
+          <div>
+            <p>
+            
+            
+              <span>
+                <i class="iconfont icon-tag"></i>
+                
+                  <a class="hover-with-bg" href="/tags/java">java</a>
+                
+                  <a class="hover-with-bg" href="/tags/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F">设计模式</a>
+                
+              </span>
+            
+            </p>
+            
+              <p class="note note-warning">本博客所有文章除特别声明外，均采用 <a href="https://zh.wikipedia.org/wiki/Wikipedia:CC_BY-SA_3.0%E5%8D%8F%E8%AE%AE%E6%96%87%E6%9C%AC" target="_blank" rel="nofollow noopener noopener">CC BY-SA 3.0协议</a> 。转载请注明出处！</p>
+            
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="d-none d-lg-block col-lg-2 toc-container">
+      
+  <div id="toc">
+    <p class="h4"><i class="far fa-list-alt"></i>&nbsp;目录</p>
+    <div id="tocbot"></div>
+  </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- custom -->
+
+
+<!-- Comments -->
+<div class="col-lg-7 mx-auto nopadding-md">
+  <div class="container comments mx-auto" id="comments">
+    
+  </div>
+</div>
+
+    
+  </main>
+
+  
+    <a class="z-depth-1" id="scroll-top-button" href="#" role="button">
+      <i class="fa fa-chevron-up scroll-top-arrow" aria-hidden="true"></i>
+    </a>
+  
+
+  
+    <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v"
+                 for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+  
+
+  <footer class="mt-5">
+  <div class="text-center py-3">
+    <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><b>Hexo</b></a>
+    <i class="iconfont icon-love"></i>
+    <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"> <b>Fluid</b></a>
+    <br>
+
+    
+  
+    <!-- 不蒜子统计PV -->
+    
+    &nbsp;<span id="busuanzi_container_site_pv"></span>总访问量 
+          <span id="busuanzi_value_site_pv"></span> 次&nbsp;
+  
+  
+    <!-- 不蒜子统计UV -->
+    
+    &nbsp;<span id="busuanzi_container_site_uv"></span>总访客数 
+            <span id="busuanzi_value_site_uv"></span> 人&nbsp;
+  
+  <br>
+
+
+
+    
+
+
+    <!-- cnzz Analytics icon -->
+    
+
+  </div>
+</footer>
+
+<!-- SCRIPTS -->
+<script src="/lib/jquery/jquery.min.js" ></script>
+<script src="/lib/popper/popper.min.js" ></script>
+<script src="/lib/bootstrap/js/bootstrap.min.js" ></script>
+<script src="/lib/mdbootstrap/js/mdb.min.js" ></script>
+<script src="/js/main.js" ></script>
+
+
+  <script src="/js/lazyload.js" ></script>
+
+
+
+  
+    <script src="/lib/tocbot/tocbot.min.js" ></script>
+  
+  <script src="/js/post.js" ></script>
+
+
+
+  <script src="/lib/smooth-scroll/smooth-scroll.min.js" ></script>
+
+
+
+  <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" ></script>
+
+
+<!-- Plugins -->
+
+
+  
+
+  
+
+  
+
+  
+
+  <!-- cnzz Analytics -->
+  
+
+
+
+  <script src="/lib/prettify/prettify.min.js" ></script>
+  <script>
+    $(document).ready(function () {
+      $('pre').addClass('prettyprint  linenums');
+      prettyPrint();
+    })
+  </script>
+
+
+
+  <script src="/lib/typed/typed.min.js" ></script>
+  <script>
+    var typed = new Typed('#subtitle', {
+      strings: [
+        '  ',
+        "代理模式以及应用&nbsp;",
+      ],
+      cursorChar: "_",
+      typeSpeed: 70,
+      loop: false,
+    });
+    typed.stop();
+    $(document).ready(function () {
+      $(".typed-cursor").addClass("h2");
+      typed.start();
+    });
+  </script>
+
+
+
+  <script src="/lib/anchor/anchor.min.js" ></script>
+  <script>
+    anchors.options = {
+      placement: "right",
+      visible: "false",
+      
+    };
+    var el = "h1,h2,h3,h4,h5,h6".split(",");
+    var res = [];
+    for (item of el) {
+      res.push(".markdown-body > " + item)
+    }
+    anchors.add(res.join(", "))
+  </script>
+
+
+
+  <script src="/js/local-search.js" ></script>
+  <script>
+    var path = "/local-search.xml";
+    var inputArea = document.querySelector("#local-search-input");
+    inputArea.onclick = function () {
+      getSearchFile(path);
+      this.onclick = null
+    }
+  </script>
+
+
+
+  <script src="/lib/fancybox/jquery.fancybox.min.js" ></script>
+  <script>
+    $("#post img:not(.no-zoom img, img[no-zoom])").each(
+      function () {
+        var element = document.createElement("a");
+        $(element).attr("data-fancybox", "images");
+        $(element).attr("href", $(this).attr("src"));
+        $(this).wrap(element);
+      }
+    );
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+</body>
+</html>
