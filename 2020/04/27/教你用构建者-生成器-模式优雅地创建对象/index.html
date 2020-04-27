@@ -1,0 +1,546 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/apple-touch-icon.png">
+  <link rel="icon" type="image/png" href="/img/favicon.png">
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="description" content="">
+  <meta name="author" content="Ye hongzhi">
+  <meta name="keywords" content="">
+  <title>教你用构建者(生成器)模式优雅地创建对象 - 叶洪智的技术分享</title>
+
+  <link rel="stylesheet" href="/lib/font-awesome/css/all.min.css"  >
+<link rel="stylesheet" href="/lib/bootstrap/css/bootstrap.min.css"  >
+<link rel="stylesheet" href="/lib/mdbootstrap/css/mdb.min.css"  >
+<link rel="stylesheet" href="/lib/github-markdown/github-markdown.min.css"  >
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1067060_qzomjdt8bmp.css">
+
+
+
+  <link rel="stylesheet" href="/lib/prettify/tomorrow-night-eighties.min.css"  >
+
+<link rel="stylesheet" href="/css/main.css"  >
+
+
+  <link rel="stylesheet" href="/lib/fancybox/jquery.fancybox.min.css"  >
+
+
+<meta name="generator" content="Hexo 4.2.0"></head>
+
+
+<body>
+  <header style="height: 70vh;">
+    <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand"
+       href="/">&nbsp;<strong>YeHongzhi's Blog</strong>&nbsp;</a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+          <li class="nav-item">
+            <a class="nav-link" href="/">首页</a>
+          </li>
+        
+          
+          
+          
+          
+          <li class="nav-item">
+            <a class="nav-link" href="/archives/">归档</a>
+          </li>
+        
+          
+          
+          
+          
+          <li class="nav-item">
+            <a class="nav-link" href="/tags/">标签</a>
+          </li>
+        
+          
+          
+          
+          
+          <li class="nav-item">
+            <a class="nav-link" href="/about/">关于</a>
+          </li>
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" data-toggle="modal" data-target="#modalSearch">&nbsp;&nbsp;<i
+                class="iconfont icon-search"></i>&nbsp;&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+    <div class="view intro-2" id="background" false
+         style="background: url('/img/post.png')no-repeat center center;
+           background-size: cover;">
+      <div class="full-bg-img">
+        <div class="mask rgba-black-light flex-center">
+          <div class="container text-center white-text fadeInUp">
+            <span class="h2" id="subtitle">
+              
+            </span>
+
+            
+              <br>
+              
+                <p class="mt-3">
+                  <i class="fas fa-calendar-alt" aria-hidden="true"></i>&nbsp;
+                  星期一, 四月 27日 2020, 11:13 晚上
+                </p>
+              
+
+              <p>
+                
+                  
+                  &nbsp;<i class="far fa-chart-bar"></i>
+                  <span class="post-count">
+                    1.7k 字
+                  </span>&nbsp;
+                
+
+                
+                  
+                  &nbsp;<i class="far fa-clock"></i>
+                  <span class="post-count">
+                      6 分钟
+                  </span>&nbsp;
+                
+
+                
+                  <!-- 不蒜子统计文章PV -->
+                  
+                  &nbsp;<i class="far fa-eye" aria-hidden="true"></i>&nbsp;
+                  <span id="busuanzi_container_page_pv">
+                    <span id="busuanzi_value_page_pv"></span> 次
+                  </span>&nbsp;
+                
+              </p>
+            
+          </div>
+
+          
+            <div class="scroll-down-bar">
+              <i class="fas fa-angle-down scroll-down-arrow"></i>
+            </div>
+          
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid">
+  <div class="row">
+    <div class="d-none d-lg-block col-lg-2"></div>
+    <div class="col-lg-8 nopadding-md">
+      <div class="py-5 z-depth-3" id="board">
+        <div class="post-content mx-auto" id="post">
+          <div class="markdown-body">
+            <h1 id="为什么要用构建者模式"><a href="#为什么要用构建者模式" class="headerlink" title="为什么要用构建者模式"></a>为什么要用构建者模式</h1><p>很多博客文章上来就先抛出一个定义，我们不妨反过来问一句为什么要用构建者模式。<br>首先我们创建一个<code>User</code>类，然后采用有参构造器的方式创建对象。</p>
+<pre><code class="java">public class User {
+
+    private String id;
+
+    private String name;
+
+    private String gender;
+
+    private String address;
+
+    private Integer age;
+
+    private String phone;
+
+    //省略无参构造器，有参构造器，getter，setter方法...
+}</code></pre>
+<pre><code class="java">public static void main(String[] args) throws Exception {
+    String id = UUID.randomUUID().toString().replaceAll(&quot;-&quot;, &quot;&quot;);
+    User user = new User(id, &quot;张三&quot;, &quot;男&quot;, &quot;广州天河&quot;, 20, &quot;135461852xx&quot;);
+}</code></pre>
+<p>我们通过有参构造器创建对象，并且赋值，看起来没什么问题，因为我们经常看到有人是这样写的。<br>事实上，如果<code>User</code>对象里面有更多的字段，通过有参构造器去创建对象是很难一眼看出字段具体是什么意思，我们经常要看着<code>User构造器</code>的代码，然后对照顺序才能看出字段的代表什么意思。</p>
+<pre><code class="java">public User(String id, String name, String gender, String address, Integer age, String phone) {
+    this.id = id;
+    this.name = name;
+    this.gender = gender;
+    this.address = address;
+    this.age = age;
+    this.phone = phone;
+}</code></pre>
+<p>比如通过上面这个，我们可以知道第一个参数是id，第二个参数是名字，第三个是性别…</p>
+<h2 id="使用有参构造器的缺点："><a href="#使用有参构造器的缺点：" class="headerlink" title="使用有参构造器的缺点："></a>使用有参构造器的缺点：</h2><p>这显然不利于代码的维护性，对于不熟悉业务的新入职的员工，如果看到这种方式构建一个对象，估计要看上一会，有些项目我遇过一个构造器十几个参数的，更加离谱。而且一般老代码还不敢乱动他的这个构造器，一不小心你动了构造器里面的一个参数的顺序，直接GG；或者你在他原有的构造器后面加多一个参数，你会发现他很多地方都引用了这个有参构造器，你很多地方都要去修改，是真的恶心。</p>
+<h2 id="解决方法一-使用无参构造器，通过setter方法设置属性值"><a href="#解决方法一-使用无参构造器，通过setter方法设置属性值" class="headerlink" title="解决方法一 使用无参构造器，通过setter方法设置属性值"></a>解决方法一 使用无参构造器，通过setter方法设置属性值</h2><pre><code class="java">public static void main(String[] args) throws Exception {
+    User user = new User();
+    user.setId(UUID.randomUUID().toString().replaceAll(&quot;-&quot;, &quot;&quot;));
+    user.setName(&quot;张三&quot;);
+    user.setAge(20);
+    user.setGender(&quot;男&quot;);
+    user.setPhone(&quot;135461852xx&quot;);
+    user.setAddress(&quot;广州天河&quot;);
+    out.println(user);
+}</code></pre>
+<p>上面这样，显然比直接用有参构造器要好很多，因为这样就可以创建对象和赋值分开进行，一眼就可以看出对什么属性值赋值，而且如果加一个字段，我们不需要再每一处都去修改，因为用的是<strong>无参构造器</strong>，是不是这样写就是万全之计呢？<br>也不是，因为这样创建对象和赋值是分开的，各个参数的初始化被放到了不同的方法中调用，这会导致严重的线程不安全问题(使用构造器则不会有这个问题)，对象在一连串的set方法中，可能会出现状态不一致的情况，这是应该尽量避免的。</p>
+<h2 id="解决方法二-通过构建者模式，链式调用构建方法设置属性值"><a href="#解决方法二-通过构建者模式，链式调用构建方法设置属性值" class="headerlink" title="解决方法二 通过构建者模式，链式调用构建方法设置属性值"></a>解决方法二 通过构建者模式，链式调用构建方法设置属性值</h2><p>什么是链式编程，就是调用一个方法，返回值是他本身，可以继续调用下一个方法，返回又是他本身，如此调用下去，看上去就像一条链子一样。典型的例子可以看<code>java8</code>新特性的<code>Stream</code>流操作。我们可以使用构建者模式，也能达到这种效果，并且线程安全，而且能直观地看到属性值的意思。总得来说，既保证线程安全，也很具有代码的可读性。先看结果代码：</p>
+<pre><code class="java">public static void main(String[] args) throws Exception {
+    String id = UUID.randomUUID().toString().replaceAll(&quot;-&quot;, &quot;&quot;);
+    User user = UserBuilder.getInstance()
+            .newPojo()
+            .addId(id)
+            .addName(&quot;张三&quot;)
+            .addGender(&quot;男&quot;)
+            .addAge(20)
+            .addPhone(&quot;135461852xx&quot;)
+            .addAddress(&quot;广州天河&quot;)
+            .build();
+}</code></pre>
+<p>怎么实现呢？其实很简单，我们只需要创建一个<code>UserBuilder</code>类即可。代码如下：</p>
+<pre><code class="java">public class UserBuilder {
+
+    private User user;
+
+    private UserBuilder() {
+    }
+
+    public static UserBuilder getInstance() {
+        return new UserBuilder();
+    }
+
+    public UserBuilder newPojo() {
+        this.user = new User();
+        //返回本身
+        return this;
+    }
+
+    public UserBuilder addId(String id) {
+        this.user.setId(id);
+        //返回本身
+        return this;
+    }
+
+    public UserBuilder addName(String name) {
+        this.user.setName(name);
+        return this;
+    }
+
+    public UserBuilder addGender(String gender) {
+        this.user.setGender(gender);
+        return this;
+    }
+
+    public UserBuilder addAge(Integer age) {
+        this.user.setAge(age);
+        return this;
+    }
+
+    public UserBuilder addAddress(String address) {
+        this.user.setAddress(address);
+        return this;
+    }
+
+    public UserBuilder addPhone(String phone) {
+        this.user.setPhone(phone);
+        return this;
+    }
+
+    public User build() {
+        return this.user;
+    }
+}</code></pre>
+<p>那么是不是这种方式就是万全之计呢，就一定没有缺点吗？</p>
+<h3 id="构造者模式的缺点还是有的"><a href="#构造者模式的缺点还是有的" class="headerlink" title="构造者模式的缺点还是有的"></a>构造者模式的缺点还是有的</h3><p>1.代码冗长。如果一个对象的属性很多，那我们在创建一个对象时，链式就会变得很长，但是这也没有办法，无论采用构造器还是builder模式都会很长。如果非要变得简洁一点，那就只有采用原型模式(克隆)等其他方式了。<br>2.会产生很多<code>Builder</code>类。我们可以放在一个包下统一管理应该问题不大。<br>第二个缺点实际上可以使用<code>Lombok</code>插件，然后在实体类上使用<code>@Builder</code>注解，就不会产生过多的<code>Builder</code>类了。但是有些公司的技术总监不太建议使用<code>Lombok</code>，那就莫得办法了…</p>
+<h3 id="注意点"><a href="#注意点" class="headerlink" title="注意点"></a>注意点</h3><p>有很多博客的示范代码，<code>Builder</code>类的<code>addXXX</code>方法会写成<code>setXXX</code>方法，这是一个隐患。因为很多框架，对Setter方法比较敏感，往往会对<code>Setter</code>方法做一些处理，所以<code>Builder</code>类里的设置属性值方法尽量不要用<code>setXXX</code>命名，防止出现一些不明原因的错误。</p>
+<h1 id="结束语"><a href="#结束语" class="headerlink" title="结束语"></a>结束语</h1><p>一般我们在项目中创建复杂的对象时，建议采用这种构建者模式创建对象。这样可以使代码可读性更好。<br>在java源码中，我们也可以看到构建者模式的应用。比如在<code>StringBuilder</code>类中：</p>
+<pre><code class="java">@Override
+public StringBuilder append(CharSequence s) {
+    super.append(s);
+    return this;
+}
+
+/**
+ * @throws     IndexOutOfBoundsException {@inheritDoc}
+ */
+@Override
+public StringBuilder append(CharSequence s, int start, int end) {
+    super.append(s, start, end);
+    return this;
+}
+
+@Override
+public StringBuilder append(char[] str) {
+    super.append(str);
+    return this;
+}</code></pre>
+<p><code>StringBuilder</code>的<code>append()</code>方法也是通过返回<code>this</code>对象实现链式构建对象，人们经常说这个<code>StringBuilder</code>类线程不安全是因为<code>append()</code>方法没有用<code>synchronized</code>修饰。<code>StringBuffer</code>则用了<code>synchronized</code>修饰，所以就是线程安全的。<br>还有<code>Mybatis</code>框架中，构建<code>SqlSessionFactory</code>对象是使用<code>SqlSessionFactoryBuilder</code>类进行构建，构建者模式运用非常广泛，非常值得学习。更多的设计模式实战经验的分享，就关注java技术小牛吧。</p>
+<img src="https://me.lovebilibili.com/img/wechat.jpg-slim" srcset="/img/loading.gif" alt="100" style="zoom:50%;" />
+
+<blockquote>
+<p>能力有限，如果有什么错误或者不当之处，请大家批评指正，一起学习交流！</p>
+</blockquote>
+
+            <hr>
+          </div>
+          <br>
+          <div>
+            <p>
+            
+            
+              <span>
+                <i class="iconfont icon-tag"></i>
+                
+                  <a class="hover-with-bg" href="/tags/java">java</a>
+                
+                  <a class="hover-with-bg" href="/tags/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F">设计模式</a>
+                
+              </span>
+            
+            </p>
+            
+              <p class="note note-warning">本博客所有文章除特别声明外，均采用 <a href="https://zh.wikipedia.org/wiki/Wikipedia:CC_BY-SA_3.0%E5%8D%8F%E8%AE%AE%E6%96%87%E6%9C%AC" target="_blank" rel="nofollow noopener noopener">CC BY-SA 3.0协议</a> 。转载请注明出处！</p>
+            
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="d-none d-lg-block col-lg-2 toc-container">
+      
+  <div id="toc">
+    <p class="h4"><i class="far fa-list-alt"></i>&nbsp;目录</p>
+    <div id="tocbot"></div>
+  </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- custom -->
+
+
+<!-- Comments -->
+<div class="col-lg-7 mx-auto nopadding-md">
+  <div class="container comments mx-auto" id="comments">
+    
+  </div>
+</div>
+
+    
+  </main>
+
+  
+    <a class="z-depth-1" id="scroll-top-button" href="#" role="button">
+      <i class="fa fa-chevron-up scroll-top-arrow" aria-hidden="true"></i>
+    </a>
+  
+
+  
+    <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v"
+                 for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+  
+
+  <footer class="mt-5">
+  <div class="text-center py-3">
+    <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><b>Hexo</b></a>
+    <i class="iconfont icon-love"></i>
+    <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"> <b>Fluid</b></a>
+    <br>
+
+    
+  
+    <!-- 不蒜子统计PV -->
+    
+    &nbsp;<span id="busuanzi_container_site_pv"></span>总访问量 
+          <span id="busuanzi_value_site_pv"></span> 次&nbsp;
+  
+  
+    <!-- 不蒜子统计UV -->
+    
+    &nbsp;<span id="busuanzi_container_site_uv"></span>总访客数 
+            <span id="busuanzi_value_site_uv"></span> 人&nbsp;
+  
+  <br>
+
+
+
+    
+
+
+    <!-- cnzz Analytics icon -->
+    
+
+  </div>
+</footer>
+
+<!-- SCRIPTS -->
+<script src="/lib/jquery/jquery.min.js" ></script>
+<script src="/lib/popper/popper.min.js" ></script>
+<script src="/lib/bootstrap/js/bootstrap.min.js" ></script>
+<script src="/lib/mdbootstrap/js/mdb.min.js" ></script>
+<script src="/js/main.js" ></script>
+
+
+  <script src="/js/lazyload.js" ></script>
+
+
+
+  
+    <script src="/lib/tocbot/tocbot.min.js" ></script>
+  
+  <script src="/js/post.js" ></script>
+
+
+
+  <script src="/lib/smooth-scroll/smooth-scroll.min.js" ></script>
+
+
+
+  <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" ></script>
+
+
+<!-- Plugins -->
+
+
+  
+
+  
+
+  
+
+  
+
+  <!-- cnzz Analytics -->
+  
+
+
+
+  <script src="/lib/prettify/prettify.min.js" ></script>
+  <script>
+    $(document).ready(function () {
+      $('pre').addClass('prettyprint  linenums');
+      prettyPrint();
+    })
+  </script>
+
+
+
+  <script src="/lib/typed/typed.min.js" ></script>
+  <script>
+    var typed = new Typed('#subtitle', {
+      strings: [
+        '  ',
+        "教你用构建者(生成器)模式优雅地创建对象&nbsp;",
+      ],
+      cursorChar: "_",
+      typeSpeed: 70,
+      loop: false,
+    });
+    typed.stop();
+    $(document).ready(function () {
+      $(".typed-cursor").addClass("h2");
+      typed.start();
+    });
+  </script>
+
+
+
+  <script src="/lib/anchor/anchor.min.js" ></script>
+  <script>
+    anchors.options = {
+      placement: "right",
+      visible: "false",
+      
+    };
+    var el = "h1,h2,h3,h4,h5,h6".split(",");
+    var res = [];
+    for (item of el) {
+      res.push(".markdown-body > " + item)
+    }
+    anchors.add(res.join(", "))
+  </script>
+
+
+
+  <script src="/js/local-search.js" ></script>
+  <script>
+    var path = "/local-search.xml";
+    var inputArea = document.querySelector("#local-search-input");
+    inputArea.onclick = function () {
+      getSearchFile(path);
+      this.onclick = null
+    }
+  </script>
+
+
+
+  <script src="/lib/fancybox/jquery.fancybox.min.js" ></script>
+  <script>
+    $("#post img:not(.no-zoom img, img[no-zoom])").each(
+      function () {
+        var element = document.createElement("a");
+        $(element).attr("data-fancybox", "images");
+        $(element).attr("href", $(this).attr("src"));
+        $(this).wrap(element);
+      }
+    );
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+</body>
+</html>
