@@ -1,0 +1,621 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/apple-touch-icon.png">
+  <link rel="icon" type="image/png" href="/img/favicon.png">
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="description" content="">
+  <meta name="author" content="Ye hongzhi">
+  <meta name="keywords" content="">
+  <title>观察者模式以及实际项目应用 - 叶洪智的技术分享</title>
+
+  <link rel="stylesheet" href="/lib/font-awesome/css/all.min.css"  >
+<link rel="stylesheet" href="/lib/bootstrap/css/bootstrap.min.css"  >
+<link rel="stylesheet" href="/lib/mdbootstrap/css/mdb.min.css"  >
+<link rel="stylesheet" href="/lib/github-markdown/github-markdown.min.css"  >
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1067060_qzomjdt8bmp.css">
+
+
+
+  <link rel="stylesheet" href="/lib/prettify/tomorrow-night-eighties.min.css"  >
+
+<link rel="stylesheet" href="/css/main.css"  >
+
+
+  <link rel="stylesheet" href="/lib/fancybox/jquery.fancybox.min.css"  >
+
+
+<meta name="generator" content="Hexo 4.2.0"></head>
+
+
+<body>
+  <header style="height: 70vh;">
+    <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand"
+       href="/">&nbsp;<strong>YeHongzhi's Blog</strong>&nbsp;</a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+          <li class="nav-item">
+            <a class="nav-link" href="/">首页</a>
+          </li>
+        
+          
+          
+          
+          
+          <li class="nav-item">
+            <a class="nav-link" href="/archives/">归档</a>
+          </li>
+        
+          
+          
+          
+          
+          <li class="nav-item">
+            <a class="nav-link" href="/tags/">标签</a>
+          </li>
+        
+          
+          
+          
+          
+          <li class="nav-item">
+            <a class="nav-link" href="/about/">关于</a>
+          </li>
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" data-toggle="modal" data-target="#modalSearch">&nbsp;&nbsp;<i
+                class="iconfont icon-search"></i>&nbsp;&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+    <div class="view intro-2" id="background" false
+         style="background: url('/img/post.png')no-repeat center center;
+           background-size: cover;">
+      <div class="full-bg-img">
+        <div class="mask rgba-black-light flex-center">
+          <div class="container text-center white-text fadeInUp">
+            <span class="h2" id="subtitle">
+              
+            </span>
+
+            
+              <br>
+              
+                <p class="mt-3">
+                  <i class="fas fa-calendar-alt" aria-hidden="true"></i>&nbsp;
+                  星期六, 五月 2日 2020, 8:44 晚上
+                </p>
+              
+
+              <p>
+                
+                  
+                  &nbsp;<i class="far fa-chart-bar"></i>
+                  <span class="post-count">
+                    2.5k 字
+                  </span>&nbsp;
+                
+
+                
+                  
+                  &nbsp;<i class="far fa-clock"></i>
+                  <span class="post-count">
+                      10 分钟
+                  </span>&nbsp;
+                
+
+                
+                  <!-- 不蒜子统计文章PV -->
+                  
+                  &nbsp;<i class="far fa-eye" aria-hidden="true"></i>&nbsp;
+                  <span id="busuanzi_container_page_pv">
+                    <span id="busuanzi_value_page_pv"></span> 次
+                  </span>&nbsp;
+                
+              </p>
+            
+          </div>
+
+          
+            <div class="scroll-down-bar">
+              <i class="fas fa-angle-down scroll-down-arrow"></i>
+            </div>
+          
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid">
+  <div class="row">
+    <div class="d-none d-lg-block col-lg-2"></div>
+    <div class="col-lg-8 nopadding-md">
+      <div class="py-5 z-depth-3" id="board">
+        <div class="post-content mx-auto" id="post">
+          <div class="markdown-body">
+            <h1 id="观察者模式"><a href="#观察者模式" class="headerlink" title="观察者模式"></a>观察者模式</h1><h2 id="定义"><a href="#定义" class="headerlink" title="定义"></a>定义</h2><p>观察者模式（Observer），又叫<strong>发布-订阅模式（Publish/Subscribe）</strong>，定义对象间一种一对多的依赖关系，使得每当一个对象改变状态，则所有依赖于它的对象都会得到通知并自动更新。</p>
+<h2 id="通俗解释"><a href="#通俗解释" class="headerlink" title="通俗解释"></a>通俗解释</h2><p>比如我们在宿舍打斗地主，我们要找个人来“放风”，这个人在门口观察，如果有宿管过了检查，那么就通知宿舍其他的小伙伴停止斗地主回床上睡觉。这种模式就被称为观察者模式。</p>
+<p>从这个例子看，“宿管是否过来宿舍”是订阅的主题，观察者是放风的人，订阅者是打斗地主的小伙伴，被观察者就是宿管。</p>
+<h2 id="不使用观察者模式的问题"><a href="#不使用观察者模式的问题" class="headerlink" title="不使用观察者模式的问题"></a>不使用观察者模式的问题</h2><p>假设我们基于之前在策略模式讲的电子支付的例子，支付完成后要发送消息，发送的消息有：短信，公众号消息，APP站内消息，邮箱。如果不使用观察者模式，怎么做呢？看代码：</p>
+<pre><code class="java">    @Override
+    public String pay(String channel, String amount) throws Exception {
+        PayStrategy payStrategy = PayStrategyFactory.getPayStrategy(channel);
+        if(payStrategy == null){
+            return &quot;输入渠道码有误&quot;;
+        }
+        String msg = payStrategy.pay(channel, amount);
+        //发送短信
+        System.out.println(&quot;发送短信：&quot;+msg);
+        //发送微信公众号消息
+        System.out.println(&quot;发送微信公众号消息：&quot;+msg);
+        //发送邮件
+        System.out.println(&quot;发送邮件：&quot;+msg);
+        //发送APP系统信息
+        System.out.println(&quot;发送APP系统信息：&quot;+msg);
+        return msg;
+    }</code></pre>
+<p>启动项目是没有问题的，我们调用接口后可以看到控制台打印以下信息：</p>
+<pre><code class="java">/**
+发送短信：使用 支付宝支付 ,消费了 100 元
+发送微信公众号消息：使用 支付宝支付 ,消费了 100 元
+发送邮件：使用 支付宝支付 ,消费了 100 元
+发送APP系统信息：使用 支付宝支付 ,消费了 100 元
+*/</code></pre>
+<p><strong>但是我们很明显可以看出有以下的问题：</strong></p>
+<ul>
+<li>每次支付如果需要新增一种消息通知方式，则要修改原来的类，不利于维护。</li>
+<li>违反了开闭原则，对拓展开放，对修改关闭。</li>
+<li>违反了单一职责原则，支付不应该糅杂消息通知的功能。</li>
+</ul>
+<p>上面就从代码演示了为什么要使用观察者模式，很多文章说不清楚，单纯地抛出一个概念和一些简单的例子，实际项目中肯定是没有那么简单。</p>
+<h2 id="使用观察者模式优化"><a href="#使用观察者模式优化" class="headerlink" title="使用观察者模式优化"></a>使用观察者模式优化</h2><p>这里的话，我不使用<code>java</code>自带的<code>Observer</code>和<code>Observable</code>来做，因为实际项目中一般都会使用<code>Spring</code>框架，<code>Spring</code>框架有一个事件机制，也是使用观察者模式的这种设计模式，而且在实际项目中我们往往会采用这种成熟度更高的框架，就像代理模式我们也很少会直接使用原生的<code>JDK动态代理</code>，而是采用<code>SpringAOP</code>来实现。</p>
+<h2 id="创建支付的事件"><a href="#创建支付的事件" class="headerlink" title="创建支付的事件"></a>创建支付的事件</h2><pre><code class="java">//继承ApplicationEvent类
+public class PayEvent extends ApplicationEvent {
+    //消息体
+    private Map&lt;String,String&gt; map;
+    //订阅主题
+    private String topic;
+
+    public PayEvent(Object source, Map&lt;String, String&gt; map, String topic) {
+        //调用父类的构造器
+        super(source);
+        this.map = map;
+        this.topic = topic;
+    }
+
+    public Map&lt;String, String&gt; getMap() {
+        return map;
+    }
+    public void setMap(Map&lt;String, String&gt; map) {
+        this.map = map;
+    }
+    public String getTopic() {
+        return topic;
+    }
+    public void setTopic(String topic) {
+        this.topic = topic;
+    }
+}</code></pre>
+<h2 id="创建事件监听类"><a href="#创建事件监听类" class="headerlink" title="创建事件监听类"></a>创建事件监听类</h2><pre><code class="java">//短信监听，实现ApplicationListener接口，重写onApplicationEvent()方法
+@Component
+public class SmsListener implements ApplicationListener&lt;PayEvent&gt; {
+
+    @Override
+    public void onApplicationEvent(PayEvent payEvent) {
+        //订阅主题
+        String topic = payEvent.getTopic();
+        //消息体
+        Map&lt;String, String&gt; map = payEvent.getMap();
+        //发送短信
+        System.out.println(&quot;订阅主题是:&quot; + topic + &quot;;发送短信:&quot; + map.get(&quot;msg&quot;));
+    }
+}</code></pre>
+<pre><code class="java">//公众号监听
+@Component
+public class WechatListener implements ApplicationListener&lt;PayEvent&gt; {
+
+    @Override
+    public void onApplicationEvent(PayEvent payEvent) {
+        String topic = payEvent.getTopic();
+        Map&lt;String, String&gt; map = payEvent.getMap();
+        System.out.println(&quot;订阅主题是:&quot; + topic + &quot;;发送公众号消息:&quot; + map.get(&quot;msg&quot;));
+    }
+}</code></pre>
+<pre><code class="java">//邮箱监听
+@Component
+public class MailListener implements ApplicationListener&lt;PayEvent&gt; {
+
+    @Override
+    public void onApplicationEvent(PayEvent payEvent) {
+        String topic = payEvent.getTopic();
+        Map&lt;String, String&gt; map = payEvent.getMap();
+        System.out.println(&quot;订阅主题是:&quot; + topic + &quot;;发送邮件:&quot; + map.get(&quot;msg&quot;));
+    }
+}</code></pre>
+<pre><code class="java">//App站内消息监听
+@Component
+public class AppListener implements ApplicationListener&lt;PayEvent&gt; {
+
+    @Override
+    public void onApplicationEvent(PayEvent payEvent) {
+        String topic = payEvent.getTopic();
+        Map&lt;String, String&gt; map = payEvent.getMap();
+        System.out.println(&quot;订阅主题是:&quot; + topic + &quot;;发送App站内消息:&quot; + map.get(&quot;msg&quot;));
+    }
+}</code></pre>
+<h2 id="重构PayServiceImpl类"><a href="#重构PayServiceImpl类" class="headerlink" title="重构PayServiceImpl类"></a>重构PayServiceImpl类</h2><pre><code class="java">    @Override
+    public String pay(String channel, String amount) throws Exception {
+        PayStrategy payStrategy = PayStrategyFactory.getPayStrategy(channel);
+        if(payStrategy == null){
+            return &quot;输入渠道码有误&quot;;
+        }
+        String msg = payStrategy.pay(channel, amount);
+        Map&lt;String,String&gt; map = new HashMap&lt;&gt;();
+        map.put(&quot;msg&quot;,msg);
+        //创建一个支付事件
+        PayEvent payEvent = new PayEvent(this, map, &quot;支付&quot;);
+        //获取Spring的ApplicationContext容器，发布事件，监听类监听到事件后就会发送消息
+        SpringContextUtil.getApplicationContext().publishEvent(payEvent);
+        return msg;
+    }</code></pre>
+<p>然后我们启动项目，调用接口，控制台就可以打印的信息：</p>
+<pre><code class="java">/**
+订阅主题是:支付;发送App站内消息:使用 支付宝支付 ,消费了 100 元
+订阅主题是:支付;发送邮件:使用 支付宝支付 ,消费了 100 元
+订阅主题是:支付;发送短信:使用 支付宝支付 ,消费了 100 元
+订阅主题是:支付;发送公众号消息:使用 支付宝支付 ,消费了 100 元
+*/</code></pre>
+<h2 id="异步监听事件，实现解耦"><a href="#异步监听事件，实现解耦" class="headerlink" title="异步监听事件，实现解耦"></a>异步监听事件，实现解耦</h2><p>改造之后是否就一劳永逸了呢，实际上并非如此。因为上面的消息发送的监听类是同步的，也就是如果发送消息出现异常，那就会导致支付的接口无法正常返回。请看以下代码：</p>
+<pre><code class="java">@Component
+public class WechatListener implements ApplicationListener&lt;PayEvent&gt; {
+
+    @Override
+    public void onApplicationEvent(PayEvent payEvent) {
+        String topic = payEvent.getTopic();
+        Map&lt;String, String&gt; map = payEvent.getMap();
+        //在发送微信公众号消息的逻辑中制造异常
+        System.out.println(10 / 0);
+        System.out.println(&quot;订阅主题是:&quot; + topic + &quot;;发送公众号消息:&quot; + map.get(&quot;msg&quot;));
+    }
+}</code></pre>
+<pre><code class="java">    @Override
+    public String pay(String channel, String amount) throws Exception {
+        PayStrategy payStrategy = PayStrategyFactory.getPayStrategy(channel);
+        if(payStrategy == null){
+            return &quot;输入渠道码有误&quot;;
+        }
+        String msg = payStrategy.pay(channel, amount);
+        Map&lt;String,String&gt; map = new HashMap&lt;&gt;();
+        map.put(&quot;msg&quot;,msg);
+        //创建一个支付事件
+        PayEvent payEvent = new PayEvent(this, map, &quot;支付&quot;);
+        //获取Spring的ApplicationContext容器，发布事件
+        SpringContextUtil.getApplicationContext().publishEvent(payEvent);
+        //发送消息后的逻辑，打印日志到控制台
+        System.out.println(&quot;发送消息后的逻辑代码...&quot;);
+        return msg;
+    }</code></pre>
+<p>我们在发送公众号消息的逻辑里制造了一个异常，然后在<code>pay()</code>方法中加了一个打印日志在发布支付的事件后面，接下来调用接口，结果是：</p>
+<pre><code class="java">/**
+订阅主题是:支付;发送App站内消息:使用 支付宝支付 ,消费了 100 元
+订阅主题是:支付;发送邮件:使用 支付宝支付 ,消费了 100 元
+订阅主题是:支付;发送短信:使用 支付宝支付 ,消费了 100 元
+java.lang.ArithmeticException: / by zero
+......
+*/</code></pre>
+<p>发送消息后的逻辑是没有被执行。这样显然是不符合业务要求的，因为在很多时候，发送消息失败是不能影响支付流程的，应该异步进行。怎么异步进行发送消息呢？</p>
+<p>很简单，只需要两个步骤。</p>
+<p><strong>第一步</strong>:在监听类或者方法上添加<code>@Async</code>注解，例如：</p>
+<pre><code class="java">@Component
+@Async//加上异步执行的注解
+public class WechatListener implements ApplicationListener&lt;PayEvent&gt; {
+
+    @Override
+    public void onApplicationEvent(PayEvent payEvent) {
+        String topic = payEvent.getTopic();
+        Map&lt;String, String&gt; map = payEvent.getMap();
+        System.out.println(10 / 0);
+        System.out.println(&quot;订阅主题是:&quot; + topic + &quot;;发送公众号消息:&quot; + map.get(&quot;msg&quot;));
+    }
+}</code></pre>
+<p><strong>第二步</strong>：在<code>SpringBoot</code>启动类上添加<code>@EnableAsync</code>注解，例如：</p>
+<pre><code class="java">@SpringBootApplication
+@EnableAsync//添加启用异步的注解
+public class StrategyApplication {
+    public static void main(String[] args) {
+        SpringApplication.run(StrategyApplication.class, args);
+    }
+}</code></pre>
+<p>然后就可以实现异步监听了，调用接口，我们可以看到控制台打印的日志如下：</p>
+<pre><code class="java">/**
+订阅主题是:支付;发送App站内消息:使用 支付宝支付 ,消费了 100 元
+订阅主题是:支付;发送邮件:使用 支付宝支付 ,消费了 100 元
+订阅主题是:支付;发送短信:使用 支付宝支付 ,消费了 100 元
+发送消息后的逻辑代码...
+使用 支付宝支付 ,消费了 100 元
+java.lang.ArithmeticException: / by zero
+......
+*/</code></pre>
+<p>明显可以看到支付后的逻辑也能正常执行下去，证明实现了异步监听！</p>
+<h2 id="扩展"><a href="#扩展" class="headerlink" title="扩展"></a>扩展</h2><p>在<code>Spring</code>里提供了许多的监听器，这里只是介绍了其中一种。</p>
+<p>还有一种叫<code>SpringApplicationRunListener</code>也是很常用的监听器，可以监听<code>SpringBoot</code>项目启动的事件，用于在启动项目时加载一些配置。</p>
+<p>还有一种叫<code>SmartApplicationListener</code>，这种监听器可以设置优先级。假设发送消息需要按顺序先发送短信，再发送公众号，再发送邮箱…，那就可以使用这种监听器实现，这里就不多做介绍了，小伙伴有兴趣的话，我可以再写一篇文章详细介绍。</p>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>经过重构之后，我们可以明显看到，如果以后要增加一种新的消息通知方式，是不需要修改<code>PayServiceImpl</code>的，我们只需要再增加一个监听类即可，这就符合了<code>开闭原则</code>。有利于代码的维护。而且最重要是解耦，支付的业务逻辑和发送消息的业务逻辑不会再糅合在一起了，符合<code>职责单一</code>原则。</p>
+<p>在很多框架中，观察者模式都有应用，对于学习很多例如<code>zookeeper</code>、<code>消息中间件</code>、<code>微服务注册中心</code>等知识是有很大帮助的。在实际项目中，观察者模式也是一种很常用的设计模式。比如有一种业务场景，通讯录的部门里有员工离职，需要通知其他依赖于通讯录的应用都要同步部门的员工，那就可以使用这种方式来实现。</p>
+<img src="https://me.lovebilibili.com/img/wechat.jpg-slim" srcset="/img/loading.gif" alt="100" style="zoom:50%;" />
+
+<blockquote>
+<p>能力有限，如果有什么错误或者不当之处，请大家批评指正，一起学习交流！</p>
+</blockquote>
+
+            <hr>
+          </div>
+          <br>
+          <div>
+            <p>
+            
+            
+              <span>
+                <i class="iconfont icon-tag"></i>
+                
+                  <a class="hover-with-bg" href="/tags/java">java</a>
+                
+                  <a class="hover-with-bg" href="/tags/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F">设计模式</a>
+                
+              </span>
+            
+            </p>
+            
+              <p class="note note-warning">本博客所有文章除特别声明外，均采用 <a href="https://zh.wikipedia.org/wiki/Wikipedia:CC_BY-SA_3.0%E5%8D%8F%E8%AE%AE%E6%96%87%E6%9C%AC" target="_blank" rel="nofollow noopener noopener">CC BY-SA 3.0协议</a> 。转载请注明出处！</p>
+            
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="d-none d-lg-block col-lg-2 toc-container">
+      
+  <div id="toc">
+    <p class="h4"><i class="far fa-list-alt"></i>&nbsp;目录</p>
+    <div id="tocbot"></div>
+  </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- custom -->
+
+
+<!-- Comments -->
+<div class="col-lg-7 mx-auto nopadding-md">
+  <div class="container comments mx-auto" id="comments">
+    
+  </div>
+</div>
+
+    
+  </main>
+
+  
+    <a class="z-depth-1" id="scroll-top-button" href="#" role="button">
+      <i class="fa fa-chevron-up scroll-top-arrow" aria-hidden="true"></i>
+    </a>
+  
+
+  
+    <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v"
+                 for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+  
+
+  <footer class="mt-5">
+  <div class="text-center py-3">
+    <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><b>Hexo</b></a>
+    <i class="iconfont icon-love"></i>
+    <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"> <b>Fluid</b></a>
+    <br>
+
+    
+  
+    <!-- 不蒜子统计PV -->
+    
+    &nbsp;<span id="busuanzi_container_site_pv"></span>总访问量 
+          <span id="busuanzi_value_site_pv"></span> 次&nbsp;
+  
+  
+    <!-- 不蒜子统计UV -->
+    
+    &nbsp;<span id="busuanzi_container_site_uv"></span>总访客数 
+            <span id="busuanzi_value_site_uv"></span> 人&nbsp;
+  
+  <br>
+
+
+
+    
+
+
+    <!-- cnzz Analytics icon -->
+    
+
+  </div>
+</footer>
+
+<!-- SCRIPTS -->
+<script src="/lib/jquery/jquery.min.js" ></script>
+<script src="/lib/popper/popper.min.js" ></script>
+<script src="/lib/bootstrap/js/bootstrap.min.js" ></script>
+<script src="/lib/mdbootstrap/js/mdb.min.js" ></script>
+<script src="/js/main.js" ></script>
+
+
+  <script src="/js/lazyload.js" ></script>
+
+
+
+  
+    <script src="/lib/tocbot/tocbot.min.js" ></script>
+  
+  <script src="/js/post.js" ></script>
+
+
+
+  <script src="/lib/smooth-scroll/smooth-scroll.min.js" ></script>
+
+
+
+  <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" ></script>
+
+
+<!-- Plugins -->
+
+
+  
+
+  
+
+  
+
+  
+
+  <!-- cnzz Analytics -->
+  
+
+
+
+  <script src="/lib/prettify/prettify.min.js" ></script>
+  <script>
+    $(document).ready(function () {
+      $('pre').addClass('prettyprint  linenums');
+      prettyPrint();
+    })
+  </script>
+
+
+
+  <script src="/lib/typed/typed.min.js" ></script>
+  <script>
+    var typed = new Typed('#subtitle', {
+      strings: [
+        '  ',
+        "观察者模式以及实际项目应用&nbsp;",
+      ],
+      cursorChar: "_",
+      typeSpeed: 70,
+      loop: false,
+    });
+    typed.stop();
+    $(document).ready(function () {
+      $(".typed-cursor").addClass("h2");
+      typed.start();
+    });
+  </script>
+
+
+
+  <script src="/lib/anchor/anchor.min.js" ></script>
+  <script>
+    anchors.options = {
+      placement: "right",
+      visible: "false",
+      
+    };
+    var el = "h1,h2,h3,h4,h5,h6".split(",");
+    var res = [];
+    for (item of el) {
+      res.push(".markdown-body > " + item)
+    }
+    anchors.add(res.join(", "))
+  </script>
+
+
+
+  <script src="/js/local-search.js" ></script>
+  <script>
+    var path = "/local-search.xml";
+    var inputArea = document.querySelector("#local-search-input");
+    inputArea.onclick = function () {
+      getSearchFile(path);
+      this.onclick = null
+    }
+  </script>
+
+
+
+  <script src="/lib/fancybox/jquery.fancybox.min.js" ></script>
+  <script>
+    $("#post img:not(.no-zoom img, img[no-zoom])").each(
+      function () {
+        var element = document.createElement("a");
+        $(element).attr("data-fancybox", "images");
+        $(element).attr("href", $(this).attr("src"));
+        $(this).wrap(element);
+      }
+    );
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+</body>
+</html>
