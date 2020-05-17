@@ -1,0 +1,660 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/apple-touch-icon.png">
+  <link rel="icon" type="image/png" href="/img/favicon.png">
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="description" content="">
+  <meta name="author" content="Ye hongzhi">
+  <meta name="keywords" content="">
+  <title>装饰者模式与IO流 - 叶洪智的技术分享</title>
+
+  <link rel="stylesheet" href="/lib/font-awesome/css/all.min.css"  >
+<link rel="stylesheet" href="/lib/bootstrap/css/bootstrap.min.css"  >
+<link rel="stylesheet" href="/lib/mdbootstrap/css/mdb.min.css"  >
+<link rel="stylesheet" href="/lib/github-markdown/github-markdown.min.css"  >
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1067060_qzomjdt8bmp.css">
+
+
+
+  <link rel="stylesheet" href="/lib/prettify/tomorrow-night-eighties.min.css"  >
+
+<link rel="stylesheet" href="/css/main.css"  >
+
+
+  <link rel="stylesheet" href="/lib/fancybox/jquery.fancybox.min.css"  >
+
+
+<meta name="generator" content="Hexo 4.2.0"></head>
+
+
+<body>
+  <header style="height: 70vh;">
+    <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand"
+       href="/">&nbsp;<strong>YeHongzhi's Blog</strong>&nbsp;</a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+          <li class="nav-item">
+            <a class="nav-link" href="/">首页</a>
+          </li>
+        
+          
+          
+          
+          
+          <li class="nav-item">
+            <a class="nav-link" href="/archives/">归档</a>
+          </li>
+        
+          
+          
+          
+          
+          <li class="nav-item">
+            <a class="nav-link" href="/tags/">标签</a>
+          </li>
+        
+          
+          
+          
+          
+          <li class="nav-item">
+            <a class="nav-link" href="/about/">关于</a>
+          </li>
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" data-toggle="modal" data-target="#modalSearch">&nbsp;&nbsp;<i
+                class="iconfont icon-search"></i>&nbsp;&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+    <div class="view intro-2" id="background" false
+         style="background: url('/img/post.png')no-repeat center center;
+           background-size: cover;">
+      <div class="full-bg-img">
+        <div class="mask rgba-black-light flex-center">
+          <div class="container text-center white-text fadeInUp">
+            <span class="h2" id="subtitle">
+              
+            </span>
+
+            
+              <br>
+              
+                <p class="mt-3">
+                  <i class="fas fa-calendar-alt" aria-hidden="true"></i>&nbsp;
+                  星期一, 五月 4日 2020, 10:10 晚上
+                </p>
+              
+
+              <p>
+                
+                  
+                  &nbsp;<i class="far fa-chart-bar"></i>
+                  <span class="post-count">
+                    2.7k 字
+                  </span>&nbsp;
+                
+
+                
+                  
+                  &nbsp;<i class="far fa-clock"></i>
+                  <span class="post-count">
+                      10 分钟
+                  </span>&nbsp;
+                
+
+                
+                  <!-- 不蒜子统计文章PV -->
+                  
+                  &nbsp;<i class="far fa-eye" aria-hidden="true"></i>&nbsp;
+                  <span id="busuanzi_container_page_pv">
+                    <span id="busuanzi_value_page_pv"></span> 次
+                  </span>&nbsp;
+                
+              </p>
+            
+          </div>
+
+          
+            <div class="scroll-down-bar">
+              <i class="fas fa-angle-down scroll-down-arrow"></i>
+            </div>
+          
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid">
+  <div class="row">
+    <div class="d-none d-lg-block col-lg-2"></div>
+    <div class="col-lg-8 nopadding-md">
+      <div class="py-5 z-depth-3" id="board">
+        <div class="post-content mx-auto" id="post">
+          <div class="markdown-body">
+            <h1 id="装饰者模式"><a href="#装饰者模式" class="headerlink" title="装饰者模式"></a>装饰者模式</h1><h2 id="定义"><a href="#定义" class="headerlink" title="定义"></a>定义</h2><p>装饰者模式是一种<strong>对象结构型</strong>模式。<strong>动态</strong>地给一个对象添加一些<strong>额外的</strong>职责，就增加功能来说，装饰者模式比生成子类更为灵活。</p>
+<a id="more"></a>
+
+<h2 id="通俗解释"><a href="#通俗解释" class="headerlink" title="通俗解释"></a>通俗解释</h2><p>上面的定义在网上是随处可见的描述，怎么解释呢。比如：我前几天和女朋友去买戒指，珠宝店的销售给我推荐了一种<strong>自由搭配</strong>的原创戒指。他跟我介绍戒指的元素需要选择材质(黄金，铂金，彩金)、表面工艺(拉丝，磨砂，光滑，铸造)、镶钻(内嵌，外嵌)、指环大小等等，然后组成一个戒指。这种就是装饰者模式的应用，原型是一个戒指，不断地给对象添加额外的职责，然后得到最终想要的产品。这样就可以通过不同的搭配产生很多不同类型的戒指。</p>
+<p>后面那句<strong>装饰者模式比生成子类更为灵活</strong>怎么理解。如果用子类去描述的话，要把每一种搭配的结果都变成一个子类，也就是要穷举，就会产生很多子类，也就是造成<strong>“类爆炸”</strong>。所以就会说装饰者模式更加灵活。</p>
+<h2 id="来个例子"><a href="#来个例子" class="headerlink" title="来个例子"></a>来个例子</h2><p>现在有一个需求，要求做一个加密的工具类，对传入的字符串加密。加密的算法有很多，有<strong>MD5、AES、DES等等</strong>，一般加密都不是单独使用一种加密算法，而是多种混合一起使用，这样可以提高安全性。</p>
+<p>现在有三种算法：<code>MD5、AES、DES</code>。做一个工具类，给系统提供加密的服务，要求可以自由搭配使用。</p>
+<h2 id="使用继承的方式实现"><a href="#使用继承的方式实现" class="headerlink" title="使用继承的方式实现"></a>使用继承的方式实现</h2><p>我们就创建一个抽象类<code>EncryptionBase</code>，每一种组合方式就创建一个子类继承<code>EncryptionBase</code>，现在有三种加密方式，很容易我们可以穷举完，总共有6种组合。请看以下代码：</p>
+<p>首先创建一个抽象类<code>EncryptionBase</code>：</p>
+<pre><code class="java">public abstract class EncryptionBase {
+    public abstract String encrypt(String string,String password);
+}</code></pre>
+<p>接着创建子类继承抽象类，并且实现其方法。以其中一个为例，其他实现类都类似：</p>
+<pre><code class="java">public class AESandDESandMD5Encryption extends EncryptionBase {
+    @Override
+    public String encrypt(String string, String password) {
+        //网上可以找具体加密的代码，我这里篇幅受限就不展示了
+        //AES加密
+        byte[] encryptByAES = AESUtil.encrypt(string, password);
+        //DES加密
+        byte[] encryptByDES = DESUtil.encrypt(encryptByAES, password);
+        //MD5加密
+        return MD5Util.encryptByMD5(new String(encryptByDES) + password);
+    }
+}</code></pre>
+<p>我们就可以实现以下效果，有6个实现类分别实现了3种加密算法的不同顺序。</p>
+<pre><code class="java">public static void main(String[] args) {
+        String string = &quot;需要加密的字符串&quot;;
+        //秘钥
+        String password = &quot;12345678&quot;;
+
+        //第一种加密顺序：AES-&gt;DES-&gt;MD5
+        EncryptionBase AESandDESandMD5 = new AESandDESandMD5Encryption();
+        //第二种加密顺序：AES-&gt;MD5-&gt;DES
+        EncryptionBase AESandMD5andDES = new AESandMD5andDESEncryption();
+        //第三种加密顺序：DES-&gt;AES-&gt;MD5
+        EncryptionBase DESandAESandMD5 = new DESandAESandMD5Encryption();
+        //第四种加密顺序：DES-&gt;MD5-&gt;AES
+        EncryptionBase DESandMD5andAES = new DESandMD5andAESEncryption();
+        //第五种加密顺序：MD5-&gt;DES-&gt;AES
+        EncryptionBase MD5andDESandAES = new MD5andDESandAESEncryption();
+        //第六种加密顺序：MD5-&gt;AES-&gt;DES
+        EncryptionBase MD5andAESandDES = new MD5andAESandDESEncryption();
+    }</code></pre>
+<p>以上就是使用继承的方式来完成这个需求。看起来没什么问题，但是仔细思考你会发现几个问题。</p>
+<ol>
+<li><strong>会创建很多子类。</strong>为什么3种算法是6个类呢？这是根据数学的排列组合<code>3*2*1=6</code>，假设再多两种算法呢？那就是<code>5*4*3*2*1=120</code>，那就是120个类了！这就是<strong>“类爆炸”</strong>。</li>
+<li><strong>不符合开闭原则。</strong>假设增加了新的算法，那就要修改原来的类，不利于代码的维护。</li>
+<li>假如其中一种加密算法要用两次，比如双重<code>MD5</code>加密，那也是很难扩展的。</li>
+</ol>
+<p>如果你不会装饰者模式，那估计要加班加点去写代码，创建很多类。如果你会装饰者模式，那问题就很简单了，那怎么做呢？请继续看下去。</p>
+<h2 id="使用装饰者模式实现"><a href="#使用装饰者模式实现" class="headerlink" title="使用装饰者模式实现"></a>使用装饰者模式实现</h2><p>首先创建三种算法的基础类，继承<code>EncryptionBase</code>，实现三种加密算法。</p>
+<p>MD5加密</p>
+<pre><code class="java">public class MD5Encryption extends EncryptionBase {
+    @Override
+    public String encrypt(String string, String password) {
+        System.out.println(&quot;使用MD5加密，得到基础密文&quot;);
+        return MD5Util.encryptByMD5(string + password);
+    }
+}</code></pre>
+<p>AES加密</p>
+<pre><code class="java">public class AESEncryption extends EncryptionBase {
+    @Override
+    public String encrypt(String string, String password) {
+        System.out.println(&quot;使用AES加密，得到基础密文&quot;);
+        return new String(AESUtil.encrypt(string, password));
+    }
+}</code></pre>
+<p>DES加密</p>
+<pre><code class="java">public class DESEncryption extends EncryptionBase {
+    @Override
+    public String encrypt(String string, String password) {
+        System.out.println(&quot;使用DES加密，得到基础密文&quot;);
+        return new String(DESUtil.encrypt(string.getBytes(), password));
+    }
+}</code></pre>
+<p>接着创建一个装饰抽象类<code>EncryptionDecorator</code>，需要继承<code>EncryptionBase</code></p>
+<pre><code class="java">public abstract class EncryptionDecorator extends EncryptionBase {
+
+    //定义一个父类的成员变量，用来存储其他装饰类，或者基础加密类
+    private EncryptionBase encryption;
+
+    public EncryptionDecorator(EncryptionBase encryption) {
+        this.encryption = encryption;
+    }
+
+    @Override
+    public String encrypt(String string, String password) throws Exception{
+        return encryption.encrypt(string, password);
+    }
+}</code></pre>
+<p>然后实现三种加密的装饰者实现类，需要继承抽象装饰者类<code>EncryptionDecorator</code>。</p>
+<p>MD5加密装饰者实现类<code>MD5EncryptionDecorator</code></p>
+<pre><code class="java">public class MD5EncryptionDecorator extends EncryptionDecorator {
+
+    public MD5EncryptionDecorator(EncryptionBase encryption) {
+        //有参构造器获取到参数，调用父类的有参构造器，
+        //当下面encrypt()方法里调用父类的加密算法就会调用传入的算法实现类的加密算法
+        super(encryption);
+    }
+
+    @Override
+    public String encrypt(String string, String password) throws Exception{
+        //首先调用父类的加密方法，得到父类的算法加密后的结果
+        String encrypt = super.encrypt(string, password);
+        System.out.println(&quot;使用MD5加密&quot;);
+        //得到的密文，再用MD5算法加密，返回
+        return MD5Util.encryptByMD5(encrypt + password);
+    }
+}</code></pre>
+<p>AES加密装饰者实现类<code>AESEncryptionDecorator</code></p>
+<pre><code class="java">public class AESEncryptionDecorator extends EncryptionDecorator {
+
+    public AESEncryptionDecorator(EncryptionBase encryption) {
+        super(encryption);
+    }
+
+    @Override
+    public String encrypt(String string, String password) throws Exception{
+        //首先调用父类的加密方法，得到父类的算法加密后的结果
+        String encrypt = super.encrypt(string, password);
+        System.out.println(&quot;使用AES加密&quot;);
+        //得到的密文，再用AES算法加密，返回
+        return new String(AESUtil.encrypt(encrypt, password),&quot;UTF-8&quot;);
+    }
+}</code></pre>
+<p>DES加密装饰者实现类<code>DESEncryptionDecorator</code></p>
+<pre><code class="java">public class DESEncryptionDecorator extends EncryptionDecorator {
+    public DESEncryptionDecorator(EncryptionBase encryption) {
+        super(encryption);
+    }
+
+    @Override
+    public String encrypt(String string, String password) throws Exception{
+        //首先调用父类的加密方法，得到父类的算法加密后的结果
+        String encrypt = super.encrypt(string, password);
+        System.out.println(&quot;使用DES加密&quot;);
+        //得到的密文，再用DES算法加密，返回
+        return new String(DESUtil.encrypt(encrypt.getBytes(), password),&quot;UTF-8&quot;);
+    }
+}</code></pre>
+<p>大功告成！我们用<code>main()</code>方法测试一下：</p>
+<pre><code class="java">public class Main {
+    public static void main(String[] args) throws Exception{
+        String string = &quot;需要加密的字符串&quot;;
+        String password = &quot;12345678&quot;;
+        //第一种加密顺序：AES-&gt;DES-&gt;MD5
+        EncryptionBase encryptionBase = new MD5EncryptionDecorator(new DESEncryptionDecorator(new AESEncryption()));
+        encryptionBase.encrypt(string, password);
+    }
+}</code></pre>
+<p>控制台打印结果：</p>
+<pre><code class="java">/**
+使用AES加密，得到基础密文
+使用DES加密
+使用MD5加密
+*/</code></pre>
+<p>我们可以看到结果是很完美地实现了，你可以任意搭配加密算法，即使加多N种算法，我们也不会呈指数增加类的数量，只需要增加M*N个类即可，M是基础构件数量，N是具体装饰类数量。</p>
+<p>原理是什么呢？我们不能说只学到形式，而不明白原理。接下来看类图。</p>
+<p>在IDEA可以选中类名，然后右键，选中“Diagrams”，再选中“show Diagrams…”，就可以打开类图。</p>
+<img src="https://static.lovebilibili.com/MD5EncryptionDecorator.png" srcset="/img/loading.gif"/>
+
+<pre><code class="java">//MD5(DES(AES))，最顶层的父类是AES，所以先执行，第二层是DES，第二执行，最外层是MD5第三执行
+EncryptionBase encryptionBase = new MD5EncryptionDecorator(new DESEncryptionDecorator(new AESEncryption()));
+encryptionBase.encrypt(string, password);</code></pre>
+<p>以上面这句代码为例，那么调用顺序就是：AES-&gt;DES-&gt;MD5</p>
+<img src="https://static.lovebilibili.com/decorator1.png" srcset="/img/loading.gif" style="width:100%;"/>
+
+<p>这就是装饰者模式的原理，其实很简单的，很容易就可以看清楚。</p>
+<h2 id="装饰者模式与I-O流"><a href="#装饰者模式与I-O流" class="headerlink" title="装饰者模式与I/O流"></a>装饰者模式与I/O流</h2><p>看了上面的代码，很容易我们能联想到IO流也有类似的创建方式，比如我们要用文件缓冲输入流，那就要这样创建：</p>
+<pre><code class="java">InputStream inputStream 
+    = new BufferedInputStream(new FileInputStream(new File(&quot;/D:abc.text&quot;)));</code></pre>
+<p>可以看出IO流使用了装饰者模式。</p>
+<p>如果我们打开源码，查看<code>BufferedInputStream</code>，我们可以看到：</p>
+<pre><code class="java">public class BufferedInputStream extends FilterInputStream {
+    //有参构造器
+    public BufferedInputStream(InputStream in, int size) {
+        //调用父类构造器，这是关键
+        //通过上面我们学过的例子，可以知道BufferedInputStream是装饰实现类
+        super(in);
+        if (size &lt;= 0) {
+            throw new IllegalArgumentException(&quot;Buffer size &lt;= 0&quot;);
+        }
+        buf = new byte[size];
+    }
+}</code></pre>
+<p>关键在<code>FilterInputStream</code>这个类，这是装饰者模式的基类。查看源码：</p>
+<pre><code class="java">public class FilterInputStream extends InputStream {
+    /**
+     * The input stream to be filtered.
+     */
+    protected volatile InputStream in;
+
+    protected FilterInputStream(InputStream in) {
+        this.in = in;
+    }
+
+    public int read() throws IOException {
+        return in.read();
+    }
+}</code></pre>
+<p><code>FilterInputStream</code>类似于加密算法例子的<code>EncryptionDecorator</code>类。我们可以通过加密算法的例子和这个作对比，就可以很容易地看出他们的关系。类图如下：</p>
+<img src="https://static.lovebilibili.com/FilterInputStream.png" srcset="/img/loading.gif" style="width:100%;"/>
+
+<p><code>FileInputStream</code>就是基础构件类，可以通过<code>FilterInputStream</code>的子类去做扩展，增加额外的功能，比如可以使用<code>BufferedInputStream</code>增加缓冲的作用。</p>
+<p>接着我们真正理解了IO流的装饰者模式的应用后，我们可以写一个扩展类，实现一个功能：读取磁盘的文件，把所有字母变成大写的字母。代码如下：</p>
+<pre><code class="java">public class CapitalizaInputStream extends FilterInputStream {
+
+    public CapitalizaInputStream(InputStream in) {
+        super(in);
+    }
+
+    @Override
+    public int read(byte[] b, int off, int len) throws IOException {
+        int result = super.read(b, off, len);
+        for (int i = off; i &lt; off + result; i++){
+            //如果是小写字母，转成大写，其他不是小写字母的不变
+            if(Character.isLetter((char)b[i])){
+                b[i] = (byte) Character.toUpperCase((char) b[i]);
+            }
+        }
+        return result;
+    }
+}</code></pre>
+<p>abc.txt文件内容：</p>
+<pre><code class="yaml">abcdefghijklmnopqrstuvwxyz</code></pre>
+<p>Main方法测试代码：</p>
+<pre><code class="java">public static void main(String[] args) throws Exception {
+        InputStream inputStream 
+            = new CapitalizaInputStream(new FileInputStream(new File(&quot;D://abc.txt&quot;)));
+        byte[] bytes = new byte[1024 * 2];
+        int c;
+        while ((c = inputStream.read(bytes, 0, bytes.length)) != -1) {
+            System.out.println(new String(bytes, 0, c));
+        }
+        inputStream.close();
+    }</code></pre>
+<p>控制台打印结果：</p>
+<pre><code class="yaml">ABCDEFGHIJKLMNOPQRSTUVWXYZ</code></pre>
+<p>以上就是IO流关于装饰者模式的扩展，能够加深我们对装饰者模式的理解。很多博客写不清楚，讲得很复杂，或者讲得很简单，很大原因是我们只看，而没有动手去做，动手去自己写，自己琢磨，就很容易能理解。这是学习方法，不是关注了公众号，看几篇文章就能轻松学会的，学习总是要自己动手才会理解深刻。看我的文章可以提供一些思路，更容易去上手。</p>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>装饰者模式的优点：</p>
+<ol>
+<li>可以动态地扩展类的功能，不会相互耦合。</li>
+<li>符合开闭原则，利于代码维护。</li>
+<li>比继承扩展的方式要更加灵活。</li>
+</ol>
+<p>缺点：多层装饰，代码结构变得复杂。</p>
+<p>更多的java技术分享，就关注java技术爱好者吧！</p>
+<img src="https://me.lovebilibili.com/img/wechat.jpg-slim" srcset="/img/loading.gif" alt="100" style="zoom:50%;" />
+
+<blockquote>
+<p>能力有限，如果有什么错误或者不当之处，请大家批评指正，一起学习交流！</p>
+</blockquote>
+
+            <hr>
+          </div>
+          <br>
+          <div>
+            <p>
+            
+            
+              <span>
+                <i class="iconfont icon-tag"></i>
+                
+                  <a class="hover-with-bg" href="/tags/java">java</a>
+                
+                  <a class="hover-with-bg" href="/tags/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F">设计模式</a>
+                
+              </span>
+            
+            </p>
+            
+              <p class="note note-warning">本博客所有文章除特别声明外，均采用 <a href="https://zh.wikipedia.org/wiki/Wikipedia:CC_BY-SA_3.0%E5%8D%8F%E8%AE%AE%E6%96%87%E6%9C%AC" target="_blank" rel="nofollow noopener noopener">CC BY-SA 3.0协议</a> 。转载请注明出处！</p>
+            
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="d-none d-lg-block col-lg-2 toc-container">
+      
+  <div id="toc">
+    <p class="h4"><i class="far fa-list-alt"></i>&nbsp;目录</p>
+    <div id="tocbot"></div>
+  </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- custom -->
+
+
+<!-- Comments -->
+<div class="col-lg-7 mx-auto nopadding-md">
+  <div class="container comments mx-auto" id="comments">
+    
+  </div>
+</div>
+
+    
+  </main>
+
+  
+    <a class="z-depth-1" id="scroll-top-button" href="#" role="button">
+      <i class="fa fa-chevron-up scroll-top-arrow" aria-hidden="true"></i>
+    </a>
+  
+
+  
+    <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v"
+                 for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+  
+
+  <footer class="mt-5">
+  <div class="text-center py-3">
+    <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><b>Hexo</b></a>
+    <i class="iconfont icon-love"></i>
+    <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"> <b>Fluid</b></a>
+    <br>
+
+    
+  
+    <!-- 不蒜子统计PV -->
+    
+    &nbsp;<span id="busuanzi_container_site_pv"></span>总访问量 
+          <span id="busuanzi_value_site_pv"></span> 次&nbsp;
+  
+  
+    <!-- 不蒜子统计UV -->
+    
+    &nbsp;<span id="busuanzi_container_site_uv"></span>总访客数 
+            <span id="busuanzi_value_site_uv"></span> 人&nbsp;
+  
+  <br>
+
+
+
+    
+
+
+    <!-- cnzz Analytics icon -->
+    
+
+  </div>
+</footer>
+
+<!-- SCRIPTS -->
+<script src="/lib/jquery/jquery.min.js" ></script>
+<script src="/lib/popper/popper.min.js" ></script>
+<script src="/lib/bootstrap/js/bootstrap.min.js" ></script>
+<script src="/lib/mdbootstrap/js/mdb.min.js" ></script>
+<script src="/js/main.js" ></script>
+
+
+  <script src="/js/lazyload.js" ></script>
+
+
+
+  
+    <script src="/lib/tocbot/tocbot.min.js" ></script>
+  
+  <script src="/js/post.js" ></script>
+
+
+
+  <script src="/lib/smooth-scroll/smooth-scroll.min.js" ></script>
+
+
+
+  <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" ></script>
+
+
+<!-- Plugins -->
+
+
+  
+
+  
+
+  
+
+  
+
+  <!-- cnzz Analytics -->
+  
+
+
+
+  <script src="/lib/prettify/prettify.min.js" ></script>
+  <script>
+    $(document).ready(function () {
+      $('pre').addClass('prettyprint  linenums');
+      prettyPrint();
+    })
+  </script>
+
+
+
+  <script src="/lib/typed/typed.min.js" ></script>
+  <script>
+    var typed = new Typed('#subtitle', {
+      strings: [
+        '  ',
+        "装饰者模式与IO流&nbsp;",
+      ],
+      cursorChar: "_",
+      typeSpeed: 70,
+      loop: false,
+    });
+    typed.stop();
+    $(document).ready(function () {
+      $(".typed-cursor").addClass("h2");
+      typed.start();
+    });
+  </script>
+
+
+
+  <script src="/lib/anchor/anchor.min.js" ></script>
+  <script>
+    anchors.options = {
+      placement: "right",
+      visible: "false",
+      
+    };
+    var el = "h1,h2,h3,h4,h5,h6".split(",");
+    var res = [];
+    for (item of el) {
+      res.push(".markdown-body > " + item)
+    }
+    anchors.add(res.join(", "))
+  </script>
+
+
+
+  <script src="/js/local-search.js" ></script>
+  <script>
+    var path = "/local-search.xml";
+    var inputArea = document.querySelector("#local-search-input");
+    inputArea.onclick = function () {
+      getSearchFile(path);
+      this.onclick = null
+    }
+  </script>
+
+
+
+  <script src="/lib/fancybox/jquery.fancybox.min.js" ></script>
+  <script>
+    $("#post img:not(.no-zoom img, img[no-zoom])").each(
+      function () {
+        var element = document.createElement("a");
+        $(element).attr("data-fancybox", "images");
+        $(element).attr("href", $(this).attr("src"));
+        $(this).wrap(element);
+      }
+    );
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+</body>
+</html>
