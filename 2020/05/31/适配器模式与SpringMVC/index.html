@@ -1,0 +1,767 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/apple-touch-icon.png">
+  <link rel="icon" type="image/png" href="/img/favicon.png">
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="description" content="">
+  <meta name="author" content="Ye hongzhi">
+  <meta name="keywords" content="">
+  <title>适配器模式与SpringMVC - 叶洪智的技术分享</title>
+
+  <link rel="stylesheet" href="/lib/font-awesome/css/all.min.css"  >
+<link rel="stylesheet" href="/lib/bootstrap/css/bootstrap.min.css"  >
+<link rel="stylesheet" href="/lib/mdbootstrap/css/mdb.min.css"  >
+<link rel="stylesheet" href="/lib/github-markdown/github-markdown.min.css"  >
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1067060_qzomjdt8bmp.css">
+
+
+
+  <link rel="stylesheet" href="/lib/prettify/tomorrow-night-eighties.min.css"  >
+
+<link rel="stylesheet" href="/css/main.css"  >
+
+
+  <link rel="stylesheet" href="/lib/fancybox/jquery.fancybox.min.css"  >
+
+
+<meta name="generator" content="Hexo 4.2.0"></head>
+
+
+<body>
+  <header style="height: 70vh;">
+    <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand"
+       href="/">&nbsp;<strong>YeHongzhi's Blog</strong>&nbsp;</a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+          <li class="nav-item">
+            <a class="nav-link" href="/">首页</a>
+          </li>
+        
+          
+          
+          
+          
+          <li class="nav-item">
+            <a class="nav-link" href="/archives/">归档</a>
+          </li>
+        
+          
+          
+          
+          
+          <li class="nav-item">
+            <a class="nav-link" href="/tags/">标签</a>
+          </li>
+        
+          
+          
+          
+          
+          <li class="nav-item">
+            <a class="nav-link" href="/about/">关于</a>
+          </li>
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" data-toggle="modal" data-target="#modalSearch">&nbsp;&nbsp;<i
+                class="iconfont icon-search"></i>&nbsp;&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+    <div class="view intro-2" id="background" false
+         style="background: url('/img/post.png')no-repeat center center;
+           background-size: cover;">
+      <div class="full-bg-img">
+        <div class="mask rgba-black-light flex-center">
+          <div class="container text-center white-text fadeInUp">
+            <span class="h2" id="subtitle">
+              
+            </span>
+
+            
+              <br>
+              
+                <p class="mt-3">
+                  <i class="fas fa-calendar-alt" aria-hidden="true"></i>&nbsp;
+                  星期日, 五月 31日 2020, 1:41 下午
+                </p>
+              
+
+              <p>
+                
+                  
+                  &nbsp;<i class="far fa-chart-bar"></i>
+                  <span class="post-count">
+                    2.7k 字
+                  </span>&nbsp;
+                
+
+                
+                  
+                  &nbsp;<i class="far fa-clock"></i>
+                  <span class="post-count">
+                      11 分钟
+                  </span>&nbsp;
+                
+
+                
+                  <!-- 不蒜子统计文章PV -->
+                  
+                  &nbsp;<i class="far fa-eye" aria-hidden="true"></i>&nbsp;
+                  <span id="busuanzi_container_page_pv">
+                    <span id="busuanzi_value_page_pv"></span> 次
+                  </span>&nbsp;
+                
+              </p>
+            
+          </div>
+
+          
+            <div class="scroll-down-bar">
+              <i class="fas fa-angle-down scroll-down-arrow"></i>
+            </div>
+          
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid">
+  <div class="row">
+    <div class="d-none d-lg-block col-lg-2"></div>
+    <div class="col-lg-8 nopadding-md">
+      <div class="py-5 z-depth-3" id="board">
+        <div class="post-content mx-auto" id="post">
+          <div class="markdown-body">
+            <h1 id="适配器模式"><a href="#适配器模式" class="headerlink" title="适配器模式"></a>适配器模式</h1><h2 id="定义"><a href="#定义" class="headerlink" title="定义"></a>定义</h2><p>适配器模式是将一个接口转换成客户希望的另一个接口，使接口不兼容的那些类可以一起工作，其别名为包装器(Wrapper)。适配器模式既可以作为类结构型模式，也可以作为对象结构型模式。</p>
+<a id="more"></a>
+
+<h2 id="通俗解释"><a href="#通俗解释" class="headerlink" title="通俗解释"></a>通俗解释</h2><p>用生活中的例子就是充电器的转接头或者数据线转接头，也就是两个类不兼容的情况下，通过适配器类来做到兼容。</p>
+<h2 id="举个例子"><a href="#举个例子" class="headerlink" title="举个例子"></a>举个例子</h2><p>我看了网上很多人的博客，关于适配器模式的一些例子，主要有两种，一种叫类适配器，一种叫对象适配器。写完这两个例子后，我有种恍然大悟的感觉！</p>
+<h3 id="类适配器"><a href="#类适配器" class="headerlink" title="类适配器"></a>类适配器</h3><p>首先有一个接口是目标接口<code>PayService</code>，目标方法<code>pay()</code>。</p>
+<pre><code class="java">public interface PayService {
+
+    String pay(String channel, String amount) throws Exception;
+}</code></pre>
+<p>然后有一个被适配的类<code>CheckHelper</code>，适配方法<code>checkedPay()</code></p>
+<pre><code class="java">public class CheckHelper {
+    //检查支付渠道和支付金额
+    public boolean checkedPay(String channel, String amount) {
+        try {
+            //字符串转成数字，如果出现转换异常返回fasle
+            int mount = Integer.parseInt(amount);
+            //PayEnum定义了一些支付渠道，比如支付宝、微信、银联等等
+            List&lt;String&gt; channelList = Arrays.stream(PayEnum.values())
+                .map(PayEnum::getChannel)
+                .collect(Collectors.toList());
+            //包含在支付渠道中，并且金额大于0，返回true，否则返回false
+            return channelList.contains(channel) &amp;&amp; mount &gt; 0;
+        } catch (Exception e) {
+            return false;
+        }
+    }
+}</code></pre>
+<p>需求是要使得在接口<code>PayService</code>调用<code>CheckHelper</code>的<code>checkedPay()</code>方法，现在使用类适配器的方式演示：</p>
+<pre><code class="java">public class PayAdapter extends CheckHelper implements PayService {
+
+    @Override
+    public String pay(String channel, String amount) throws Exception {
+        boolean checked = super.checkedPay(channel, amount);
+        if (!checked) {
+            return &quot;支付失败，支付参数有误&quot;;
+        }
+        return &quot;支付成功，渠道为：&quot; + channel + &quot;,金额：&quot; + amount;
+    }
+}</code></pre>
+<p>其实就是使用继承的方式来完成，适配器类继承<code>CheckHelper</code>类，然后使用<code>super</code>来调用被适配类</p>
+<p><code>CheckHelper</code>的<code>checkedPay()</code>方法，一目了然了。</p>
+<h3 id="对象适配器"><a href="#对象适配器" class="headerlink" title="对象适配器"></a>对象适配器</h3><p>明显使用类适配器的方式不太灵活，因为<code>java</code>是单继承，所以我们可以改成成员变量的方式，也就是对象适配器。代码如下：</p>
+<pre><code class="java">public class PayAdapter implements PayService {
+    //使用成员变量
+    private CheckHelper checkHelper = new CheckHelper();
+
+    @Override
+    public String pay(String channel, String amount) throws Exception {
+        //调用CheckHelper的checkedPay()方法
+        boolean checked = checkHelper.checkedPay(channel, amount);
+        if (!checked) {
+            return &quot;支付失败，支付参数有误&quot;;
+        }
+        return &quot;支付成功，渠道为：&quot; + channel + &quot;,金额：&quot; + amount;
+    }
+}</code></pre>
+<p>那么肯定有人会说，你这样直接<code>new</code>一个对象不好，可以使用<code>SpringIOC</code>注入，于是又可以写成这样：</p>
+<pre><code class="java">//注册到Spring容器中
+@Component(&quot;checkHelper&quot;)
+public class CheckHelper {
+
+}</code></pre>
+<pre><code class="java">public class PayAdapter implements PayService {
+
+    @Resource(name = &quot;checkHelper&quot;)
+    private CheckHelper checkHelper;
+
+    @Override
+    public String pay(String channel, String amount) throws Exception {
+        boolean checked = checkHelper.checkedPay(channel, amount);
+        if (!checked) {
+            return &quot;支付失败，支付参数有误&quot;;
+        }
+        return &quot;支付成功，渠道为：&quot; + channel + &quot;,金额：&quot; + amount;
+    }
+}</code></pre>
+<p>然后有人可能已经开始察觉了，这不就是平时我们使用的依赖注入吗？没错！所以我开始就说了，写完这两个例子后，我恍然大悟了。原来适配器模式我们一直都在用，只是没认出来罢了。</p>
+<h2 id="总结一下"><a href="#总结一下" class="headerlink" title="总结一下"></a>总结一下</h2><p>那么我们用适配器模式有什么优点呢？为什么要这样写：</p>
+<p>1.解耦，降低了对象与对象之间的耦合性。</p>
+<p>2.增加了类的复用，这点是比较重要的。</p>
+<p>3.灵活性和扩展性都非常好，通过使用配置文件，可以很方便地更换适配器，也可以在不修改原有代码的基础上增加新的适配器类，完全符合“开闭原则”。这点我待会在下面<code>SpringMVC</code>的应用中详细说明。</p>
+<h2 id="在SpringMVC中的应用"><a href="#在SpringMVC中的应用" class="headerlink" title="在SpringMVC中的应用"></a>在SpringMVC中的应用</h2><p>我们都知道<code>SpringMVC</code>定义一个映射的方式很简单，使用<code>@RequestMapping</code>注解，如下所示：</p>
+<pre><code class="java">@RestController
+public class PayController {
+    @RequestMapping(&quot;/pay&quot;)
+    public String pay(String channel,String amount)throws Exception{
+        return &quot;&quot;;
+    }
+}</code></pre>
+<p>实际上除了上面这种常用的方式外，还有其他的方式定义：</p>
+<blockquote>
+<p>实现<code>Controller</code>接口</p>
+</blockquote>
+<pre><code class="java">@org.springframework.stereotype.Controller(&quot;/path&quot;)
+public class TestController implements Controller {
+    @Override
+    public ModelAndView handleRequest(HttpServletRequest request, HttpServletResponse response) throws Exception {
+        return null;
+    }
+}</code></pre>
+<blockquote>
+<p>实现<code>HttpRequestHandler</code>接口</p>
+</blockquote>
+<pre><code class="java">@Controller(&quot;/httpPath&quot;)
+public class HttpController implements HttpRequestHandler {
+
+    @Override
+    public void handleRequest(HttpServletRequest request,
+                              HttpServletResponse response
+    ) throws ServletException, IOException {
+        //业务处理，页面跳转，返回响应结果等等
+    }
+}</code></pre>
+<blockquote>
+<p>实现<code>Servlet</code>接口</p>
+</blockquote>
+<pre><code class="java">@Controller(&quot;/servletPath&quot;)
+public class ServletController implements Servlet {
+    //Servlet生命周期函数
+    //重写init()方法
+      //重写getServletConfig()方法
+
+    @Override
+    public void service(ServletRequest servletRequest, ServletResponse servletResponse) throws ServletException, IOException {
+        //业务处理
+    }
+
+    //重写getServletInfo()方法
+    //重写destroy()方法
+}</code></pre>
+<p>还要配置一个<code>SimpleServletHandlerAdapter</code>适配器的<code>bean</code>，因为默认只加载前面三种适配器，所以这种适配器需要自己手动添加。从这里也可以看出<code>SpringMVC</code>已经不推荐这种创建方式。</p>
+<pre><code class="java">@Configuration
+@EnableWebMvc
+public class WebMvcConfig extends WebMvcConfigurerAdapter {
+    @Bean
+    public SimpleServletHandlerAdapter simpleServletHandlerAdapter() {
+        return new SimpleServletHandlerAdapter();
+    }
+}</code></pre>
+<blockquote>
+<p><code>HandlerFunction</code>接口，关于响应式接口的开发</p>
+</blockquote>
+<p>最后一种是使用<code>HandlerFunction</code>函数式接口，这是<code>Spring5.0</code>后引入的方式，主要用于做响应式接口的开发，这里就不举例子了。后面我会写一篇文章再详述。</p>
+<p><strong>问题：</strong>以上就有五种方式定义<code>Mapping</code>映射，那么<code>SpringMVC</code>是如何去适配的呢？并且具有良好的扩展性和维护性呢？</p>
+<h2 id="源码分析"><a href="#源码分析" class="headerlink" title="源码分析"></a>源码分析</h2><p>首先我们把目光放在<code>DispatcherServlet</code>类的<code>doDispatch()</code>方法</p>
+<pre><code class="java">protected void doDispatch(HttpServletRequest request, HttpServletResponse response) throws Exception {
+        HttpServletRequest processedRequest = request;
+        HandlerExecutionChain mappedHandler = null;
+        boolean multipartRequestParsed = false;
+
+        WebAsyncManager asyncManager = WebAsyncUtils.getAsyncManager(request);
+
+        try {
+            ModelAndView mv = null;
+            Exception dispatchException = null;
+
+            try {
+                processedRequest = checkMultipart(request);
+                multipartRequestParsed = (processedRequest != request);
+
+                // Determine handler for the current request.
+                mappedHandler = getHandler(processedRequest);
+                if (mappedHandler == null) {
+                    noHandlerFound(processedRequest, response);
+                    return;
+                }
+
+                //重点： 获取到对应的适配器
+                HandlerAdapter ha = getHandlerAdapter(mappedHandler.getHandler());
+                //省略...
+                //重点： 调用HandlerAdapter接口的handle()方法，得到ModelAndView结果
+                mv = ha.handle(processedRequest, response, mappedHandler.getHandler());
+                //省略...
+            }
+            catch (Exception ex) {
+                //省略...
+            }
+            catch (Throwable err) {
+                //省略..
+            }
+        }
+    }</code></pre>
+<p>先不要慌张，其实学过策略模式你一眼就可以看出来，实际上这里就是运用了类似于策略模式的方式，根据不同的对象获取到对应的适配器，然后执行<code>HandlerAdapter</code>接口的<code>handle()</code>方法得到结果。</p>
+<p>关键是这个<code>getHandlerAdapter()</code>方法，是怎么获取到对应的<code>HandlerAdapter</code>。</p>
+<pre><code class="java">protected HandlerAdapter getHandlerAdapter(Object handler) throws ServletException {
+        if (this.handlerAdapters != null) {
+            //这个handlerAdapters有全部的适配器，遍历handlerAdapters集合
+            for (HandlerAdapter adapter : this.handlerAdapters) {
+                //如果匹配
+                if (adapter.supports(handler)) {
+                    //就返回这个适配器
+                    return adapter;
+                }
+            }
+        }
+        throw new ServletException(&quot;No adapter for handler [&quot; + handler +
+                &quot;]: The DispatcherServlet configuration needs to include a HandlerAdapter that supports this handler&quot;);
+    }</code></pre>
+<p>那么你看到上面这个<code>this.handlerAdapters</code>肯定会有疑问，<code>handlerAdapters</code>集合里面的适配器是什么时候初始化的？哪里初始化？继续看。</p>
+<p>在<code>DispatcherServlet</code>的<code>initStrategies()</code>方法中有一堆初始化方法。</p>
+<pre><code class="java">protected void initStrategies(ApplicationContext context) {
+        initMultipartResolver(context);
+        initLocaleResolver(context);
+        initThemeResolver(context);
+        initHandlerMappings(context);
+        //这个就是初始化适配器的方法，handlerAdapters就是在这里初始化的
+        initHandlerAdapters(context);
+        initHandlerExceptionResolvers(context);
+        initRequestToViewNameTranslator(context);
+        initViewResolvers(context);
+        initFlashMapManager(context);
+    }</code></pre>
+<p>接着我们看<code>initHandlerAdapters()</code>方法</p>
+<pre><code class="java">private void initHandlerAdapters(ApplicationContext context) {
+        this.handlerAdapters = null;
+        //省略...
+        //如果为null，刚开始当然为null，所以加载handlerAdapters集合
+        if (this.handlerAdapters == null) {
+            //关键又在于getDefaultStrategies方法
+            this.handlerAdapters = getDefaultStrategies(context, HandlerAdapter.class);
+            if (logger.isDebugEnabled()) {
+                logger.debug(&quot;No HandlerAdapters found in servlet &#39;&quot; + getServletName() + &quot;&#39;: using default&quot;);
+            }
+        }
+    }</code></pre>
+<p>然后我们又去<code>getDefaultStrategies()</code>方法中看你会发现：</p>
+<pre><code class="java">    protected &lt;T&gt; List&lt;T&gt; getDefaultStrategies(ApplicationContext context, Class&lt;T&gt; strategyInterface) {
+        String key = strategyInterface.getName();
+        //defaultStrategies中获取值，key就是HandlerAdapter.class对象
+        String value = defaultStrategies.getProperty(key);
+        //省略...
+    }</code></pre>
+<p>然后重点就在于这个<code>defaultStrategies</code>对象。我们继续看，很快看到了。</p>
+<pre><code class="java">    //DispatcherServlet.properties文件名
+    private static final String DEFAULT_STRATEGIES_PATH = &quot;DispatcherServlet.properties&quot;;
+    //Properties对象，全局变量
+    private static final Properties defaultStrategies;
+
+    static {
+        try {
+            ClassPathResource resource = new ClassPathResource(DEFAULT_STRATEGIES_PATH, DispatcherServlet.class);
+            //加载DispatcherServlet.properties文件
+            defaultStrategies = PropertiesLoaderUtils.loadProperties(resource);
+        }
+        catch (IOException ex) {
+            throw new IllegalStateException(&quot;Could not load &#39;&quot; + DEFAULT_STRATEGIES_PATH + &quot;&#39;: &quot; + ex.getMessage());
+        }
+    }</code></pre>
+<p>所以明显可以看到所有的适配器类都是写在<code>DispatcherServlet.properties</code>文件里了！默认加载这三种适配器。</p>
+<pre><code class="properties">org.springframework.web.servlet.HandlerAdapter=org.springframework.web.servlet.mvc.HttpRequestHandlerAdapter,\
+    org.springframework.web.servlet.mvc.SimpleControllerHandlerAdapter,\
+    org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter</code></pre>
+<h3 id="得到结论："><a href="#得到结论：" class="headerlink" title="得到结论："></a>得到结论：</h3><p>适配器实现类是从<code>DispatcherServlet.properties</code>文件加载到内存中的。</p>
+<h2 id="HandlerAdapter接口"><a href="#HandlerAdapter接口" class="headerlink" title="HandlerAdapter接口"></a>HandlerAdapter接口</h2><p>所以关键在于<code>HandlerAdapter</code>接口，接口信息如下：</p>
+<pre><code class="java">public interface HandlerAdapter {
+
+    //子类去实现，用于判断上级接口
+    boolean supports(Object handler);
+
+    //子类实现这个方法，返回响应的结果
+    @Nullable
+    ModelAndView handle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception;
+
+    //判断是否使用浏览器缓存，返回-1表示不使用浏览器缓存
+    long getLastModified(HttpServletRequest request, Object handler);
+
+}</code></pre>
+<p>学过策略模式的应该很清楚了，上面讲过有5种方式定义<code>Mapping</code>。</p>
+<p>所以应该可以猜测<code>HandlerAdapter</code>接口有五个子类。打开类图：</p>
+<p><img src="https://static.lovebilibili.com/HandlerAdapter.png" srcset="/img/loading.gif" alt=""></p>
+<p>果然是有五个实现的子类分别对应五种方式！</p>
+<p>那么我们找其中一个实现类，比如最简单的<code>SimpleControllerHandlerAdapter</code>，来分析一下：</p>
+<pre><code class="java">public class SimpleControllerHandlerAdapter implements HandlerAdapter {
+
+    @Override
+    //getHandlerAdapter()方法就会调用这个方法判断，然后返回对应的适配器实现类
+    //这里返回的就是SimpleControllerHandlerAdapter适配器
+    public boolean supports(Object handler) {
+        return (handler instanceof Controller);
+    }
+
+    @Override
+    @Nullable
+    public ModelAndView handle(HttpServletRequest request, HttpServletResponse response, Object handler)
+            throws Exception {
+        //执行Controller接口的handleRequest，也就是mapping映射的方法
+        return ((Controller) handler).handleRequest(request, response);
+    }
+
+    //判断是否使用浏览器缓存，返回-1表示不使用浏览器缓存
+    @Override
+    public long getLastModified(HttpServletRequest request, Object handler) {
+        if (handler instanceof LastModified) {
+            return ((LastModified) handler).getLastModified(request);
+        }
+        return -1L;
+    }
+
+}</code></pre>
+<p>下面画一张图来总结一下以上的分析过程：</p>
+<p><img src="https://static.lovebilibili.com/adapterProcessPic.png" srcset="/img/loading.gif" alt=""></p>
+<p>这不就像策略模式吗…只能解释为设计模式有很多都比较类似。假设<code>SpringMVC</code>要增加一种定义<code>Mapping</code>的方式，那就很容易了，增加对应的适配器实现类，对原有的代码没有任何的侵入，这就非常符合开闭原则。接下来我们就对适配器进行扩展，自定义一个适配器。</p>
+<h2 id="自定义SpringMVC适配器"><a href="#自定义SpringMVC适配器" class="headerlink" title="自定义SpringMVC适配器"></a>自定义SpringMVC适配器</h2><p>首先要定义一个适配器<code>MyHandlerAdapter</code>，实现<code>HandlerAdapter</code>接口。</p>
+<pre><code class="java">public class MyHandlerAdapter implements HandlerAdapter {
+
+    @Override
+    public boolean supports(Object handler) {
+        return handler instanceof MyController;
+    }
+
+    @Override
+    public ModelAndView handle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
+        return ((MyController) handler).handleRequest(request, response);
+    }
+
+    @Override
+    public long getLastModified(HttpServletRequest request, Object handler) {
+        //不使用浏览器缓存，返回-1
+        return -1;
+    }
+}</code></pre>
+<p>接着定义一个<code>MyController</code>接口。</p>
+<pre><code class="java">public interface MyController {
+    /**
+     * 处理请求
+     */
+    @Nullable
+    ModelAndView handleRequest(HttpServletRequest request, HttpServletResponse response) throws Exception;
+}</code></pre>
+<p>注册适配器到<code>Spring</code>容器中。</p>
+<pre><code class="java">@Configuration
+@EnableWebMvc
+public class WebMvcConfig extends WebMvcConfigurerAdapter {
+    //注册自定义的适配器
+    @Bean
+    public MyHandlerAdapter myHandlerAdapter() {
+        return new MyHandlerAdapter();
+    }
+}</code></pre>
+<p>最后创建一个<code>MyTestController</code>实现<code>MyController</code>进行测试。</p>
+<pre><code class="java">@Controller(&quot;/myTest&quot;)
+public class MyTestController implements MyController {
+
+    @Override
+    public ModelAndView handleRequest(HttpServletRequest request, HttpServletResponse response) throws Exception {
+        response.getWriter().println(&quot;MyTestController Test success!!!&quot;);
+        return null;
+    }
+}</code></pre>
+<p>启动项目，然后在浏览器输入访问地址，即可看到。</p>
+<p><img src="https://static.lovebilibili.com/adapter_test.png" srcset="/img/loading.gif" alt=""></p>
+<p>当你理解透彻之后，你就可以这样自定义一个适配器，来加深一下理解，验证之前的分析的正确性。</p>
+<p>沉下心学习，才能跑得更快！</p>
+<p>以上就是适配器模式的学习，更多的java技术分享，就关注<strong>java技术爱好者</strong>吧！</p>
+<img src="https://me.lovebilibili.com/img/wechat.jpg-slim" srcset="/img/loading.gif" alt="100" style="zoom:50%;" />
+
+<blockquote>
+<p>能力有限，如果有什么错误或者不当之处，请大家批评指正，一起学习交流！</p>
+</blockquote>
+
+            <hr>
+          </div>
+          <br>
+          <div>
+            <p>
+            
+            
+              <span>
+                <i class="iconfont icon-tag"></i>
+                
+                  <a class="hover-with-bg" href="/tags/java">java</a>
+                
+                  <a class="hover-with-bg" href="/tags/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F">设计模式</a>
+                
+              </span>
+            
+            </p>
+            
+              <p class="note note-warning">本博客所有文章除特别声明外，均采用 <a href="https://zh.wikipedia.org/wiki/Wikipedia:CC_BY-SA_3.0%E5%8D%8F%E8%AE%AE%E6%96%87%E6%9C%AC" target="_blank" rel="nofollow noopener noopener">CC BY-SA 3.0协议</a> 。转载请注明出处！</p>
+            
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="d-none d-lg-block col-lg-2 toc-container">
+      
+  <div id="toc">
+    <p class="h4"><i class="far fa-list-alt"></i>&nbsp;目录</p>
+    <div id="tocbot"></div>
+  </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- custom -->
+
+
+<!-- Comments -->
+<div class="col-lg-7 mx-auto nopadding-md">
+  <div class="container comments mx-auto" id="comments">
+    
+  </div>
+</div>
+
+    
+  </main>
+
+  
+    <a class="z-depth-1" id="scroll-top-button" href="#" role="button">
+      <i class="fa fa-chevron-up scroll-top-arrow" aria-hidden="true"></i>
+    </a>
+  
+
+  
+    <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v"
+                 for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+  
+
+  <footer class="mt-5">
+  <div class="text-center py-3">
+    <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><b>Hexo</b></a>
+    <i class="iconfont icon-love"></i>
+    <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"> <b>Fluid</b></a>
+    <br>
+
+    
+  
+    <!-- 不蒜子统计PV -->
+    
+    &nbsp;<span id="busuanzi_container_site_pv"></span>总访问量 
+          <span id="busuanzi_value_site_pv"></span> 次&nbsp;
+  
+  
+    <!-- 不蒜子统计UV -->
+    
+    &nbsp;<span id="busuanzi_container_site_uv"></span>总访客数 
+            <span id="busuanzi_value_site_uv"></span> 人&nbsp;
+  
+  <br>
+
+
+
+    
+
+
+    <!-- cnzz Analytics icon -->
+    
+
+  </div>
+</footer>
+
+<!-- SCRIPTS -->
+<script src="/lib/jquery/jquery.min.js" ></script>
+<script src="/lib/popper/popper.min.js" ></script>
+<script src="/lib/bootstrap/js/bootstrap.min.js" ></script>
+<script src="/lib/mdbootstrap/js/mdb.min.js" ></script>
+<script src="/js/main.js" ></script>
+
+
+  <script src="/js/lazyload.js" ></script>
+
+
+
+  
+    <script src="/lib/tocbot/tocbot.min.js" ></script>
+  
+  <script src="/js/post.js" ></script>
+
+
+
+  <script src="/lib/smooth-scroll/smooth-scroll.min.js" ></script>
+
+
+
+  <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" ></script>
+
+
+<!-- Plugins -->
+
+
+  
+
+  
+
+  
+
+  
+
+  <!-- cnzz Analytics -->
+  
+
+
+
+  <script src="/lib/prettify/prettify.min.js" ></script>
+  <script>
+    $(document).ready(function () {
+      $('pre').addClass('prettyprint  linenums');
+      prettyPrint();
+    })
+  </script>
+
+
+
+  <script src="/lib/typed/typed.min.js" ></script>
+  <script>
+    var typed = new Typed('#subtitle', {
+      strings: [
+        '  ',
+        "适配器模式与SpringMVC&nbsp;",
+      ],
+      cursorChar: "_",
+      typeSpeed: 70,
+      loop: false,
+    });
+    typed.stop();
+    $(document).ready(function () {
+      $(".typed-cursor").addClass("h2");
+      typed.start();
+    });
+  </script>
+
+
+
+  <script src="/lib/anchor/anchor.min.js" ></script>
+  <script>
+    anchors.options = {
+      placement: "right",
+      visible: "false",
+      
+    };
+    var el = "h1,h2,h3,h4,h5,h6".split(",");
+    var res = [];
+    for (item of el) {
+      res.push(".markdown-body > " + item)
+    }
+    anchors.add(res.join(", "))
+  </script>
+
+
+
+  <script src="/js/local-search.js" ></script>
+  <script>
+    var path = "/local-search.xml";
+    var inputArea = document.querySelector("#local-search-input");
+    inputArea.onclick = function () {
+      getSearchFile(path);
+      this.onclick = null
+    }
+  </script>
+
+
+
+  <script src="/lib/fancybox/jquery.fancybox.min.js" ></script>
+  <script>
+    $("#post img:not(.no-zoom img, img[no-zoom])").each(
+      function () {
+        var element = document.createElement("a");
+        $(element).attr("data-fancybox", "images");
+        $(element).attr("href", $(this).attr("src"));
+        $(this).wrap(element);
+      }
+    );
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+</body>
+</html>
