@@ -16,7 +16,7 @@
   <meta name="description" content="">
   <meta name="author" content="Ye hongzhi">
   <meta name="keywords" content="">
-  <title>SpringBoot系列之自定义spring-boot-starter - 叶洪智的技术分享</title>
+  <title>List集合的坑 - 叶洪智的技术分享</title>
 
   <link rel="stylesheet" href="/lib/font-awesome/css/all.min.css"  >
 <link rel="stylesheet" href="/lib/bootstrap/css/bootstrap.min.css"  >
@@ -113,7 +113,7 @@
               
                 <p class="mt-3">
                   <i class="fas fa-calendar-alt" aria-hidden="true"></i>&nbsp;
-                  星期一, 二月 17日 2020, 9:53 晚上
+                  星期日, 六月 21日 2020, 5:24 下午
                 </p>
               
 
@@ -122,7 +122,7 @@
                   
                   &nbsp;<i class="far fa-chart-bar"></i>
                   <span class="post-count">
-                    1.2k 字
+                    1.4k 字
                   </span>&nbsp;
                 
 
@@ -130,7 +130,7 @@
                   
                   &nbsp;<i class="far fa-clock"></i>
                   <span class="post-count">
-                      5 分钟
+                      6 分钟
                   </span>&nbsp;
                 
 
@@ -167,211 +167,175 @@
       <div class="py-5 z-depth-3" id="board">
         <div class="post-content mx-auto" id="post">
           <div class="markdown-body">
-            <h1 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h1><p>传统的 Maven项目一般将需要被复用的组件做成 Module来进行管理，以便二次调用；而在 Spring Boot项目中我们则可以使用更加优雅的 Spring Boot Starter来完成这一切。</p>
+            <blockquote>
+<p>学如逆水行舟，不进则退</p>
+</blockquote>
+<p>经过几年的工作经验，我发现<code>List</code>有很多坑，之前公司有些实习生一不小心就踩到了，所以我打算写一篇文章总结一下，希望看到这篇文章的人能不再踩到坑，代码没bug。做个快乐的程序员。</p>
 <a id="more"></a>
 
-<p>这个开箱即用的魔法特性很大程度上来源于各式各样 Spring Boot Starter的加持，而且随着版本的迭代 Starter家族成员日益庞大，而且各种优秀开源作者也提供了很多非常好用的Spring Boot Starter。</p>
-<p>本文尝试自定义一个Spring Boot Starter用于图片链接转换BASE64编码。</p>
-<h1 id="构建过程"><a href="#构建过程" class="headerlink" title="构建过程"></a>构建过程</h1><ol>
-<li>在GItHub上创建base64util-spring-boot-starter项目，然后clone下来本地进行开发。</li>
-</ol>
-<p><img src="https://static.lovebilibili.com/Github_Create.png" srcset="/img/loading.gif" alt=""></p>
-<ol start="2">
-<li>pom.xml文件配置如下</li>
-</ol>
-<pre><code class="xml">&lt;modelVersion&gt;4.0.0&lt;/modelVersion&gt;
-&lt;parent&gt;
-    &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;
-    &lt;artifactId&gt;spring-boot-starter-parent&lt;/artifactId&gt;
-    &lt;version&gt;2.2.2.RELEASE&lt;/version&gt;
-&lt;/parent&gt;
-&lt;groupId&gt;com.github.yehongzhi&lt;/groupId&gt;
-&lt;artifactId&gt;base64util-spring-boot-starter&lt;/artifactId&gt;
-&lt;version&gt;0.0.1&lt;/version&gt;
-&lt;dependencies&gt;
-    &lt;!-- 引入SpringBoot自动配置jar包 --&gt;
-    &lt;dependency&gt;
-        &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;
-        &lt;artifactId&gt;spring-boot-autoconfigure&lt;/artifactId&gt;
-    &lt;/dependency&gt;
-&lt;/dependencies&gt;</code></pre>
-<ol start="3">
-<li>业务代码</li>
-</ol>
-<pre><code class="java">import com.sun.org.apache.xerces.internal.impl.dv.util.Base64;
-import sun.misc.BASE64Decoder;
-import sun.misc.BASE64Encoder;
-import java.io.ByteArrayOutputStream;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.net.HttpURLConnection;
-import java.net.URL;
+<h3 id="迭代时删除元素"><a href="#迭代时删除元素" class="headerlink" title="迭代时删除元素"></a>迭代时删除元素</h3><p>使用<code>for-each</code>迭代遍历时，删除集合中的元素，会报错。</p>
+<pre><code class="java">    private static List&lt;String&gt; list = new ArrayList&lt;&gt;();
 
-/**
- * @author Ye Hongzhi
- * @program Base64Util
- * @description
- * @date 2020-02-17 14:04
- **/
-public class Base64Util {
-
-    /**
-     * 本地图片转为BASE64编码
-     *
-     * @param imgFile 本地图片地址
-     * @return BASE64 解码后的字符串编码
-     * @description: 根据图片地址转换为base64编码字符串
-     * @author: Ye Hongzhi
-     * @createTime: 2020/02/17
-     */
-    public static String getImageFile(String imgFile) {
-        byte[] data = null;
-        try (InputStream inputStream = new FileInputStream(imgFile)) {
-            data = new byte[inputStream.available()];
-            int length = inputStream.read(data);
-            if (length == -1) {
-                return null;
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        // 加密
-        BASE64Encoder encoder = new BASE64Encoder();
-        if (data != null) {
-            return encoder.encode(data);
-        } else {
-            return null;
+    static {
+        //初始化集合
+        for (int i = 1; i &lt;= 10; i++) {
+            list.add(String.valueOf(i));
         }
     }
 
-    public static String image2Base64(String imgUrl) throws Exception {
-        URL url = new URL(imgUrl);
-        HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
-        try(InputStream inputStream = urlConnection.getInputStream();
-            ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
-            urlConnection.connect();
-            byte[] buffer = new byte[1024];
-            int len;
-            //使用一个输入流从buffer里把数据读取出来
-            while ((len = inputStream.read(buffer)) != -1) {
-                //用输出流往buffer里写入数据，中间参数代表从哪个位置开始读，len代表读取的长度
-                baos.write(buffer, 0, len);
-            }
-            // 对字节数组Base64编码
-            return Base64.encode(baos.toByteArray());
-        } catch (Exception e) {
-            e.printStackTrace();
-        } finally {
-            if (urlConnection != null) {
-                urlConnection.disconnect();
+    public static void main(String[] args) {
+        //使用for-each迭代时删除元素
+        for (String str : list) {
+            if (&quot;1&quot;.equals(str)) {
+                list.remove(str);
             }
         }
-        return imgUrl;
-    }
+    }</code></pre>
+<p>或者你使用迭代器<code>Iterator</code>遍历时，删除元素。</p>
+<pre><code class="java">    public static void main(String[] args) {
+        //使用Iterator迭代器遍历时，删除元素
+        Iterator&lt;String&gt; it = list.iterator();
+        while (it.hasNext()) {
+            String str = it.next();
+            if (&quot;1&quot;.equals(str)) {
+                list.remove(str);
+            }
+        }
+    }</code></pre>
+<p>以上两种情况都会报这个错：</p>
+<pre><code class="java">Exception in thread &quot;main&quot; java.util.ConcurrentModificationException
+    at java.util.ArrayList$Itr.checkForComodification(ArrayList.java:901)
+    at java.util.ArrayList$Itr.next(ArrayList.java:851)</code></pre>
+<p>这就是不正确的删除姿势，那怎么删呢？</p>
+<p>使用<code>for-i</code>循环遍历删除(亲测有效)：</p>
+<pre><code class="java">    public static void main(String[] args) {
+        //使用Iterator迭代器遍历时，删除元素
+        for (int i = 0; i &lt; list.size(); i++) {
+            String s = list.get(i);
+            if (&quot;1&quot;.equals(s)) {
+                list.remove(s);
+            }
+        }
+        list.forEach(System.out::println);//2 3 4 5 6 7 8 9 10
+    }</code></pre>
+<p>使用<code>for-i</code>循环倒序遍历，删除元素。</p>
+<pre><code class="java">    public static void main(String[] args) {
+        //使用for-i倒序遍历，删除元素
+        for (int i = list.size() - 1; i &gt;= 0; i--) {
+            String str = list.get(i);
+            if (&quot;1&quot;.equals(str)) {
+                list.remove(str);
+            }
+        }
+        list.forEach(System.out::println);//2 3 4 5 6 7 8 9 10
+    }</code></pre>
+<p>使用<code>Iterator</code>的<code>remove()</code>方法删除。</p>
+<pre><code class="java">    public static void main(String[] args) {
+        //使用Iterator迭代器遍历时，删除元素
+        Iterator&lt;String&gt; it = list.iterator();
+        while (it.hasNext()) {
+            String str = it.next();
+            if (&quot;1&quot;.equals(str)) {
+                it.remove();
+            }
+        }
+        list.forEach(System.out::println);//2 3 4 5 6 7 8 9 10
+    }</code></pre>
+<p>要么潇洒一点，用<code>Lambda</code>表达式。在java8中，<code>List</code>增加了一个<code>removeIf()</code>方法用于删除。</p>
+<pre><code class="java">    public static void main(String[] args) {
+        //使用removeIf()遍历时，删除元素。删除集合中为1的元素
+        list.removeIf(str -&gt; &quot;1&quot;.equals(str));
+        list.forEach(System.out::println);//2 3 4 5 6 7 8 9 10
+    }</code></pre>
+<h3 id="使用asList-获得集合删除-增加"><a href="#使用asList-获得集合删除-增加" class="headerlink" title="使用asList()获得集合删除/增加"></a>使用asList()获得集合删除/增加</h3><p>看代码演示：</p>
+<pre><code class="java">    public static void main(String[] args) {
+        List&lt;Integer&gt; nums = Arrays.asList(1, 2, 3, 4, 5, 6);
+        nums.add(7);
+    }</code></pre>
+<pre><code class="java">    public static void main(String[] args) {
+        List&lt;Integer&gt; nums = Arrays.asList(1, 2, 3, 4, 5, 6);
+        nums.remove(1);
+    }</code></pre>
+<p>如果你进行以上操作，就会看到报错：</p>
+<pre><code class="java">Exception in thread &quot;main&quot; java.lang.UnsupportedOperationException
+    at java.util.AbstractList.remove(AbstractList.java:161)</code></pre>
+<p>为什么会报这个错，看一下源代码就知道了！</p>
+<pre><code class="java">private static class ArrayList&lt;E&gt; extends AbstractList&lt;E&gt; implements RandomAccess, java.io.Serializable {
 
-    /**
-     * BASE64编码转为图片
-     * 注意：&quot;data:image/jpeg;base64,&quot; 解码之前得去掉。
-     *
-     * @param imgStr base64编码字符串
-     * @param path   图片路径-具体到文件
-     * @return 是否转换成功
-     * @description: 将base64编码字符串转换为图片
-     * @author: Ye Hongzhi
-     * @createTime: 2020/02/17
-     */
-    public static boolean generateImage(String imgStr, String path) {
-        if (imgStr == null) {
-            return false;
-        }
-        try (OutputStream out = new FileOutputStream(path)) {
-            BASE64Decoder decoder = new BASE64Decoder();
-            // 解密
-            byte[] b = decoder.decodeBuffer(imgStr);
-            // 处理数据
-            for (int i = 0; i &lt; b.length; ++i) {
-                if (b[i] &lt; 0) {
-                    b[i] += 256;
-                }
-            }
-            out.write(b);
-            out.flush();
-            return true;
-        } catch (Exception e) {
-            e.printStackTrace();
-            return false;
-        }
-    }
 }</code></pre>
-<ol start="4">
-<li>创建一个service调用，这里为了简单，就不定义为接口的形式</li>
-</ol>
-<pre><code class="java">public class Base64Service {
-
-    /**
-     * 本地图片转为BASE64编码
-     */
-    public String getImageFile(String imgFile) {
-        return Base64Util.getImageFile(imgFile);
+<p><code>ArrayList</code>不是<code>util</code>包的<code>ArrayList</code>，而是<code>Arrays</code>的一个内部类。因为继承了<code>AbstractList</code>抽象类，但是又没有实现<code>add()</code>、<code>remove()</code>方法。所以会调用抽象类的<code>add()</code>和<code>remove()</code>。<br>你猜猜抽象类的<code>add()</code>怎么着？</p>
+<pre><code class="java">    public void add(int index, E element) {
+        throw new UnsupportedOperationException();
     }
 
-    /**
-     * BASE64编码转为图片
-     * */
-    public boolean generateImage(String imgStr, String path) {
-        return Base64Util.generateImage(imgStr,path);
-    }
-    /**
-     * 在线图片转为BASE64编码
-     * */
-    public String image2Base64(String imgUrl) throws Exception{
-        return Base64Util.image2Base64(imgUrl);
-    }
+    public E remove(int index) {
+        throw new UnsupportedOperationException();
+    }</code></pre>
+<p>所以不能用<code>asList()</code>得到的集合去增删了！</p>
+<h3 id="通过subList-方法获得集合后增删"><a href="#通过subList-方法获得集合后增删" class="headerlink" title="通过subList()方法获得集合后增删"></a>通过subList()方法获得集合后增删</h3><p>当使用<code>subList()</code>方法获得集合后删除，原(父)集合也会被删除。</p>
+<pre><code class="java">    public static void main(String[] args) {
+        List&lt;String&gt; subList = list.subList(0, 5);
+        System.out.println(list);//[1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+        System.out.println(subList);//[1, 2, 3, 4, 5]
+        subList.remove(&quot;1&quot;);
+        System.out.println(list);//[2, 3, 4, 5, 6, 7, 8, 9, 10]
+        System.out.println(subList);//[2, 3, 4, 5]
+    }</code></pre>
+<p>当使用<code>subList()</code>方法获得集合后增加元素，原(父)集合也会增加。</p>
+<pre><code class="java">    public static void main(String[] args) {
+        List&lt;String&gt; subList = list.subList(0, 5);
+        System.out.println(list);//[1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+        System.out.println(subList);//[1, 2, 3, 4, 5]
+        subList.add(&quot;11&quot;);
+        System.out.println(list);//[1, 2, 3, 4, 5, 11, 6, 7, 8, 9, 10]
+        System.out.println(subList);//[1, 2, 3, 4, 5, 11]
+    }</code></pre>
+<p>大家看一下源码就知道什么原因了。</p>
+<pre><code class="java">private class SubList extends AbstractList&lt;E&gt; implements RandomAccess {
+        public void add(int index, E e) {
+            rangeCheckForAdd(index);
+            checkForComodification();
+            //父集合添加元素
+            parent.add(parentOffset + index, e);
+            this.modCount = parent.modCount;
+            this.size++;
+        }
+
+        public E remove(int index) {
+            rangeCheck(index);
+            checkForComodification();
+            //父集合删除元素
+            E result = parent.remove(parentOffset + index);
+            this.modCount = parent.modCount;
+            this.size--;
+            return result;
+        }
 }</code></pre>
-<ol start="5">
-<li>关键的一步，使用配置类，把service定义成bean，加入到spring容器中管理</li>
-</ol>
-<pre><code class="java">@Configuration
-public class Base64AutoConfiguration {
-    @Bean
-    Base64Service base64Service(){
-        return new Base64Service();
-    }
-}</code></pre>
-<ol start="6">
-<li>最关键一步在于需要在resources文件夹下创建<code>META-INF/spring.factories</code>，<code>spring.factories</code>里的代码如下:</li>
-</ol>
-<pre><code class="yaml">org.springframework.boot.autoconfigure.EnableAutoConfiguration=com.lovebilibili.me.config.Base64AutoConfiguration</code></pre>
-<p>这一步是重点，因为Spring Boot应用在启动过程中会通过 <code>SpringFactoriesLoader</code> 加载所有 <code>META-INF/spring.factories</code> 文件，通过一系列的处理流程最终将 spring.factories 文件中的定义的各种 <code>beans</code> 装载入 ApplicationContext容器。</p>
+<p>如果希望截取的集合是和原集合互不干扰的话，可以这样：</p>
+<pre><code class="java">List&lt;String&gt; subList = new ArrayList&lt;&gt;(list.subList(0, 5));</code></pre>
+<h3 id="使用Collections-unmodifiableList-创建不可变集合也是可变的。"><a href="#使用Collections-unmodifiableList-创建不可变集合也是可变的。" class="headerlink" title="使用Collections.unmodifiableList()创建不可变集合也是可变的。"></a>使用Collections.unmodifiableList()创建不可变集合也是可变的。</h3><p>当不可变集合的原集合改变时，不可变集合也跟着改变。演示代码：</p>
+<pre><code class="java">    public static void main(String[] args) {
+        List&lt;String&gt; unmodifiableList = Collections.unmodifiableList(list);
+        System.out.println(unmodifiableList);//[1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+        //删除原集合元素
+        list.remove(&quot;1&quot;);
+        System.out.println(unmodifiableList);//[2, 3, 4, 5, 6, 7, 8, 9, 10]
+    }</code></pre>
+<p>看源码就知道原因了：</p>
+<pre><code class="java">    UnmodifiableList(List&lt;? extends E&gt; list) {
+        super(list);
+        this.list = list;
+    }</code></pre>
+<p><strong>因为不可变集合的成员变量的引用是指向原集合的，所以当原集合改变时，不可变集合也会随之改变</strong>。</p>
+<p>解决方式：使用<code>Guava</code>工具包的<code>ImmutableList.copyOf()</code>方法创建。</p>
+<pre><code class="java">    public static void main(String[] args) throws Exception {
+        List&lt;String&gt; unmodifiableList = ImmutableList.copyOf(list);
+        list.remove(&quot;1&quot;);
+        System.out.println(unmodifiableList);//[1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+    }</code></pre>
+<p>创作不易，觉得有用就<strong>点个赞</strong>吧。</p>
+<p>想第一时间看到我更新的文章，可以微信搜索公众号「<code>java技术爱好者</code>」，<strong>拒绝做一条咸鱼，我是一个在互联网荒野求生的程序员。我们下期再见！！！</strong><br><img src="https://static.lovebilibili.com/erweimaguanzhu.png" srcset="/img/loading.gif" alt="在这里插入图片描述"></p>
 <blockquote>
-<p>至此，自定义的用于base64转码工具的spring-boot-starter就完成了</p>
-<p>可以通过使用maven命令<code>mvn install</code>打包，传到私有/公有Maven仓库使用。</p>
-<p>形成一个公共的模块，供有需要的项目使用。</p>
-</blockquote>
-<ol start="7">
-<li>完成后把代码推送到Github仓库中，方便以后继续优化。</li>
-</ol>
-<h1 id="测试"><a href="#测试" class="headerlink" title="测试"></a>测试</h1><ol>
-<li>在其他项目中的pom文件加入以下依赖：</li>
-</ol>
-<pre><code class="xml">&lt;dependency&gt;
-    &lt;groupId&gt;com.github.yehongzhi&lt;/groupId&gt;
-    &lt;artifactId&gt;base64util-spring-boot-starter&lt;/artifactId&gt;
-    &lt;version&gt;0.0.1&lt;/version&gt;
-&lt;/dependency&gt;</code></pre>
-<ol start="2">
-<li>在Controller层中，我们可以引入base64Service。</li>
-</ol>
-<pre><code class="java">@Resource
-private Base64Service base64Service;</code></pre>
-<ol start="3">
-<li>然后在Controller层中的@RequestMapping对应的方法中使用</li>
-</ol>
-<pre><code class="java">//把在线图片转为BASE64编码
-String base64 = base64Service.image2Base64(imgUrl);</code></pre>
-<h1 id="后记"><a href="#后记" class="headerlink" title="后记"></a>后记</h1><blockquote>
 <p>能力有限，如果有什么错误或者不当之处，请大家批评指正，一起学习交流！</p>
 </blockquote>
 
@@ -387,7 +351,9 @@ String base64 = base64Service.image2Base64(imgUrl);</code></pre>
                 
                   <a class="hover-with-bg" href="/tags/java">java</a>
                 
-                  <a class="hover-with-bg" href="/tags/SpringBoot">SpringBoot</a>
+                  <a class="hover-with-bg" href="/tags/%E9%9B%86%E5%90%88">集合</a>
+                
+                  <a class="hover-with-bg" href="/tags/%E7%BB%8F%E9%AA%8C%E6%80%BB%E7%BB%93">经验总结</a>
                 
               </span>
             
@@ -543,7 +509,7 @@ String base64 = base64Service.image2Base64(imgUrl);</code></pre>
     var typed = new Typed('#subtitle', {
       strings: [
         '  ',
-        "SpringBoot系列之自定义spring-boot-starter&nbsp;",
+        "List集合的坑&nbsp;",
       ],
       cursorChar: "_",
       typeSpeed: 70,
