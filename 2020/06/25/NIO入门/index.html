@@ -1,0 +1,1105 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/apple-touch-icon.png">
+  <link rel="icon" type="image/png" href="/img/favicon.png">
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="description" content="">
+  <meta name="author" content="Ye hongzhi">
+  <meta name="keywords" content="">
+  <title>NIO入门 - 叶洪智的技术分享</title>
+
+  <link rel="stylesheet" href="/lib/font-awesome/css/all.min.css"  >
+<link rel="stylesheet" href="/lib/bootstrap/css/bootstrap.min.css"  >
+<link rel="stylesheet" href="/lib/mdbootstrap/css/mdb.min.css"  >
+<link rel="stylesheet" href="/lib/github-markdown/github-markdown.min.css"  >
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1067060_qzomjdt8bmp.css">
+
+
+
+  <link rel="stylesheet" href="/lib/prettify/tomorrow-night-eighties.min.css"  >
+
+<link rel="stylesheet" href="/css/main.css"  >
+
+
+  <link rel="stylesheet" href="/lib/fancybox/jquery.fancybox.min.css"  >
+
+
+<meta name="generator" content="Hexo 4.2.0"></head>
+
+
+<body>
+  <header style="height: 70vh;">
+    <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand"
+       href="/">&nbsp;<strong>YeHongzhi's Blog</strong>&nbsp;</a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+          <li class="nav-item">
+            <a class="nav-link" href="/">首页</a>
+          </li>
+        
+          
+          
+          
+          
+          <li class="nav-item">
+            <a class="nav-link" href="/archives/">归档</a>
+          </li>
+        
+          
+          
+          
+          
+          <li class="nav-item">
+            <a class="nav-link" href="/tags/">标签</a>
+          </li>
+        
+          
+          
+          
+          
+          <li class="nav-item">
+            <a class="nav-link" href="/about/">关于</a>
+          </li>
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" data-toggle="modal" data-target="#modalSearch">&nbsp;&nbsp;<i
+                class="iconfont icon-search"></i>&nbsp;&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+    <div class="view intro-2" id="background" false
+         style="background: url('/img/post.png')no-repeat center center;
+           background-size: cover;">
+      <div class="full-bg-img">
+        <div class="mask rgba-black-light flex-center">
+          <div class="container text-center white-text fadeInUp">
+            <span class="h2" id="subtitle">
+              
+            </span>
+
+            
+              <br>
+              
+                <p class="mt-3">
+                  <i class="fas fa-calendar-alt" aria-hidden="true"></i>&nbsp;
+                  星期四, 六月 25日 2020, 11:14 晚上
+                </p>
+              
+
+              <p>
+                
+                  
+                  &nbsp;<i class="far fa-chart-bar"></i>
+                  <span class="post-count">
+                    5.6k 字
+                  </span>&nbsp;
+                
+
+                
+                  
+                  &nbsp;<i class="far fa-clock"></i>
+                  <span class="post-count">
+                      23 分钟
+                  </span>&nbsp;
+                
+
+                
+                  <!-- 不蒜子统计文章PV -->
+                  
+                  &nbsp;<i class="far fa-eye" aria-hidden="true"></i>&nbsp;
+                  <span id="busuanzi_container_page_pv">
+                    <span id="busuanzi_value_page_pv"></span> 次
+                  </span>&nbsp;
+                
+              </p>
+            
+          </div>
+
+          
+            <div class="scroll-down-bar">
+              <i class="fas fa-angle-down scroll-down-arrow"></i>
+            </div>
+          
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid">
+  <div class="row">
+    <div class="d-none d-lg-block col-lg-2"></div>
+    <div class="col-lg-8 nopadding-md">
+      <div class="py-5 z-depth-3" id="board">
+        <div class="post-content mx-auto" id="post">
+          <div class="markdown-body">
+            <h1 id="思维导图"><a href="#思维导图" class="headerlink" title="思维导图"></a>思维导图</h1><p><img src="https://static.lovebilibili.com/image-20200625230224224.png" srcset="/img/loading.gif" alt="image-20200625230224224"></p>
+<blockquote>
+<p>学如逆水行舟，不进则退</p>
+</blockquote>
+<h1 id="1-NIO概述"><a href="#1-NIO概述" class="headerlink" title="1 NIO概述"></a>1 NIO概述</h1><h2 id="1-1-定义"><a href="#1-1-定义" class="headerlink" title="1.1 定义"></a>1.1 定义</h2><p><strong>java.nio</strong>全称<strong>java non-blocking IO</strong>，是指<strong>JDK1.4 及以上</strong>版本里提供的新api（New IO） ，为所有的原始类型（boolean类型除外）提供<strong>缓存支持的数据容器</strong>，使用它可以提供<strong>非阻塞式</strong>的高伸缩性网络(来源于百度百科)。</p>
+<a id="more"></a>
+
+<h2 id="1-2-为什么使用NIO"><a href="#1-2-为什么使用NIO" class="headerlink" title="1.2 为什么使用NIO"></a>1.2 为什么使用NIO</h2><p>在上面的描述中提到，是在JDK1.4以上的版本才提供NIO，那在之前使用的是什么呢？答案很简单，就是<strong>BIO</strong>(阻塞式IO)，也就是我们常用的IO流。</p>
+<p>BIO的问题其实不用多说了，因为在使用BIO时，主线程会进入阻塞状态，这就非常影响程序的性能，<strong>不能充分利用机器资源</strong>。但是这样就会有人提出疑问了，那我<strong>使用多线程</strong>不就可以了吗？</p>
+<p>但是在高并发的情况下，会创建很多线程，线程会占用内存，线程之间的切换也会浪费资源开销。</p>
+<p>而NIO<strong>只有在连接/通道真正有读写事件</strong>发生时(<strong>事件驱动</strong>)，<strong>才会进行读写</strong>，就大大地减少了系统的开销。不必为每一个连接都创建一个线程，也不必去维护多个线程。</p>
+<p><strong>避免了多个线程之间的上下文切换</strong>，导致资源的浪费。</p>
+<h1 id="为什么使用NIO"><a href="#为什么使用NIO" class="headerlink" title="为什么使用NIO"></a>为什么使用NIO</h1><h1 id="2-NIO的三大核心"><a href="#2-NIO的三大核心" class="headerlink" title="2 NIO的三大核心"></a>2 NIO的三大核心</h1><table>
+<thead>
+<tr>
+<th>NIO的核心</th>
+<th>对应的类或接口</th>
+<th>应用</th>
+<th>作用</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>缓冲区</td>
+<td>java.nio.Buffer</td>
+<td>文件IO/网络IO</td>
+<td>存储数据</td>
+</tr>
+<tr>
+<td>通道</td>
+<td>java.nio.channels.Channel</td>
+<td>文件IO/网络IO</td>
+<td>运输</td>
+</tr>
+<tr>
+<td>选择器</td>
+<td>java.nio.channels.Selector</td>
+<td>网络IO</td>
+<td>控制器</td>
+</tr>
+</tbody></table>
+<h2 id="2-1缓冲区-Buffer"><a href="#2-1缓冲区-Buffer" class="headerlink" title="2.1缓冲区(Buffer)"></a>2.1缓冲区(Buffer)</h2><h3 id="2-1-1-什么是缓冲区"><a href="#2-1-1-什么是缓冲区" class="headerlink" title="2.1.1 什么是缓冲区"></a>2.1.1 什么是缓冲区</h3><p>我们先看以下这张类图，可以看到<code>Buffer</code>有七种类型。</p>
+<p><img src="https://static.lovebilibili.com/Buffer.png" srcset="/img/loading.gif" alt=""></p>
+<p><code>Buffer</code>是一个内存块。在<code>NIO</code>中，所有的数据都是用<code>Buffer</code>处理，有读写两种模式。所以NIO和传统的IO的区别就体现在这里。传统IO是面向<code>Stream</code>流，<code>NIO</code>而是面向缓冲区(<code>Buffer</code>)。</p>
+<h3 id="2-1-2-常用的类型ByteBuffer"><a href="#2-1-2-常用的类型ByteBuffer" class="headerlink" title="2.1.2 常用的类型ByteBuffer"></a>2.1.2 常用的类型ByteBuffer</h3><p>一般我们常用的类型是<code>ByteBuffer</code>，把数据转成字节进行处理。实质上是一个<code>byte[]</code>数组。</p>
+<pre><code class="java">public abstract class ByteBuffer extends Buffer implements Comparable&lt;ByteBuffer&gt;{
+    //存储数据的数组
+    final byte[] hb;
+    //构造器方法
+    ByteBuffer(int mark, int pos, int lim, int cap, byte[] hb, int offset) {
+        super(mark, pos, lim, cap);
+        //初始化数组
+        this.hb = hb;
+        this.offset = offset;
+    }
+}</code></pre>
+<h3 id="2-1-3-创建Buffer的方式"><a href="#2-1-3-创建Buffer的方式" class="headerlink" title="2.1.3 创建Buffer的方式"></a>2.1.3 创建Buffer的方式</h3><p>主要分成两种：JVM堆内内存块Buffer、堆外内存块Buffer。</p>
+<p>创建堆内内存块(非直接缓冲区)的方法是：</p>
+<pre><code class="java">//创建堆内内存块HeapByteBuffer
+ByteBuffer byteBuffer1 = ByteBuffer.allocate(1024);
+
+String msg = &quot;java技术爱好者&quot;;
+//包装一个byte[]数组获得一个Buffer，实际类型是HeapByteBuffer
+ByteBuffer byteBuffer2 = ByteBuffer.wrap(msg.getBytes());</code></pre>
+<p>创建堆外内存块(直接缓冲区)的方法：</p>
+<pre><code class="java">//创建堆外内存块DirectByteBuffer
+ByteBuffer byteBuffer3 = ByteBuffer.allocateDirect(1024);</code></pre>
+<h4 id="2-1-3-1-HeapByteBuffer与DirectByteBuffer的区别"><a href="#2-1-3-1-HeapByteBuffer与DirectByteBuffer的区别" class="headerlink" title="2.1.3.1 HeapByteBuffer与DirectByteBuffer的区别"></a>2.1.3.1 HeapByteBuffer与DirectByteBuffer的区别</h4><p>其实根据类名就可以看出，<code>HeapByteBuffer</code>所创建的字节缓冲区就是在JVM堆中的，即JVM内部所维护的字节数组。而<code>DirectByteBuffer</code>是<strong>直接操作操作系统本地代码</strong>创建的<strong>内存缓冲数组</strong>。</p>
+<p><code>DirectByteBuffer</code>的使用场景：</p>
+<ol>
+<li><p>java程序与本地磁盘、socket传输数据</p>
+</li>
+<li><p>大文件对象，可以使用。不会受到堆内存大小的限制。</p>
+</li>
+<li><p>不需要频繁创建，生命周期较长的情况，能重复使用的情况。</p>
+</li>
+</ol>
+<p><code>HeapByteBuffer</code>的使用场景：</p>
+<p>除了以上的场景外，其他情况还是建议使用<code>HeapByteBuffer</code>，没有达到一定的量级，实际上使用<code>DirectByteBuffer</code>是体现不出优势的。</p>
+<h4 id="2-1-3-2-Buffer的初体验"><a href="#2-1-3-2-Buffer的初体验" class="headerlink" title="2.1.3.2 Buffer的初体验"></a>2.1.3.2 Buffer的初体验</h4><p>接下来，使用<code>ByteBuffer</code>做一个小例子，熟悉一下：</p>
+<pre><code class="java">    public static void main(String[] args) throws Exception {
+        String msg = &quot;java技术爱好者，起飞！&quot;;
+        //创建一个固定大小的buffer(返回的是HeapByteBuffer)
+        ByteBuffer byteBuffer = ByteBuffer.allocate(1024);
+        byte[] bytes = msg.getBytes();
+        //写入数据到Buffer中
+        byteBuffer.put(bytes);
+        //切换成读模式，关键一步
+        byteBuffer.flip();
+        //创建一个临时数组，用于存储获取到的数据
+        byte[] tempByte = new byte[bytes.length];
+        int i = 0;
+        //如果还有数据，就循环。循环判断条件
+        while (byteBuffer.hasRemaining()) {
+            //获取byteBuffer中的数据
+            byte b = byteBuffer.get();
+            //放到临时数组中
+            tempByte[i] = b;
+            i++;
+        }
+        //打印结果
+        System.out.println(new String(tempByte));//java技术爱好者，起飞！
+    }</code></pre>
+<p>这上面有一个<code>flip()</code>方法是很重要的。意思是切换到读模式。上面已经提到<strong>缓存区是双向的</strong>，<strong>既可以往缓冲区写入数据，也可以从缓冲区读取数据</strong>。但是不能同时进行，需要切换。那么这个切换模式的本质是什么呢？</p>
+<h3 id="2-1-4-三个重要参数"><a href="#2-1-4-三个重要参数" class="headerlink" title="2.1.4 三个重要参数"></a>2.1.4 三个重要参数</h3><pre><code class="java">//位置，默认是从第一个开始
+private int position = 0;
+//限制，不能读取或者写入的位置索引
+private int limit;
+//容量，缓冲区所包含的元素的数量
+private int capacity;</code></pre>
+<p>那么我们以上面的例子，一句一句代码进行分析：</p>
+<pre><code class="java">String msg = &quot;java技术爱好者，起飞！&quot;;
+//创建一个固定大小的buffer(返回的是HeapByteBuffer)
+ByteBuffer byteBuffer = ByteBuffer.allocate(1024);</code></pre>
+<p>当创建一个缓冲区时，参数的值是这样的：</p>
+<p><img src="https://static.lovebilibili.com/image-20200625122035548.png" srcset="/img/loading.gif" alt=""></p>
+<p><img src="https://static.lovebilibili.com/image-20200625122337215.png" srcset="/img/loading.gif" alt="image-20200625122337215"></p>
+<p>当执行到<code>byteBuffer.put(bytes)</code>，当<code>put()</code>进入多少数据，position就会增加多少，参数就会发生变化：</p>
+<p><img src="https://static.lovebilibili.com/image-20200625122640979.png" srcset="/img/loading.gif" alt="image-20200625122640979"></p>
+<p><img src="https://static.lovebilibili.com/image-20200625123835657.png" srcset="/img/loading.gif" alt="image-20200625123835657"></p>
+<p>接下来关键一步<code>byteBuffer.flip()</code>，会发生如下变化：</p>
+<p><img src="https://static.lovebilibili.com/image-20200625122931713.png" srcset="/img/loading.gif" alt="image-20200625122931713"></p>
+<p><img src="https://static.lovebilibili.com/image-20200625123004623.png" srcset="/img/loading.gif" alt="image-20200625123004623"></p>
+<p><code>flip()</code>方法的源码如下：</p>
+<pre><code class="java">    public final Buffer flip() {
+        limit = position;
+        position = 0;
+        mark = -1;
+        return this;
+    }</code></pre>
+<p>为什么要这样赋值呢？因为下面有一句循环条件判断：</p>
+<pre><code class="java">byteBuffer.hasRemaining();
+public final boolean hasRemaining() {
+    //判断position的索引是否小于limit。
+    //所以可以看出limit的作用就是记录写入数据的位置，那么当读取数据时，就知道读到哪个位置
+    return position &lt; limit;
+}</code></pre>
+<p>接下来就是在<code>while</code>循环中<code>get()</code>读取数据，读取完之后。</p>
+<p><img src="https://static.lovebilibili.com/image-20200625123623688.png" srcset="/img/loading.gif" alt="image-20200625123623688"></p>
+<p><img src="https://static.lovebilibili.com/image-20200625123745018.png" srcset="/img/loading.gif" alt="image-20200625123745018"></p>
+<p>最后当<code>position</code>等于<code>limit</code>时，循环判断条件不成立，就跳出循环，读取完毕。</p>
+<p>所以可以看出实质上<code>capacity</code>容量大小是不变的，实际上是通过控制<code>position</code>和<code>limit</code>的值来控制读写的数据。</p>
+<h2 id="2-2-管道-Channel"><a href="#2-2-管道-Channel" class="headerlink" title="2.2 管道(Channel)"></a>2.2 管道(Channel)</h2><p>首先我们看一下Channel有哪些子类：</p>
+<p><img src="https://static.lovebilibili.com/Channel.png" srcset="/img/loading.gif" alt=""></p>
+<p>常用的Channel有这四种：</p>
+<blockquote>
+<p>FileChannel，读写文件中的数据。<br>SocketChannel，通过TCP读写网络中的数据。<br>ServerSockectChannel，监听新进来的TCP连接，像Web服务器那样。对每一个新进来的连接都会创建一个SocketChannel。<br>DatagramChannel，通过UDP读写网络中的数据。</p>
+</blockquote>
+<p><strong>Channel本身并不存储数据，只是负责数据的运输</strong>。必须要和<code>Buffer</code>一起使用。</p>
+<h3 id="2-2-1-获取通道的方式"><a href="#2-2-1-获取通道的方式" class="headerlink" title="2.2.1 获取通道的方式"></a>2.2.1 获取通道的方式</h3><h4 id="2-2-1-1-FileChannel"><a href="#2-2-1-1-FileChannel" class="headerlink" title="2.2.1.1 FileChannel"></a>2.2.1.1 FileChannel</h4><p>FileChannel的获取方式，下面举个文件复制拷贝的例子进行说明：</p>
+<p><img src="https://static.lovebilibili.com/image-20200625130742262.png" srcset="/img/loading.gif" alt="image-20200625130742262"></p>
+<p>首先准备一个”1.txt”放在项目的根目录下，然后编写一个main方法：</p>
+<pre><code class="java">    public static void main(String[] args) throws Exception {
+        //获取文件输入流
+        File file = new File(&quot;1.txt&quot;);
+        FileInputStream inputStream = new FileInputStream(file);
+        //从文件输入流获取通道
+        FileChannel inputStreamChannel = inputStream.getChannel();
+        //获取文件输出流
+        FileOutputStream outputStream = new FileOutputStream(new File(&quot;2.txt&quot;));
+        //从文件输出流获取通道
+        FileChannel outputStreamChannel = outputStream.getChannel();
+        //创建一个byteBuffer，小文件所以就直接一次读取，不分多次循环了
+        ByteBuffer byteBuffer = ByteBuffer.allocate((int)file.length());
+        //把输入流通道的数据读取到缓冲区
+        inputStreamChannel.read(byteBuffer);
+        //切换成读模式
+        byteBuffer.flip();
+        //把数据从缓冲区写入到输出流通道
+        outputStreamChannel.write(byteBuffer);
+        //关闭通道
+        outputStream.close();
+        inputStream.close();
+        outputStreamChannel.close();
+        inputStreamChannel.close();
+    }</code></pre>
+<p>执行后，我们就获得一个”2.txt”。执行成功。</p>
+<p><img src="https://static.lovebilibili.com/image-20200625130945572.png" srcset="/img/loading.gif" alt="image-20200625130945572"></p>
+<p>以上的例子，可以用一张示意图表示，是这样的：</p>
+<p><img src="https://static.lovebilibili.com/image-20200625132433945.png" srcset="/img/loading.gif" alt="image-20200625132433945"></p>
+<h4 id="2-2-1-2-SocketChannel"><a href="#2-2-1-2-SocketChannel" class="headerlink" title="2.2.1.2 SocketChannel"></a>2.2.1.2 SocketChannel</h4><p>接下来我们学习获取<code>SocketChannel</code>的方式。</p>
+<p>还是一样，我们通过一个例子来快速上手：</p>
+<pre><code class="java">    public static void main(String[] args) throws Exception {
+        //获取ServerSocketChannel
+        ServerSocketChannel serverSocketChannel = ServerSocketChannel.open();
+        InetSocketAddress address = new InetSocketAddress(&quot;127.0.0.1&quot;, 6666);
+        //绑定地址，端口号
+        serverSocketChannel.bind(address);
+        //创建一个缓冲区
+        ByteBuffer byteBuffer = ByteBuffer.allocate(1024);
+        while (true) {
+            //获取SocketChannel
+            SocketChannel socketChannel = serverSocketChannel.accept();
+            while (socketChannel.read(byteBuffer) != -1){
+                //打印结果
+                System.out.println(new String(byteBuffer.array()));
+                //清空缓冲区
+                byteBuffer.clear();
+            }
+        }
+    }</code></pre>
+<p>然后运行main()方法，我们可以通过<code>telnet</code>命令进行连接测试：</p>
+<p><img src="https://static.lovebilibili.com/image-20200625134508044.png" srcset="/img/loading.gif" alt="image-20200625134508044"></p>
+<p>通过上面的例子可以知道，通过<code>ServerSocketChannel.open()</code>方法可以获取服务器的通道，然后绑定一个地址端口号，接着<code>accept()</code>方法可获得一个<code>SocketChannel</code>通道，也就是客户端的连接通道。</p>
+<p>最后配合使用<code>Buffer</code>进行读写即可。</p>
+<p>这就是一个简单的例子，实际上上面的例子是阻塞式的。要做到非阻塞还需要使用选择器<code>Selector</code>。</p>
+<h2 id="2-3-选择器-Selector"><a href="#2-3-选择器-Selector" class="headerlink" title="2.3 选择器(Selector)"></a>2.3 选择器(Selector)</h2><p><code>Selector</code>翻译成<strong>选择器</strong>，有些人也会翻译成<strong>多路复用器</strong>，实际上指的是同一样东西。</p>
+<p>只有网络IO才会使用选择器，文件IO是不需要使用的。</p>
+<p>选择器可以说是NIO的核心组件，它可以监听通道的状态，来实现异步非阻塞的IO。换句话说，也就是事件驱动。以此实现<strong>单线程管理多个Channel</strong>的目的。</p>
+<p><img src="https://static.lovebilibili.com/20180813104125886.png" srcset="/img/loading.gif" alt=""></p>
+<h3 id="2-3-1-核心API"><a href="#2-3-1-核心API" class="headerlink" title="2.3.1 核心API"></a>2.3.1 核心API</h3><table>
+<thead>
+<tr>
+<th>API方法名</th>
+<th>作用</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Selector.open()</td>
+<td>打开一个选择器。</td>
+</tr>
+<tr>
+<td>select()</td>
+<td>选择一组键，其相应的通道已为 I/O 操作准备就绪。</td>
+</tr>
+<tr>
+<td>selectedKeys()</td>
+<td>返回此选择器的已选择键集。</td>
+</tr>
+</tbody></table>
+<p>以上的API会在后面的例子用到，先有个印象。</p>
+<h1 id="3-NIO快速入门"><a href="#3-NIO快速入门" class="headerlink" title="3 NIO快速入门"></a>3 NIO快速入门</h1><h2 id="3-1-文件IO"><a href="#3-1-文件IO" class="headerlink" title="3.1 文件IO"></a>3.1 文件IO</h2><h3 id="3-1-1-通道间的数据传输"><a href="#3-1-1-通道间的数据传输" class="headerlink" title="3.1.1 通道间的数据传输"></a>3.1.1 通道间的数据传输</h3><p>这里主要介绍两个通道与通道之间数据传输的方式：</p>
+<p><code>transferTo()</code>：把源通道的数据传输到目的通道中。</p>
+<pre><code class="java">    public static void main(String[] args) throws Exception {
+        //获取文件输入流
+        File file = new File(&quot;1.txt&quot;);
+        FileInputStream inputStream = new FileInputStream(file);
+        //从文件输入流获取通道
+        FileChannel inputStreamChannel = inputStream.getChannel();
+        //获取文件输出流
+        FileOutputStream outputStream = new FileOutputStream(new File(&quot;2.txt&quot;));
+        //从文件输出流获取通道
+        FileChannel outputStreamChannel = outputStream.getChannel();
+        //创建一个byteBuffer，小文件所以就直接一次读取，不分多次循环了
+        ByteBuffer byteBuffer = ByteBuffer.allocate((int) file.length());
+        //把输入流通道的数据读取到输出流的通道
+        inputStreamChannel.transferTo(0, byteBuffer.limit(), outputStreamChannel);
+        //关闭通道
+        outputStream.close();
+        inputStream.close();
+        outputStreamChannel.close();
+        inputStreamChannel.close();
+    }    </code></pre>
+<p><code>transferFrom()</code>：把来自源通道的数据传输到目的通道。</p>
+<pre><code class="java">    public static void main(String[] args) throws Exception {
+        //获取文件输入流
+        File file = new File(&quot;1.txt&quot;);
+        FileInputStream inputStream = new FileInputStream(file);
+        //从文件输入流获取通道
+        FileChannel inputStreamChannel = inputStream.getChannel();
+        //获取文件输出流
+        FileOutputStream outputStream = new FileOutputStream(new File(&quot;2.txt&quot;));
+        //从文件输出流获取通道
+        FileChannel outputStreamChannel = outputStream.getChannel();
+        //创建一个byteBuffer，小文件所以就直接一次读取，不分多次循环了
+        ByteBuffer byteBuffer = ByteBuffer.allocate((int) file.length());
+        //把输入流通道的数据读取到输出流的通道
+        outputStreamChannel.transferFrom(inputStreamChannel,0,byteBuffer.limit());
+        //关闭通道
+        outputStream.close();
+        inputStream.close();
+        outputStreamChannel.close();
+        inputStreamChannel.close();
+    }</code></pre>
+<h3 id="3-1-2-分散读取和聚合写入"><a href="#3-1-2-分散读取和聚合写入" class="headerlink" title="3.1.2 分散读取和聚合写入"></a>3.1.2 分散读取和聚合写入</h3><p>我们先看一下FileChannel的源码：</p>
+<pre><code class="java">public abstract class FileChannel extends AbstractInterruptibleChannel
+    implements SeekableByteChannel, GatheringByteChannel, ScatteringByteChannel {   
+}</code></pre>
+<p>从源码中可以看出实现了GatheringByteChannel, ScatteringByteChannel接口。也就是支持分散读取和聚合写入的操作。怎么使用呢，请看以下例子：</p>
+<p>我们写一个main方法来实现复制1.txt文件，文件内容是：</p>
+<pre><code class="java">abcdefghijklmnopqrstuvwxyz//26个字母</code></pre>
+<p>代码如下：</p>
+<pre><code class="java">    public static void main(String[] args) throws Exception {
+        //获取文件输入流
+        File file = new File(&quot;1.txt&quot;);
+        FileInputStream inputStream = new FileInputStream(file);
+        //从文件输入流获取通道
+        FileChannel inputStreamChannel = inputStream.getChannel();
+        //获取文件输出流
+        FileOutputStream outputStream = new FileOutputStream(new File(&quot;2.txt&quot;));
+        //从文件输出流获取通道
+        FileChannel outputStreamChannel = outputStream.getChannel();
+        //创建三个缓冲区，分别都是5
+        ByteBuffer byteBuffer1 = ByteBuffer.allocate(5);
+        ByteBuffer byteBuffer2 = ByteBuffer.allocate(5);
+        ByteBuffer byteBuffer3 = ByteBuffer.allocate(5);
+        //创建一个缓冲区数组
+        ByteBuffer[] buffers = new ByteBuffer[]{byteBuffer1, byteBuffer2, byteBuffer3};
+        //循环写入到buffers缓冲区数组中，分散读取
+        long read;
+        long sumLength = 0;
+        while ((read = inputStreamChannel.read(buffers)) != -1) {
+            sumLength += read;
+            Arrays.stream(buffers)
+                    .map(buffer -&gt; &quot;posstion=&quot; + buffer.position() + &quot;,limit=&quot; + buffer.limit())
+                    .forEach(System.out::println);
+            //切换模式
+            Arrays.stream(buffers).forEach(Buffer::flip);
+            //聚合写入到文件输出通道
+            outputStreamChannel.write(buffers);
+            //清空缓冲区
+            Arrays.stream(buffers).forEach(Buffer::clear);
+        }
+        System.out.println(&quot;总长度:&quot; + sumLength);
+        //关闭通道
+        outputStream.close();
+        inputStream.close();
+        outputStreamChannel.close();
+        inputStreamChannel.close();
+    }</code></pre>
+<p>打印结果：</p>
+<pre><code class="java">posstion=5,limit=5
+posstion=5,limit=5
+posstion=5,limit=5
+
+posstion=5,limit=5
+posstion=5,limit=5
+posstion=1,limit=5
+
+总长度:26</code></pre>
+<p>可以看到循环了两次。第一次循环时，三个缓冲区都读取了5个字节，总共读取了15，也就是读满了。还剩下11个字节，于是第二次循环时，前两个缓冲区分配了5个字节，最后一个缓冲区给他分配了1个字节，刚好读完。总共就是26个字节。</p>
+<p>这就是分散读取，聚合写入的过程。</p>
+<p>使用场景就是可以<strong>使用一个缓冲区数组，自动地根据需要去分配缓冲区的大小。可以减少内存消耗</strong>。网络IO也可以使用，这里就不写例子演示了。</p>
+<h3 id="3-1-3-非直接-直接缓冲区"><a href="#3-1-3-非直接-直接缓冲区" class="headerlink" title="3.1.3 非直接/直接缓冲区"></a>3.1.3 非直接/直接缓冲区</h3><p>非直接缓冲区的创建方式：</p>
+<pre><code class="java">static ByteBuffer allocate(int capacity)</code></pre>
+<p>直接缓冲区的创建方式：</p>
+<pre><code class="java">static ByteBuffer allocateDirect(int capacity)</code></pre>
+<p>非直接/直接缓冲区的区别示意图：</p>
+<p><img src="https://static.lovebilibili.com/307536-20170731145300974-520326124.png" srcset="/img/loading.gif" alt=""></p>
+<p><img src="https://static.lovebilibili.com/307536-20170731145311224-406164516.png" srcset="/img/loading.gif" alt=""></p>
+<p>从示意图中我们可以发现，最大的不同在于直接缓冲区不需要再把文件内容copy到物理内存中。这就大大地提高了性能。其实在介绍Buffer时，我们就有接触到这个概念。直接缓冲区是堆外内存，在本地文件IO效率会更高一点。</p>
+<p>接下来我们来对比一下效率，以一个136 MB的视频文件为例：</p>
+<pre><code class="java">public static void main(String[] args) throws Exception {
+    long starTime = System.currentTimeMillis();
+    //获取文件输入流
+    File file = new File(&quot;D:\\小电影.mp4&quot;);//文件大小136 MB
+    FileInputStream inputStream = new FileInputStream(file);
+    //从文件输入流获取通道
+    FileChannel inputStreamChannel = inputStream.getChannel();
+    //获取文件输出流
+    FileOutputStream outputStream = new FileOutputStream(new File(&quot;D:\\test.mp4&quot;));
+    //从文件输出流获取通道
+    FileChannel outputStreamChannel = outputStream.getChannel();
+    //创建一个直接缓冲区
+    ByteBuffer byteBuffer = ByteBuffer.allocateDirect(5 * 1024 * 1024);
+    //创建一个非直接缓冲区
+    //ByteBuffer byteBuffer = ByteBuffer.allocate(5 * 1024 * 1024);
+    //写入到缓冲区
+    while (inputStreamChannel.read(byteBuffer) != -1) {
+        //切换读模式
+        byteBuffer.flip();
+        outputStreamChannel.write(byteBuffer);
+        byteBuffer.clear();
+    }
+    //关闭通道
+    outputStream.close();
+    inputStream.close();
+    outputStreamChannel.close();
+    inputStreamChannel.close();
+    long endTime = System.currentTimeMillis();
+    System.out.println(&quot;消耗时间：&quot; + (endTime - starTime) + &quot;毫秒&quot;);
+}</code></pre>
+<p>结果：</p>
+<p>直接缓冲区的消耗时间：283毫秒</p>
+<p>非直接缓冲区的消耗时间：487毫秒</p>
+<h2 id="3-2-网络IO"><a href="#3-2-网络IO" class="headerlink" title="3.2 网络IO"></a>3.2 网络IO</h2><p>其实NIO的主要用途是网络IO，在NIO之前java要使用网络编程就只有用<code>Socket</code>。而<code>Socket</code>是阻塞的，显然对于高并发的场景是不适用的。所以NIO的出现就是解决了这个痛点。</p>
+<p>主要思想是把Channel通道注册到Selector中，通过Selector去监听Channel中的事件状态，这样就不需要阻塞等待客户端的连接，从主动等待客户端的连接，变成了通过事件驱动。没有监听的事件，服务器可以做自己的事情。</p>
+<h3 id="3-2-1-使用Selector的小例子"><a href="#3-2-1-使用Selector的小例子" class="headerlink" title="3.2.1 使用Selector的小例子"></a>3.2.1 使用Selector的小例子</h3><p>接下来趁热打铁，我们来做一个服务器接受客户端消息的例子：</p>
+<p>首先服务端代码：</p>
+<pre><code class="java">public class NIOServer {
+    public static void main(String[] args) throws Exception {
+        //打开一个ServerSocketChannel
+        ServerSocketChannel serverSocketChannel = ServerSocketChannel.open();
+        InetSocketAddress address = new InetSocketAddress(&quot;127.0.0.1&quot;, 6666);
+        //绑定地址
+        serverSocketChannel.bind(address);
+        //设置为非阻塞
+        serverSocketChannel.configureBlocking(false);
+        //打开一个选择器
+        Selector selector = Selector.open();
+        //serverSocketChannel注册到选择器中,监听连接事件
+        serverSocketChannel.register(selector, SelectionKey.OP_ACCEPT);
+        //循环等待客户端的连接
+        while (true) {
+            //等待3秒，（返回0相当于没有事件）如果没有事件，则跳过
+            if (selector.select(3000) == 0) {
+                System.out.println(&quot;服务器等待3秒，没有连接&quot;);
+                continue;
+            }
+            //如果有事件selector.select(3000)&gt;0的情况,获取事件
+            Set&lt;SelectionKey&gt; selectionKeys = selector.selectedKeys();
+            //获取迭代器遍历
+            Iterator&lt;SelectionKey&gt; it = selectionKeys.iterator();
+            while (it.hasNext()) {
+                //获取到事件
+                SelectionKey selectionKey = it.next();
+                //判断如果是连接事件
+                if (selectionKey.isAcceptable()) {
+                    //服务器与客户端建立连接，获取socketChannel
+                    SocketChannel socketChannel = serverSocketChannel.accept();
+                    //设置成非阻塞
+                    socketChannel.configureBlocking(false);
+                    //把socketChannel注册到selector中，监听读事件，并绑定一个缓冲区
+                    socketChannel.register(selector, SelectionKey.OP_READ, ByteBuffer.allocate(1024));
+                }
+                //如果是读事件
+                if (selectionKey.isReadable()) {
+                    //获取通道
+                    SocketChannel socketChannel = (SocketChannel) selectionKey.channel();
+                    //获取关联的ByteBuffer
+                    ByteBuffer buffer = (ByteBuffer) selectionKey.attachment();
+                    //打印从客户端获取到的数据
+                    socketChannel.read(buffer);
+                    System.out.println(&quot;from 客户端：&quot; + new String(buffer.array()));
+                }
+                //从事件集合中删除已处理的事件，防止重复处理
+                it.remove();
+            }
+        }
+    }
+}</code></pre>
+<p>客户端代码：</p>
+<pre><code class="java">public class NIOClient {
+    public static void main(String[] args) throws Exception {
+        SocketChannel socketChannel = SocketChannel.open();
+        InetSocketAddress address = new InetSocketAddress(&quot;127.0.0.1&quot;, 6666);
+        socketChannel.configureBlocking(false);
+        //连接服务器
+        boolean connect = socketChannel.connect(address);
+        //判断是否连接成功
+        if(!connect){
+            //等待连接的过程中
+            while (!socketChannel.finishConnect()){
+                System.out.println(&quot;连接服务器需要时间，期间可以做其他事情...&quot;);
+            }
+        }
+        String msg = &quot;hello java技术爱好者！&quot;;
+        ByteBuffer byteBuffer = ByteBuffer.wrap(msg.getBytes());
+        //把byteBuffer数据写入到通道中
+        socketChannel.write(byteBuffer);
+        //让程序卡在这个位置，不关闭连接
+        System.in.read();
+    }
+}</code></pre>
+<p>接下来启动服务端，然后再启动客户端，我们可以看到控制台打印以下信息：</p>
+<pre><code class="java">服务器等待3秒，没有连接
+服务器等待3秒，没有连接
+from 客户端：hello java技术爱好者！                       
+服务器等待3秒，没有连接
+服务器等待3秒，没有连接</code></pre>
+<p>通过这个例子我们引出以下知识点。</p>
+<h3 id="3-2-2-SelectionKey"><a href="#3-2-2-SelectionKey" class="headerlink" title="3.2.2 SelectionKey"></a>3.2.2 SelectionKey</h3><p>在<code>SelectionKey</code>类中有四个常量表示四种事件，来看源码：</p>
+<pre><code class="java">public abstract class SelectionKey {
+    //读事件
+    public static final int OP_READ = 1 &lt;&lt; 0; //2^0=1
+    //写事件
+    public static final int OP_WRITE = 1 &lt;&lt; 2; // 2^2=4
+    //连接操作,Client端支持的一种操作
+    public static final int OP_CONNECT = 1 &lt;&lt; 3; // 2^3=8
+    //连接可接受操作,仅ServerSocketChannel支持
+    public static final int OP_ACCEPT = 1 &lt;&lt; 4; // 2^4=16
+}</code></pre>
+<p>附加的对象(可选)，把通道注册到选择器中时可以附加一个对象。</p>
+<pre><code class="java">public final SelectionKey register(Selector sel, int ops, Object att)</code></pre>
+<p>从<code>selectionKey</code>中获取附件对象可以使用<code>attachment()</code>方法</p>
+<pre><code class="java">public final Object attachment() {
+    return attachment;
+}</code></pre>
+<h1 id="4-使用NIO实现多人聊天室"><a href="#4-使用NIO实现多人聊天室" class="headerlink" title="4 使用NIO实现多人聊天室"></a>4 使用NIO实现多人聊天室</h1><p>接下来进行一个实战例子，用NIO实现一个多人运动版本的聊天室。</p>
+<p>服务端代码：</p>
+<pre><code class="java">public class GroupChatServer {
+
+    private Selector selector;
+
+    private ServerSocketChannel serverSocketChannel;
+
+    public static final int PORT = 6667;
+
+    //构造器初始化成员变量
+    public GroupChatServer() {
+        try {
+            //打开一个选择器
+            this.selector = Selector.open();
+            //打开serverSocketChannel
+            this.serverSocketChannel = ServerSocketChannel.open();
+            //绑定地址，端口号
+            this.serverSocketChannel.bind(new InetSocketAddress(&quot;127.0.0.1&quot;, PORT));
+            //设置为非阻塞
+            serverSocketChannel.configureBlocking(false);
+            //把通道注册到选择器中
+            serverSocketChannel.register(selector, SelectionKey.OP_ACCEPT);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * 监听，并且接受客户端消息，转发到其他客户端
+     */
+    public void listen() {
+        try {
+            while (true) {
+                //获取监听的事件总数
+                int count = selector.select(2000);
+                if (count &gt; 0) {
+                    Set&lt;SelectionKey&gt; selectionKeys = selector.selectedKeys();
+                    //获取SelectionKey集合
+                    Iterator&lt;SelectionKey&gt; it = selectionKeys.iterator();
+                    while (it.hasNext()) {
+                        SelectionKey key = it.next();
+                        //如果是获取连接事件
+                        if (key.isAcceptable()) {
+                            SocketChannel socketChannel = serverSocketChannel.accept();
+                            //设置为非阻塞
+                            socketChannel.configureBlocking(false);
+                            //注册到选择器中
+                            socketChannel.register(selector, SelectionKey.OP_READ);
+                            System.out.println(socketChannel.getRemoteAddress() + &quot;上线了~&quot;);
+                        }
+                        //如果是读就绪事件
+                        if (key.isReadable()) {
+                            //读取消息，并且转发到其他客户端
+                            readData(key);
+                        }
+                        it.remove();
+                    }
+                } else {
+                    System.out.println(&quot;等待...&quot;);
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    //获取客户端发送过来的消息
+    private void readData(SelectionKey selectionKey) {
+        SocketChannel socketChannel = null;
+        try {
+            //从selectionKey中获取channel
+            socketChannel = (SocketChannel) selectionKey.channel();
+            //创建一个缓冲区
+            ByteBuffer byteBuffer = ByteBuffer.allocate(1024);
+            //把通道的数据写入到缓冲区
+            int count = socketChannel.read(byteBuffer);
+            //判断返回的count是否大于0，大于0表示读取到了数据
+            if (count &gt; 0) {
+                //把缓冲区的byte[]转成字符串
+                String msg = new String(byteBuffer.array());
+                //输出该消息到控制台
+                System.out.println(&quot;from 客户端：&quot; + msg);
+                //转发到其他客户端
+                notifyAllClient(msg, socketChannel);
+            }
+        } catch (Exception e) {
+            try {
+                //打印离线的通知
+                System.out.println(socketChannel.getRemoteAddress() + &quot;离线了...&quot;);
+                //取消注册
+                selectionKey.cancel();
+                //关闭流
+                socketChannel.close();
+            } catch (IOException e1) {
+                e1.printStackTrace();
+            }
+        }
+    }
+
+    /**
+     * 转发消息到其他客户端
+     * msg 消息
+     * noNotifyChannel 不需要通知的Channel
+     */
+    private void notifyAllClient(String msg, SocketChannel noNotifyChannel) throws Exception {
+        System.out.println(&quot;服务器转发消息~&quot;);
+        for (SelectionKey selectionKey : selector.keys()) {
+            Channel channel = selectionKey.channel();
+            //channel的类型实际类型是SocketChannel，并且排除不需要通知的通道
+            if (channel instanceof SocketChannel &amp;&amp; channel != noNotifyChannel) {
+                //强转成SocketChannel类型
+                SocketChannel socketChannel = (SocketChannel) channel;
+                //通过消息，包裹获取一个缓冲区
+                ByteBuffer byteBuffer = ByteBuffer.wrap(msg.getBytes());
+                socketChannel.write(byteBuffer);
+            }
+        }
+    }
+
+    public static void main(String[] args) throws Exception {
+        GroupChatServer chatServer = new GroupChatServer();
+        //启动服务器，监听
+        chatServer.listen();
+    }
+}</code></pre>
+<p>客户端代码：</p>
+<pre><code class="java">public class GroupChatClinet {
+
+    private Selector selector;
+
+    private SocketChannel socketChannel;
+
+    private String userName;
+
+    public GroupChatClinet() {
+        try {
+            //打开选择器
+            this.selector = Selector.open();
+            //连接服务器
+            socketChannel = SocketChannel.open(new InetSocketAddress(&quot;127.0.0.1&quot;, GroupChatServer.PORT));
+            //设置为非阻塞
+            socketChannel.configureBlocking(false);
+            //注册到选择器中
+            socketChannel.register(selector, SelectionKey.OP_READ);
+            //获取用户名
+            userName = socketChannel.getLocalAddress().toString().substring(1);
+            System.out.println(userName + &quot; is ok~&quot;);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    //发送消息到服务端
+    private void sendMsg(String msg) {
+        msg = userName + &quot;说：&quot; + msg;
+        try {
+            socketChannel.write(ByteBuffer.wrap(msg.getBytes()));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    //读取服务端发送过来的消息
+    private void readMsg() {
+        try {
+            int count = selector.select();
+            if (count &gt; 0) {
+                Iterator&lt;SelectionKey&gt; iterator = selector.selectedKeys().iterator();
+                while (iterator.hasNext()) {
+                    SelectionKey selectionKey = iterator.next();
+                    //判断是读就绪事件
+                    if (selectionKey.isReadable()) {
+                        SocketChannel channel = (SocketChannel) selectionKey.channel();
+                        //创建一个缓冲区
+                        ByteBuffer byteBuffer = ByteBuffer.allocate(1024);
+                        //从服务器的通道中读取数据到缓冲区
+                        channel.read(byteBuffer);
+                        //缓冲区的数据，转成字符串，并打印
+                        System.out.println(new String(byteBuffer.array()));
+                    }
+                    iterator.remove();
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static void main(String[] args) throws Exception {
+        GroupChatClinet chatClinet = new GroupChatClinet();
+        //启动线程，读取服务器转发过来的消息
+        new Thread(() -&gt; {
+            while (true) {
+                chatClinet.readMsg();
+                try {
+                    Thread.sleep(3000);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        }).start();
+        //主线程发送消息到服务器
+        Scanner scanner = new Scanner(System.in);
+        while (scanner.hasNextLine()) {
+            String msg = scanner.nextLine();
+            chatClinet.sendMsg(msg);
+        }
+    }
+}</code></pre>
+<p>先启动服务端的main方法，再启动两个客户端的main方法：</p>
+<p><img src="https://static.lovebilibili.com/image-20200625225034967.png" srcset="/img/loading.gif" alt="image-20200625225034967"></p>
+<p>然后使用两个客户端开始聊天了~</p>
+<p><img src="https://static.lovebilibili.com/image-20200625225118983.png" srcset="/img/loading.gif" alt="image-20200625225118983"></p>
+<p><img src="https://static.lovebilibili.com/image-20200625225130048.png" srcset="/img/loading.gif" alt="image-20200625225130048"></p>
+<p>以上就是使用NIO<strong>实现多人聊天室</strong>的例子，同学们可以看着我这个例子自己完成一下。要多写代码才好理解这些概念。</p>
+<h1 id="写在最后"><a href="#写在最后" class="headerlink" title="写在最后"></a>写在最后</h1><p><strong>创作不易</strong>，觉得有用就<strong>点个赞</strong>吧。</p>
+<p>想第一时间看到我更新的文章，可以微信搜索公众号「<code>java技术爱好者</code>」，<strong>拒绝做一条咸鱼，我是一个努力让别人记住的程序员。我们下期再见！！！</strong></p>
+<blockquote>
+<p>能力有限，如果有什么错误或者不当之处，请大家批评指正，一起学习交流！</p>
+</blockquote>
+
+            <hr>
+          </div>
+          <br>
+          <div>
+            <p>
+            
+            
+              <span>
+                <i class="iconfont icon-tag"></i>
+                
+                  <a class="hover-with-bg" href="/tags/java">java</a>
+                
+                  <a class="hover-with-bg" href="/tags/NIO">NIO</a>
+                
+              </span>
+            
+            </p>
+            
+              <p class="note note-warning">本博客所有文章除特别声明外，均采用 <a href="https://zh.wikipedia.org/wiki/Wikipedia:CC_BY-SA_3.0%E5%8D%8F%E8%AE%AE%E6%96%87%E6%9C%AC" target="_blank" rel="nofollow noopener noopener">CC BY-SA 3.0协议</a> 。转载请注明出处！</p>
+            
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="d-none d-lg-block col-lg-2 toc-container">
+      
+  <div id="toc">
+    <p class="h4"><i class="far fa-list-alt"></i>&nbsp;目录</p>
+    <div id="tocbot"></div>
+  </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- custom -->
+
+
+<!-- Comments -->
+<div class="col-lg-7 mx-auto nopadding-md">
+  <div class="container comments mx-auto" id="comments">
+    
+  </div>
+</div>
+
+    
+  </main>
+
+  
+    <a class="z-depth-1" id="scroll-top-button" href="#" role="button">
+      <i class="fa fa-chevron-up scroll-top-arrow" aria-hidden="true"></i>
+    </a>
+  
+
+  
+    <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v"
+                 for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+  
+
+  <footer class="mt-5">
+  <div class="text-center py-3">
+    <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><b>Hexo</b></a>
+    <i class="iconfont icon-love"></i>
+    <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"> <b>Fluid</b></a>
+    <br>
+
+    
+  
+    <!-- 不蒜子统计PV -->
+    
+    &nbsp;<span id="busuanzi_container_site_pv"></span>总访问量 
+          <span id="busuanzi_value_site_pv"></span> 次&nbsp;
+  
+  
+    <!-- 不蒜子统计UV -->
+    
+    &nbsp;<span id="busuanzi_container_site_uv"></span>总访客数 
+            <span id="busuanzi_value_site_uv"></span> 人&nbsp;
+  
+  <br>
+
+
+
+    
+
+
+    <!-- cnzz Analytics icon -->
+    
+
+  </div>
+</footer>
+
+<!-- SCRIPTS -->
+<script src="/lib/jquery/jquery.min.js" ></script>
+<script src="/lib/popper/popper.min.js" ></script>
+<script src="/lib/bootstrap/js/bootstrap.min.js" ></script>
+<script src="/lib/mdbootstrap/js/mdb.min.js" ></script>
+<script src="/js/main.js" ></script>
+
+
+  <script src="/js/lazyload.js" ></script>
+
+
+
+  
+    <script src="/lib/tocbot/tocbot.min.js" ></script>
+  
+  <script src="/js/post.js" ></script>
+
+
+
+  <script src="/lib/smooth-scroll/smooth-scroll.min.js" ></script>
+
+
+
+  <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" ></script>
+
+
+<!-- Plugins -->
+
+
+  
+
+  
+
+  
+
+  
+
+  <!-- cnzz Analytics -->
+  
+
+
+
+  <script src="/lib/prettify/prettify.min.js" ></script>
+  <script>
+    $(document).ready(function () {
+      $('pre').addClass('prettyprint  linenums');
+      prettyPrint();
+    })
+  </script>
+
+
+
+  <script src="/lib/typed/typed.min.js" ></script>
+  <script>
+    var typed = new Typed('#subtitle', {
+      strings: [
+        '  ',
+        "NIO入门&nbsp;",
+      ],
+      cursorChar: "_",
+      typeSpeed: 70,
+      loop: false,
+    });
+    typed.stop();
+    $(document).ready(function () {
+      $(".typed-cursor").addClass("h2");
+      typed.start();
+    });
+  </script>
+
+
+
+  <script src="/lib/anchor/anchor.min.js" ></script>
+  <script>
+    anchors.options = {
+      placement: "right",
+      visible: "false",
+      
+    };
+    var el = "h1,h2,h3,h4,h5,h6".split(",");
+    var res = [];
+    for (item of el) {
+      res.push(".markdown-body > " + item)
+    }
+    anchors.add(res.join(", "))
+  </script>
+
+
+
+  <script src="/js/local-search.js" ></script>
+  <script>
+    var path = "/local-search.xml";
+    var inputArea = document.querySelector("#local-search-input");
+    inputArea.onclick = function () {
+      getSearchFile(path);
+      this.onclick = null
+    }
+  </script>
+
+
+
+  <script src="/lib/fancybox/jquery.fancybox.min.js" ></script>
+  <script>
+    $("#post img:not(.no-zoom img, img[no-zoom])").each(
+      function () {
+        var element = document.createElement("a");
+        $(element).attr("data-fancybox", "images");
+        $(element).attr("href", $(this).attr("src"));
+        $(this).wrap(element);
+      }
+    );
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+</body>
+</html>
