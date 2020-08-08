@@ -136,6 +136,53 @@
     
     
       <div class="col-12 col-md-4 m-auto">
+        <a href="/2020/08/08/RabbitMQ%E5%A6%82%E4%BD%95%E9%98%B2%E6%AD%A2%E6%B6%88%E6%81%AF%E4%B8%A2%E5%A4%B1/" target="_blank">
+          <img src="https://static.lovebilibili.com/rabbitmq_jinjie_index.jpg" srcset="/img/loading.gif" alt="RabbitMQ如何防止消息丢失" class="index-img img-fluid rounded index-thumbnails">
+        </a>
+      </div>
+    
+    <div class="col-12 col-md-8 mx-auto index-info">
+      <a href="/2020/08/08/RabbitMQ%E5%A6%82%E4%BD%95%E9%98%B2%E6%AD%A2%E6%B6%88%E6%81%AF%E4%B8%A2%E5%A4%B1/">
+        <p class="h4 index-header">RabbitMQ如何防止消息丢失</p>
+      </a>
+
+      <a href="/2020/08/08/RabbitMQ%E5%A6%82%E4%BD%95%E9%98%B2%E6%AD%A2%E6%B6%88%E6%81%AF%E4%B8%A2%E5%A4%B1/">
+        
+        
+          
+          
+        
+        <div class="index-excerpt" style="max-height: none;">
+          <div class="index-text mb-1">思维导图
+一、分析数据丢失的原因分析RabbitMQ消息丢失的情况，不妨先看看一条消息从生产者发送到消费者消费的过程：
+
+可以看出，一条消息整个过程要经历两次的网络传输：从生产者发送到RabbitMQ服务器，从RabbitMQ服务器发送到消费者。...</div>
+        </div>
+      </a>
+
+      <div class="index-btm">
+        
+          <i class="iconfont icon-riqi2"></i>&nbsp;2020-08-08&nbsp;&nbsp;
+        
+        
+        
+          <i class="iconfont icon-tag"></i>
+          
+            <a href="/tags/%E6%B6%88%E6%81%AF%E9%98%9F%E5%88%97">消息队列</a>&nbsp;
+          
+            <a href="/tags/RabbitMQ">RabbitMQ</a>&nbsp;
+          
+            <a href="/tags/%E4%B8%AD%E9%97%B4%E4%BB%B6">中间件</a>&nbsp;
+          
+        
+      </div>
+    </div>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+      <div class="col-12 col-md-4 m-auto">
         <a href="/2020/08/08/RabbitMQ%E5%85%A5%E9%97%A8/" target="_blank">
           <img src="https://static.lovebilibili.com/rabbitmq_index.jpg" srcset="/img/loading.gif" alt="RabbitMQ入门" class="index-img img-fluid rounded index-thumbnails">
         </a>
@@ -150,19 +197,12 @@
         
         
           
+          
         
-        <div class="index-excerpt" >
+        <div class="index-excerpt" style="max-height: none;">
           <div class="index-text mb-1">思维导图
 一、什么是消息队列消息指的是两个应用间传递的数据。数据的类型有很多种形式，可能只包含文本字符串，也可能包含嵌入对象。
-“消息队列(Message Queue)”是在消息的传输过程中保存消息的容器。在消息队列中，通常有生产者和消费者两个角色。生产者只负责发送数据到消息队列，谁从消息队列中取出数据处理，他不管。消费者只负责从消息队列中取出数据处理，他不管这是谁发送的数据。
-
-二、为什么使用消息队列主要有三个作用：
-
-解耦。如图所示。假设有系统B、C、D都需要系统A的数据，于是系统A调用三个方法发送数据到B、C、D。这时，系统D不需要了，那就需要在系统A把相关的代码删掉。假设这时有个新的系统E需要数据，这时系统A又要增加调用系统E的代码。为了降低这种强耦合，就可以使用MQ，系统A只需要把数据发送到MQ，其他系统如果需要数据，则从MQ中获取即可。
-
-
-
-异步。如图所示。一个客户端请求发送进来，系统A会调用系统B、C、D三个系统，同步请求的话，响应时间就是系统A、B、C、D的总和，也就是800ms。如果使用MQ，系统A发送数据到MQ，然后就可以返回响应给客户端，不需要再等待系统B、C、</div>
+“消息队列(Message Queue)”是在消息的传输过程中保存消息的容器。在消息队列中，通常有生产者和消费者两个角色。生产者只负责发送数据到消息队列，谁从消息队列中取出数据处理，他不管。消费者只负责从消息队列中取出数据处理，他不管这是谁发送的数据。...</div>
         </div>
       </a>
 
@@ -567,53 +607,6 @@ S</div>
             <a href="/tags/SpringMVC">SpringMVC</a>&nbsp;
           
             <a href="/tags/%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90">源码分析</a>&nbsp;
-          
-        
-      </div>
-    </div>
-  </div>
-
-  <div class="row mx-auto index-card">
-    
-    
-      <div class="col-12 col-md-4 m-auto">
-        <a href="/2020/06/11/%E9%9D%A2%E8%AF%95%E9%A2%98%E6%80%BB%E7%BB%93-%E5%9F%BA%E7%A1%80%E7%AF%87/" target="_blank">
-          <img src="https://static.lovebilibili.com/mianshi_base.jpg" srcset="/img/loading.gif" alt="面试题总结-基础篇" class="index-img img-fluid rounded index-thumbnails">
-        </a>
-      </div>
-    
-    <div class="col-12 col-md-8 mx-auto index-info">
-      <a href="/2020/06/11/%E9%9D%A2%E8%AF%95%E9%A2%98%E6%80%BB%E7%BB%93-%E5%9F%BA%E7%A1%80%E7%AF%87/">
-        <p class="h4 index-header">面试题总结-基础篇</p>
-      </a>
-
-      <a href="/2020/06/11/%E9%9D%A2%E8%AF%95%E9%A2%98%E6%80%BB%E7%BB%93-%E5%9F%BA%E7%A1%80%E7%AF%87/">
-        
-        
-          
-        
-        <div class="index-excerpt" >
-          <div class="index-text mb-1">基础知识JVM、JRE、JDK有什么联系与区别？JVM是java虚拟机，能够将 class 文件中的字节码指令进行识别并调用操作系统向上的 API 完成动作。JRE是java运行时环境，它主要包含两个部分，jvm 的标准实现和 Java 的一些基本类库。它相对于 jvm 来说，多出来的是一部分的 Java 类库。换句话说，JRE包含JVM。JDK是java开发工具包，它集成了 jre 和一些好用的小工具。例如：javac.exe，java.exe，jar.exe 等。JDK包含JRE。所以总得来说，JDK&gt;JRE&gt;JVM。
-面向对象的特征有哪些？有三大特征，继承，封装，多态。
-为什么java可以实现跨平台？因为java是编译成.class文件运行在JVM上的。针对不同的系统有不同的JVM实现，在不同的JVM实现上会映射到不同系统的 API 调用，从而实现代码的跨平台运行。
-类的加载顺序？静态成员变量、静态代码块、实例成员变量，实例代码块，构造器，实例方法。
-接口和抽象类有什么共同点和不同点？共同点：1.都可以定义抽象方法，子类都要实现定义的抽象方法。2.都不能被实例化，但是</div>
-        </div>
-      </a>
-
-      <div class="index-btm">
-        
-          <i class="iconfont icon-riqi2"></i>&nbsp;2020-06-11&nbsp;&nbsp;
-        
-        
-        
-          <i class="iconfont icon-tag"></i>
-          
-            <a href="/tags/java">java</a>&nbsp;
-          
-            <a href="/tags/%E9%9D%A2%E8%AF%95">面试</a>&nbsp;
-          
-            <a href="/tags/%E6%80%BB%E7%BB%93">总结</a>&nbsp;
           
         
       </div>

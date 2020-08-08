@@ -1,0 +1,682 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/apple-touch-icon.png">
+  <link rel="icon" type="image/png" href="/img/favicon.png">
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="description" content="">
+  <meta name="author" content="Ye hongzhi">
+  <meta name="keywords" content="">
+  <title>RabbitMQ如何防止消息丢失 - 叶洪智的技术分享</title>
+
+  <link rel="stylesheet" href="/lib/font-awesome/css/all.min.css"  >
+<link rel="stylesheet" href="/lib/bootstrap/css/bootstrap.min.css"  >
+<link rel="stylesheet" href="/lib/mdbootstrap/css/mdb.min.css"  >
+<link rel="stylesheet" href="/lib/github-markdown/github-markdown.min.css"  >
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1067060_qzomjdt8bmp.css">
+
+
+
+  <link rel="stylesheet" href="/lib/prettify/tomorrow-night-eighties.min.css"  >
+
+<link rel="stylesheet" href="/css/main.css"  >
+
+
+  <link rel="stylesheet" href="/lib/fancybox/jquery.fancybox.min.css"  >
+
+
+<meta name="generator" content="Hexo 4.2.0"></head>
+
+
+<body>
+  <header style="height: 70vh;">
+    <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand"
+       href="/">&nbsp;<strong>YeHongzhi's Blog</strong>&nbsp;</a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+          <li class="nav-item">
+            <a class="nav-link" href="/">首页</a>
+          </li>
+        
+          
+          
+          
+          
+          <li class="nav-item">
+            <a class="nav-link" href="/archives/">归档</a>
+          </li>
+        
+          
+          
+          
+          
+          <li class="nav-item">
+            <a class="nav-link" href="/tags/">标签</a>
+          </li>
+        
+          
+          
+          
+          
+          <li class="nav-item">
+            <a class="nav-link" href="/about/">关于</a>
+          </li>
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" data-toggle="modal" data-target="#modalSearch">&nbsp;&nbsp;<i
+                class="iconfont icon-search"></i>&nbsp;&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+    <div class="view intro-2" id="background" false
+         style="background: url('/img/post.png')no-repeat center center;
+           background-size: cover;">
+      <div class="full-bg-img">
+        <div class="mask rgba-black-light flex-center">
+          <div class="container text-center white-text fadeInUp">
+            <span class="h2" id="subtitle">
+              
+            </span>
+
+            
+              <br>
+              
+                <p class="mt-3">
+                  <i class="fas fa-calendar-alt" aria-hidden="true"></i>&nbsp;
+                  星期六, 八月 8日 2020, 2:47 下午
+                </p>
+              
+
+              <p>
+                
+                  
+                  &nbsp;<i class="far fa-chart-bar"></i>
+                  <span class="post-count">
+                    3.3k 字
+                  </span>&nbsp;
+                
+
+                
+                  
+                  &nbsp;<i class="far fa-clock"></i>
+                  <span class="post-count">
+                      13 分钟
+                  </span>&nbsp;
+                
+
+                
+                  <!-- 不蒜子统计文章PV -->
+                  
+                  &nbsp;<i class="far fa-eye" aria-hidden="true"></i>&nbsp;
+                  <span id="busuanzi_container_page_pv">
+                    <span id="busuanzi_value_page_pv"></span> 次
+                  </span>&nbsp;
+                
+              </p>
+            
+          </div>
+
+          
+            <div class="scroll-down-bar">
+              <i class="fas fa-angle-down scroll-down-arrow"></i>
+            </div>
+          
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid">
+  <div class="row">
+    <div class="d-none d-lg-block col-lg-2"></div>
+    <div class="col-lg-8 nopadding-md">
+      <div class="py-5 z-depth-3" id="board">
+        <div class="post-content mx-auto" id="post">
+          <div class="markdown-body">
+            <h1 id="思维导图"><a href="#思维导图" class="headerlink" title="思维导图"></a>思维导图</h1><p><img src="https://img-blog.csdnimg.cn/20200802232920896.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3llaG9uZ3poaTE5OTQ=,size_16,color_FFFFFF,t_70" srcset="/img/loading.gif" alt="在这里插入图片描述"></p>
+<h1 id="一、分析数据丢失的原因"><a href="#一、分析数据丢失的原因" class="headerlink" title="一、分析数据丢失的原因"></a>一、分析数据丢失的原因</h1><p>分析RabbitMQ消息丢失的情况，不妨先看看一条消息从生产者发送到消费者消费的过程：</p>
+<p><img src="https://imgconvert.csdnimg.cn/aHR0cHM6Ly91c2VyLWdvbGQtY2RuLnhpdHUuaW8vMjAyMC83LzI4LzE3Mzk1Yzc2OTVkMDE5MjE?x-oss-process=image/format,png" srcset="/img/loading.gif" alt=""></p>
+<p>可以看出，一条消息整个过程要经历两次的网络传输：<strong>从生产者发送到RabbitMQ服务器，从RabbitMQ服务器发送到消费者</strong>。</p>
+<a id="more"></a>
+
+<p><strong>在消费者未消费前存储在队列(Queue)中</strong>。</p>
+<p>所以可以知道，有三个场景下是会发生消息丢失的：</p>
+<ul>
+<li>存储在队列中，如果队列没有对消息持久化，RabbitMQ服务器宕机重启会丢失数据。</li>
+<li>生产者发送消息到RabbitMQ服务器过程中，RabbitMQ服务器如果宕机停止服务，消息会丢失。</li>
+<li>消费者从RabbitMQ服务器获取队列中存储的数据消费，但是消费者程序出错或者宕机而没有正确消费，导致数据丢失。</li>
+</ul>
+<p>针对以上三种场景，RabbitMQ提供了三种解决的方式，分别是消息持久化，confirm机制，ACK事务机制。</p>
+<p><img src="https://imgconvert.csdnimg.cn/aHR0cHM6Ly91c2VyLWdvbGQtY2RuLnhpdHUuaW8vMjAyMC83LzI4LzE3Mzk1ZDVhNjQ1YzNkNDc?x-oss-process=image/format,png" srcset="/img/loading.gif" alt=""></p>
+<h1 id="二、消息持久化"><a href="#二、消息持久化" class="headerlink" title="二、消息持久化"></a>二、消息持久化</h1><p>RabbitMQ是支持消息持久化的，消息持久化需要设置：Exchange为持久化和Queue持久化，这样当消息发送到RabbitMQ服务器时，消息就会持久化。</p>
+<p>首先看Exchange交换机的类图：</p>
+<p><img src="https://imgconvert.csdnimg.cn/aHR0cHM6Ly91c2VyLWdvbGQtY2RuLnhpdHUuaW8vMjAyMC83LzI4LzE3Mzk1ZjY3MTUyNmVkMmQ?x-oss-process=image/format,png" srcset="/img/loading.gif" alt=""></p>
+<p>看这个类图其实是要说明上一篇文章介绍的四种交换机都是AbstractExchange抽象类的子类，所以根据java的特性，<strong>创建子类的实例会先调用父类的构造器</strong>，父类也就是AbstractExchange的构造器是怎么样的呢？</p>
+<p><img src="https://imgconvert.csdnimg.cn/aHR0cHM6Ly91c2VyLWdvbGQtY2RuLnhpdHUuaW8vMjAyMC83LzI4LzE3Mzk1ZjhjMGQ1YzhlNTE?x-oss-process=image/format,png" srcset="/img/loading.gif" alt=""></p>
+<p>从上面的注释可以看到<strong>durable参数表示是否持久化。默认是持久化(true)</strong>。创建持久化的Exchange可以这样写：</p>
+<pre><code class="java">    @Bean
+    public DirectExchange rabbitmqDemoDirectExchange() {
+        //Direct交换机
+        return new DirectExchange(RabbitMQConfig.RABBITMQ_DEMO_DIRECT_EXCHANGE, true, false);
+    }</code></pre>
+<p>接着是Queue队列，我们先看看Queue的构造器是怎么样的：</p>
+<p><img src="https://imgconvert.csdnimg.cn/aHR0cHM6Ly9wMS1qdWVqaW4uYnl0ZWltZy5jb20vdG9zLWNuLWktazN1MWZicGZjcC9lNTA3ZmU0OTExNWE0MTk5YTFhNjg2ZDIwNWM5OWRlY350cGx2LWszdTFmYnBmY3Atem9vbS0xLmltYWdl?x-oss-process=image/format,png" srcset="/img/loading.gif" alt=""></p>
+<p>也是通过durable参数设置是否持久化，默认是true。所以创建时可以不指定：</p>
+<pre><code class="java">    @Bean
+    public Queue fanoutExchangeQueueA() {
+        //只需要指定名称，默认是持久化的
+        return new Queue(RabbitMQConfig.FANOUT_EXCHANGE_QUEUE_TOPIC_A);
+    }</code></pre>
+<p>这就完成了消息持久化的设置，接下来启动项目，发送几条消息，我们可以看到：</p>
+<p><img src="https://imgconvert.csdnimg.cn/aHR0cHM6Ly9wNi1qdWVqaW4uYnl0ZWltZy5jb20vdG9zLWNuLWktazN1MWZicGZjcC8zNWFmZjJkNmE0YzU0YjFjYmQ4ODk1NTM2NTExOTAwYn50cGx2LWszdTFmYnBmY3Atem9vbS0xLmltYWdl?x-oss-process=image/format,png" srcset="/img/loading.gif" alt=""><br>怎么证明是已经持久化了呢，实际上可以找到对应的文件：<br><img src="https://img-blog.csdnimg.cn/20200801205656332.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3llaG9uZ3poaTE5OTQ=,size_16,color_FFFFFF,t_70" srcset="/img/loading.gif" alt="在这里插入图片描述"><br>找到对应磁盘中的目录：<br><img src="https://imgconvert.csdnimg.cn/aHR0cHM6Ly9wMS1qdWVqaW4uYnl0ZWltZy5jb20vdG9zLWNuLWktazN1MWZicGZjcC80NmU1NDIxNTYwM2U0MmIyODI4ODlhYTQxYTVhNjFiOH50cGx2LWszdTFmYnBmY3Atem9vbS0xLmltYWdl?x-oss-process=image/format,png" srcset="/img/loading.gif" alt=""><br><strong>消息持久化可以防止消息在RabbitMQ Server中不会因为宕机重启而丢失</strong>。</p>
+<h1 id="三、消息确认机制"><a href="#三、消息确认机制" class="headerlink" title="三、消息确认机制"></a>三、消息确认机制</h1><h2 id="3-1-confirm机制"><a href="#3-1-confirm机制" class="headerlink" title="3.1 confirm机制"></a>3.1 confirm机制</h2><p><strong>在生产者发送到RabbitMQ Server时有可能因为网络问题导致投递失败，从而丢失数据</strong>。我们可以使用confirm模式防止数据丢失。工作流程是怎么样的呢，看以下图解：<br><img src="https://img-blog.csdnimg.cn/20200801210244345.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3llaG9uZ3poaTE5OTQ=,size_16,color_FFFFFF,t_70" srcset="/img/loading.gif" alt="在这里插入图片描述"><br>从上图中可以看到是通过两个回调函数<strong>confirm()、returnedMessage()</strong>进行通知。</p>
+<p>一条消息从生产者发送到RabbitMQ，首先会发送到Exchange，对应回调函数<strong>confirm()</strong>。第二步从Exchange路由分配到Queue中，对应回调函数则是<strong>returnedMessage()</strong>。</p>
+<p>代码怎么实现呢，请看演示：</p>
+<p>首先在<strong>application.yml</strong>配置文件中加上如下配置：</p>
+<pre><code class="yml">spring:
+  rabbitmq:
+    publisher-confirms: true
+#    publisher-returns: true
+    template:
+      mandatory: true
+# publisher-confirms：设置为true时。当消息投递到Exchange后，会回调confirm()方法进行通知生产者
+# publisher-returns：设置为true时。当消息匹配到Queue并且失败时，会通过回调returnedMessage()方法返回消息
+# spring.rabbitmq.template.mandatory: 设置为true时。指定消息在没有被队列接收时会通过回调returnedMessage()方法退回。</code></pre>
+<p>有个小细节，<strong>publisher-returns和mandatory如果都设置的话，优先级是以mandatory优先</strong>。可以看源码：<br><img src="https://img-blog.csdnimg.cn/20200801212504531.png" srcset="/img/loading.gif" alt="在这里插入图片描述"><br>接着我们需要定义回调方法：</p>
+<pre><code class="java">@Component
+public class RabbitmqConfirmCallback implements RabbitTemplate.ConfirmCallback, RabbitTemplate.ReturnCallback {
+    private Logger logger = LoggerFactory.getLogger(RabbitmqConfirmCallback.class);
+
+    /**
+     * 监听消息是否到达Exchange
+     *
+     * @param correlationData 包含消息的唯一标识的对象
+     * @param ack             true 标识 ack，false 标识 nack
+     * @param cause           nack 投递失败的原因
+     */
+    @Override
+    public void confirm(CorrelationData correlationData, boolean ack, String cause) {
+        if (ack) {
+            logger.info(&quot;消息投递成功~消息Id：{}&quot;, correlationData.getId());
+        } else {
+            logger.error(&quot;消息投递失败，Id：{}，错误提示：{}&quot;, correlationData.getId(), cause);
+        }
+    }
+
+    @Override
+    public void returnedMessage(Message message, int replyCode, String replyText, String exchange, String routingKey) {
+        logger.info(&quot;消息没有路由到队列，获得返回的消息&quot;);
+        Map map = byteToObject(message.getBody(), Map.class);
+        logger.info(&quot;message body: {}&quot;, map == null ? &quot;&quot; : map.toString());
+        logger.info(&quot;replyCode: {}&quot;, replyCode);
+        logger.info(&quot;replyText: {}&quot;, replyText);
+        logger.info(&quot;exchange: {}&quot;, exchange);
+        logger.info(&quot;routingKey: {}&quot;, exchange);
+        logger.info(&quot;------------&gt; end &lt;------------&quot;);
+    }
+
+    @SuppressWarnings(&quot;unchecked&quot;)
+    private &lt;T&gt; T byteToObject(byte[] bytes, Class&lt;T&gt; clazz) {
+        T t;
+        try (ByteArrayInputStream bis = new ByteArrayInputStream(bytes);
+             ObjectInputStream ois = new ObjectInputStream(bis)) {
+            t = (T) ois.readObject();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+        return t;
+    }
+}</code></pre>
+<p>我这里就简单地打印回调方法返回的消息，在实际项目中，可以把返回的消息存储到日志表中，使用定时任务进行进一步的处理。</p>
+<p>我这里是使用<strong>RabbitTemplate</strong>进行发送，所以在Service层的RabbitTemplate需要设置一下：</p>
+<pre><code class="java">@Service
+public class RabbitMQServiceImpl implements RabbitMQService {
+    @Resource
+    private RabbitmqConfirmCallback rabbitmqConfirmCallback;
+
+    @Resource
+    private RabbitTemplate rabbitTemplate;
+
+    @PostConstruct
+    public void init() {
+        //指定 ConfirmCallback
+        rabbitTemplate.setConfirmCallback(rabbitmqConfirmCallback);
+        //指定 ReturnCallback
+        rabbitTemplate.setReturnCallback(rabbitmqConfirmCallback);
+    }
+
+    @Override
+    public String sendMsg(String msg) throws Exception {
+        Map&lt;String, Object&gt; message = getMessage(msg);
+        try {
+            CorrelationData correlationData = (CorrelationData) message.remove(&quot;correlationData&quot;);
+            rabbitTemplate.convertAndSend(RabbitMQConfig.RABBITMQ_DEMO_DIRECT_EXCHANGE, RabbitMQConfig.RABBITMQ_DEMO_DIRECT_ROUTING, message, correlationData);
+            return &quot;ok&quot;;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return &quot;error&quot;;
+        }
+    }
+
+    private Map&lt;String, Object&gt; getMessage(String msg) {
+        String msgId = UUID.randomUUID().toString().replace(&quot;-&quot;, &quot;&quot;).substring(0, 32);
+        CorrelationData correlationData = new CorrelationData(msgId);
+        String sendTime = sdf.format(new Date());
+        Map&lt;String, Object&gt; map = new HashMap&lt;&gt;();
+        map.put(&quot;msgId&quot;, msgId);
+        map.put(&quot;sendTime&quot;, sendTime);
+        map.put(&quot;msg&quot;, msg);
+        map.put(&quot;correlationData&quot;, correlationData);
+        return map;
+    }
+}</code></pre>
+<p>大功告成！接下来我们进行测试，发送一条消息，我们可以控制台：<br><img src="https://img-blog.csdnimg.cn/20200801214001880.png" srcset="/img/loading.gif" alt="在这里插入图片描述"><br>假设发送一条信息没有路由匹配到队列，可以看到如下信息：<br><img src="https://img-blog.csdnimg.cn/20200801214142468.png" srcset="/img/loading.gif" alt="在这里插入图片描述"><br>这就是confirm模式。它的作用是<strong>为了保障生产者投递消息到RabbitMQ不会出现消息丢失</strong>。</p>
+<h2 id="3-2-事务机制-ACK"><a href="#3-2-事务机制-ACK" class="headerlink" title="3.2 事务机制(ACK)"></a>3.2 事务机制(ACK)</h2><p>最开始的那张图已经讲过，<strong>消费者从队列中获取到消息后，会直接确认签收，假设消费者宕机或者程序出现异常，数据没有正常消费，这种情况就会出现数据丢失</strong>。</p>
+<p>所以关键在于把自动签收改成手动签收，正常消费则返回确认签收，如果出现异常，则返回拒绝签收重回队列。<br><img src="https://img-blog.csdnimg.cn/20200801215323179.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3llaG9uZ3poaTE5OTQ=,size_16,color_FFFFFF,t_70" srcset="/img/loading.gif" alt="在这里插入图片描述"><br>代码怎么实现呢，请看演示：</p>
+<p>首先在消费者的<strong>application.yml</strong>文件中设置事务提交为<strong>manual</strong>手动模式：</p>
+<pre><code class="yml">spring:
+  rabbitmq:
+    listener:
+      simple:
+        acknowledge-mode: manual # 手动ack模式
+        concurrency: 1 # 最少消费者数量
+        max-concurrency: 10 # 最大消费者数量</code></pre>
+<p>然后编写消费者的监听器：</p>
+<pre><code class="java">@Component
+public class RabbitDemoConsumer {
+
+    enum Action {
+        //处理成功
+        SUCCESS,
+        //可以重试的错误，消息重回队列
+        RETRY,
+        //无需重试的错误，拒绝消息，并从队列中删除
+        REJECT
+    }
+
+    @RabbitHandler
+    @RabbitListener(queuesToDeclare = @Queue(RabbitMQConfig.RABBITMQ_DEMO_TOPIC))
+    public void process(String msg, Message message, Channel channel) {
+        long tag = message.getMessageProperties().getDeliveryTag();
+        Action action = Action.SUCCESS;
+        try {
+            System.out.println(&quot;消费者RabbitDemoConsumer从RabbitMQ服务端消费消息：&quot; + msg);
+            if (&quot;bad&quot;.equals(msg)) {
+                throw new IllegalArgumentException(&quot;测试：抛出可重回队列的异常&quot;);
+            }
+            if (&quot;error&quot;.equals(msg)) {
+                throw new Exception(&quot;测试：抛出无需重回队列的异常&quot;);
+            }
+        } catch (IllegalArgumentException e1) {
+            e1.printStackTrace();
+            //根据异常的类型判断，设置action是可重试的，还是无需重试的
+            action = Action.RETRY;
+        } catch (Exception e2) {
+            //打印异常
+            e2.printStackTrace();
+            //根据异常的类型判断，设置action是可重试的，还是无需重试的
+            action = Action.REJECT;
+        } finally {
+            try {
+                if (action == Action.SUCCESS) {
+                    //multiple 表示是否批量处理。true表示批量ack处理小于tag的所有消息。false则处理当前消息
+                    channel.basicAck(tag, false);
+                } else if (action == Action.RETRY) {
+                    //Nack，拒绝策略，消息重回队列
+                    channel.basicNack(tag, false, true);
+                } else {
+                    //Nack，拒绝策略，并且从队列中删除
+                    channel.basicNack(tag, false, false);
+                }
+                channel.close();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    }
+}</code></pre>
+<p>解释一下上面的代码，如果没有异常，则手动确认回复RabbitMQ服务端basicAck(消费成功)。</p>
+<p>如果抛出某些可以重回队列的异常，我们就回复basicNack并且设置重回队列。</p>
+<p>如果是抛出不可重回队列的异常，就回复basicNack并且设置从RabbitMQ的队列中删除。</p>
+<p>接下来进行测试，发送一条普通的消息”hello”：<br><img src="https://img-blog.csdnimg.cn/20200802215129880.png" srcset="/img/loading.gif" alt="在这里插入图片描述"><br>解释一下ack返回的三个方法的意思。</p>
+<p>①成功确认</p>
+<pre><code class="java">void basicAck(long deliveryTag, boolean multiple) throws IOException;</code></pre>
+<p>消费者成功处理后调用此方法对消息进行确认。</p>
+<ul>
+<li>deliveryTag：该消息的index</li>
+<li>multiple：是否批量.。true：将一次性ack所有小于deliveryTag的消息。</li>
+</ul>
+<p>②失败确认</p>
+<pre><code class="java">void basicNack(long deliveryTag, boolean multiple, boolean requeue) throws IOException;</code></pre>
+<ul>
+<li>deliveryTag：该消息的index。</li>
+<li>multiple：是否批量。true：将一次性拒绝所有小于deliveryTag的消息。</li>
+<li>requeue：被拒绝的是否重新入队列。</li>
+</ul>
+<p>③失败确认</p>
+<pre><code class="java">void basicReject(long deliveryTag, boolean requeue) throws IOException;</code></pre>
+<ul>
+<li>deliveryTag:该消息的index。</li>
+<li>requeue：被拒绝的是否重新入队列。</li>
+</ul>
+<p>basicNack()和basicReject()的区别在于：<strong>basicNack()可以批量拒绝，basicReject()一次只能拒接一条消息</strong>。</p>
+<h1 id="四、遇到的坑"><a href="#四、遇到的坑" class="headerlink" title="四、遇到的坑"></a>四、遇到的坑</h1><h2 id="4-1-启用nack机制后，导致的死循环"><a href="#4-1-启用nack机制后，导致的死循环" class="headerlink" title="4.1 启用nack机制后，导致的死循环"></a>4.1 启用nack机制后，导致的死循环</h2><p>上面的代码我故意写了一个bug。测试发送一条”bad”，然后会抛出重回队列的异常。这就有个问题：重回队列后消费者又消费，消费抛出异常又重回队列，就造成了死循环。<br><img src="https://img-blog.csdnimg.cn/20200802215521688.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3llaG9uZ3poaTE5OTQ=,size_16,color_FFFFFF,t_70" srcset="/img/loading.gif" alt="在这里插入图片描述"><br>那怎么避免这种情况呢？</p>
+<p>既然nack会造成死循环的话，我提供的一个思路是<strong>不使用basicNack()，把抛出异常的消息落库到一张表中，记录抛出的异常，消息体，消息Id。通过定时任务去处理</strong>。</p>
+<p>如果你有什么好的解决方案，也可以留言讨论~</p>
+<h2 id="4-2-double-ack"><a href="#4-2-double-ack" class="headerlink" title="4.2 double ack"></a>4.2 double ack</h2><p>有的时候比较粗心，不小心开启了自动Ack模式，又手动回复了Ack。那就会报这个错误：</p>
+<pre><code class="java">消费者RabbitDemoConsumer从RabbitMQ服务端消费消息：java技术爱好者
+2020-08-02 22:52:42.148 ERROR 4880 --- [ 127.0.0.1:5672] o.s.a.r.c.CachingConnectionFactory       : Channel shutdown: channel error; protocol method: #method&lt;channel.close&gt;(reply-code=406, reply-text=PRECONDITION_FAILED - unknown delivery tag 1, class-id=60, method-id=80)
+2020-08-02 22:52:43.102  INFO 4880 --- [cTaskExecutor-1] o.s.a.r.l.SimpleMessageListenerContainer : Restarting Consumer@f4a3a8d: tags=[{amq.ctag-8MJeQ7el_PNbVJxGOOw7Rw=rabbitmq.demo.topic}], channel=Cached Rabbit Channel: AMQChannel(amqp://guest@127.0.0.1:5672/,5), conn: Proxy@782a1679 Shared Rabbit Connection: SimpleConnection@67c5b175 [delegate=amqp://guest@127.0.0.1:5672/, localPort= 56938], acknowledgeMode=AUTO local queue size=0</code></pre>
+<p>出现这个错误，可以检查一下yml文件是否添加了以下配置：</p>
+<pre><code class="yml">spring:
+  rabbitmq:
+    listener:
+      simple:
+        acknowledge-mode: manual
+        concurrency: 1
+        max-concurrency: 10</code></pre>
+<p>如果上面这个配置已经添加了，还是报错，<strong>有可能你使用@Configuration配置了SimpleRabbitListenerContainerFactory，根据SpringBoot的特性，代码优于配置，代码的配置覆盖了yml的配置，并且忘记设置手动manual模式</strong>：</p>
+<pre><code class="java">@Bean
+    public SimpleRabbitListenerContainerFactory rabbitListenerContainerFactory(ConnectionFactory connectionFactory) {
+        SimpleRabbitListenerContainerFactory factory = new SimpleRabbitListenerContainerFactory();
+        factory.setConnectionFactory(connectionFactory);
+        //设置手动ack模式
+        factory.setAcknowledgeMode(AcknowledgeMode.MANUAL);
+        return factory;
+    }</code></pre>
+<p>如果你还是有报错，那可能是写错地方了，写在生产者的项目了。以上的配置应该配置在消费者的项目。因为ack模式是针对消费者而言的。我就是写错了，写在生产者，折腾了几个小时，泪目~</p>
+<h2 id="4-3-性能问题"><a href="#4-3-性能问题" class="headerlink" title="4.3 性能问题"></a>4.3 性能问题</h2><p>其实手动ACK相对于自动ACK肯定是会慢很多，我在网上查了一些资料，性能相差大概有10倍。所以一般在实际应用中不太建议开手动ACK模式。不过也不是绝对不可以开，具体情况具体分析，看并发量，还有数据的重要性等等。</p>
+<p>所以<strong>在实际项目中还需要权衡一下并发量和数据的重要性，再决定具体的方案</strong>。</p>
+<h2 id="4-4-启用手动ack模式，如果没有及时回复，会造成队列异常"><a href="#4-4-启用手动ack模式，如果没有及时回复，会造成队列异常" class="headerlink" title="4.4 启用手动ack模式，如果没有及时回复，会造成队列异常"></a>4.4 启用手动ack模式，如果没有及时回复，会造成队列异常</h2><p>如果开启了手动ACK模式，但是由于代码有bug的原因，没有回复RabbitMQ服务端，那么这条消息就会放到Unacked状态的消息堆里，只有等到消费者的连接断开才会转到Ready消息。如果消费者一直没有断开连接，那Unacked的消息就会越来越多，占用内存就越来越大，最后就会出现异常。</p>
+<p>这个问题，我没法用我的电脑演示，我的电脑太卡了。</p>
+<h1 id="五、总结"><a href="#五、总结" class="headerlink" title="五、总结"></a>五、总结</h1><p>通过上面的学习后，总结了RabbitMQ防止数据丢失有三种方式：</p>
+<ul>
+<li>消息持久化</li>
+<li>生产者消息确认机制(confirm模式)</li>
+<li>消费者消息确认模式(ack模式)</li>
+</ul>
+<p>上面所有例子的代码都上传github了：</p>
+<blockquote>
+<p><a href="https://github.com/yehongzhi/mall" target="_blank" rel="noopener">https://github.com/yehongzhi/mall</a></p>
+</blockquote>
+<p><strong>如果你觉得这篇文章对你有用，点个赞吧</strong>~</p>
+<p><strong>你的点赞是我创作的最大动力</strong>~</p>
+<p>想第一时间看到我更新的文章，可以微信搜索公众号「<code>java技术爱好者</code>」，<strong>拒绝做一条咸鱼，我是一个努力让大家记住的程序员。我们下期再见！！！</strong><br><img src="https://imgconvert.csdnimg.cn/aHR0cHM6Ly91c2VyLWdvbGQtY2RuLnhpdHUuaW8vMjAyMC82LzMwLzE3MzA1Y2MwOGE3ZWQ1ZDc?x-oss-process=image/format,png" srcset="/img/loading.gif" alt="在这里插入图片描述"></p>
+<blockquote>
+<p>能力有限，如果有什么错误或者不当之处，请大家批评指正，一起学习交流！</p>
+</blockquote>
+
+            <hr>
+          </div>
+          <br>
+          <div>
+            <p>
+            
+            
+              <span>
+                <i class="iconfont icon-tag"></i>
+                
+                  <a class="hover-with-bg" href="/tags/%E6%B6%88%E6%81%AF%E9%98%9F%E5%88%97">消息队列</a>
+                
+                  <a class="hover-with-bg" href="/tags/RabbitMQ">RabbitMQ</a>
+                
+                  <a class="hover-with-bg" href="/tags/%E4%B8%AD%E9%97%B4%E4%BB%B6">中间件</a>
+                
+              </span>
+            
+            </p>
+            
+              <p class="note note-warning">本博客所有文章除特别声明外，均采用 <a href="https://zh.wikipedia.org/wiki/Wikipedia:CC_BY-SA_3.0%E5%8D%8F%E8%AE%AE%E6%96%87%E6%9C%AC" target="_blank" rel="nofollow noopener noopener">CC BY-SA 3.0协议</a> 。转载请注明出处！</p>
+            
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="d-none d-lg-block col-lg-2 toc-container">
+      
+  <div id="toc">
+    <p class="h4"><i class="far fa-list-alt"></i>&nbsp;目录</p>
+    <div id="tocbot"></div>
+  </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- custom -->
+
+
+<!-- Comments -->
+<div class="col-lg-7 mx-auto nopadding-md">
+  <div class="container comments mx-auto" id="comments">
+    
+  </div>
+</div>
+
+    
+  </main>
+
+  
+    <a class="z-depth-1" id="scroll-top-button" href="#" role="button">
+      <i class="fa fa-chevron-up scroll-top-arrow" aria-hidden="true"></i>
+    </a>
+  
+
+  
+    <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v"
+                 for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+  
+
+  <footer class="mt-5">
+  <div class="text-center py-3">
+    <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><b>Hexo</b></a>
+    <i class="iconfont icon-love"></i>
+    <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"> <b>Fluid</b></a>
+    <br>
+
+    
+  
+    <!-- 不蒜子统计PV -->
+    
+    &nbsp;<span id="busuanzi_container_site_pv"></span>总访问量 
+          <span id="busuanzi_value_site_pv"></span> 次&nbsp;
+  
+  
+    <!-- 不蒜子统计UV -->
+    
+    &nbsp;<span id="busuanzi_container_site_uv"></span>总访客数 
+            <span id="busuanzi_value_site_uv"></span> 人&nbsp;
+  
+  <br>
+
+
+
+    
+
+
+    <!-- cnzz Analytics icon -->
+    
+
+  </div>
+</footer>
+
+<!-- SCRIPTS -->
+<script src="/lib/jquery/jquery.min.js" ></script>
+<script src="/lib/popper/popper.min.js" ></script>
+<script src="/lib/bootstrap/js/bootstrap.min.js" ></script>
+<script src="/lib/mdbootstrap/js/mdb.min.js" ></script>
+<script src="/js/main.js" ></script>
+
+
+  <script src="/js/lazyload.js" ></script>
+
+
+
+  
+    <script src="/lib/tocbot/tocbot.min.js" ></script>
+  
+  <script src="/js/post.js" ></script>
+
+
+
+  <script src="/lib/smooth-scroll/smooth-scroll.min.js" ></script>
+
+
+
+  <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" ></script>
+
+
+<!-- Plugins -->
+
+
+  
+
+  
+
+  
+
+  
+
+  <!-- cnzz Analytics -->
+  
+
+
+
+  <script src="/lib/prettify/prettify.min.js" ></script>
+  <script>
+    $(document).ready(function () {
+      $('pre').addClass('prettyprint  linenums');
+      prettyPrint();
+    })
+  </script>
+
+
+
+  <script src="/lib/typed/typed.min.js" ></script>
+  <script>
+    var typed = new Typed('#subtitle', {
+      strings: [
+        '  ',
+        "RabbitMQ如何防止消息丢失&nbsp;",
+      ],
+      cursorChar: "_",
+      typeSpeed: 70,
+      loop: false,
+    });
+    typed.stop();
+    $(document).ready(function () {
+      $(".typed-cursor").addClass("h2");
+      typed.start();
+    });
+  </script>
+
+
+
+  <script src="/lib/anchor/anchor.min.js" ></script>
+  <script>
+    anchors.options = {
+      placement: "right",
+      visible: "false",
+      
+    };
+    var el = "h1,h2,h3,h4,h5,h6".split(",");
+    var res = [];
+    for (item of el) {
+      res.push(".markdown-body > " + item)
+    }
+    anchors.add(res.join(", "))
+  </script>
+
+
+
+  <script src="/js/local-search.js" ></script>
+  <script>
+    var path = "/local-search.xml";
+    var inputArea = document.querySelector("#local-search-input");
+    inputArea.onclick = function () {
+      getSearchFile(path);
+      this.onclick = null
+    }
+  </script>
+
+
+
+  <script src="/lib/fancybox/jquery.fancybox.min.js" ></script>
+  <script>
+    $("#post img:not(.no-zoom img, img[no-zoom])").each(
+      function () {
+        var element = document.createElement("a");
+        $(element).attr("data-fancybox", "images");
+        $(element).attr("href", $(this).attr("src"));
+        $(this).wrap(element);
+      }
+    );
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+</body>
+</html>
