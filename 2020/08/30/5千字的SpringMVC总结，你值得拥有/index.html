@@ -1,0 +1,1033 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/apple-touch-icon.png">
+  <link rel="icon" type="image/png" href="/img/favicon.png">
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="description" content="">
+  <meta name="author" content="Ye hongzhi">
+  <meta name="keywords" content="">
+  <title>5千字的SpringMVC总结，你值得拥有 - 叶洪智的技术分享</title>
+
+  <link rel="stylesheet" href="/lib/font-awesome/css/all.min.css"  >
+<link rel="stylesheet" href="/lib/bootstrap/css/bootstrap.min.css"  >
+<link rel="stylesheet" href="/lib/mdbootstrap/css/mdb.min.css"  >
+<link rel="stylesheet" href="/lib/github-markdown/github-markdown.min.css"  >
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1067060_qzomjdt8bmp.css">
+
+
+
+  <link rel="stylesheet" href="/lib/prettify/tomorrow-night-eighties.min.css"  >
+
+<link rel="stylesheet" href="/css/main.css"  >
+
+
+  <link rel="stylesheet" href="/lib/fancybox/jquery.fancybox.min.css"  >
+
+
+<meta name="generator" content="Hexo 4.2.0"></head>
+
+
+<body>
+  <header style="height: 70vh;">
+    <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand"
+       href="/">&nbsp;<strong>YeHongzhi's Blog</strong>&nbsp;</a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+          <li class="nav-item">
+            <a class="nav-link" href="/">首页</a>
+          </li>
+        
+          
+          
+          
+          
+          <li class="nav-item">
+            <a class="nav-link" href="/archives/">归档</a>
+          </li>
+        
+          
+          
+          
+          
+          <li class="nav-item">
+            <a class="nav-link" href="/tags/">标签</a>
+          </li>
+        
+          
+          
+          
+          
+          <li class="nav-item">
+            <a class="nav-link" href="/about/">关于</a>
+          </li>
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" data-toggle="modal" data-target="#modalSearch">&nbsp;&nbsp;<i
+                class="iconfont icon-search"></i>&nbsp;&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+    <div class="view intro-2" id="background" false
+         style="background: url('/img/post.png')no-repeat center center;
+           background-size: cover;">
+      <div class="full-bg-img">
+        <div class="mask rgba-black-light flex-center">
+          <div class="container text-center white-text fadeInUp">
+            <span class="h2" id="subtitle">
+              
+            </span>
+
+            
+              <br>
+              
+                <p class="mt-3">
+                  <i class="fas fa-calendar-alt" aria-hidden="true"></i>&nbsp;
+                  星期日, 八月 30日 2020, 9:14 晚上
+                </p>
+              
+
+              <p>
+                
+                  
+                  &nbsp;<i class="far fa-chart-bar"></i>
+                  <span class="post-count">
+                    5k 字
+                  </span>&nbsp;
+                
+
+                
+                  
+                  &nbsp;<i class="far fa-clock"></i>
+                  <span class="post-count">
+                      21 分钟
+                  </span>&nbsp;
+                
+
+                
+                  <!-- 不蒜子统计文章PV -->
+                  
+                  &nbsp;<i class="far fa-eye" aria-hidden="true"></i>&nbsp;
+                  <span id="busuanzi_container_page_pv">
+                    <span id="busuanzi_value_page_pv"></span> 次
+                  </span>&nbsp;
+                
+              </p>
+            
+          </div>
+
+          
+            <div class="scroll-down-bar">
+              <i class="fas fa-angle-down scroll-down-arrow"></i>
+            </div>
+          
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid">
+  <div class="row">
+    <div class="d-none d-lg-block col-lg-2"></div>
+    <div class="col-lg-8 nopadding-md">
+      <div class="py-5 z-depth-3" id="board">
+        <div class="post-content mx-auto" id="post">
+          <div class="markdown-body">
+            <h1 id="思维导图"><a href="#思维导图" class="headerlink" title="思维导图"></a>思维导图</h1><p><img src="https://static.lovebilibili.com/springmvc_swdt.png" srcset="/img/loading.gif" alt=""></p>
+<blockquote>
+<p>微信公众号已开启：【<strong>java技术爱好者</strong>】，还没关注的记得关注哦~</p>
+<p><strong>文章已收录到我的Github精选，欢迎Star</strong>：<a href="https://github.com/yehongzhi/learningSummary" target="_blank" rel="noopener">https://github.com/yehongzhi/learningSummary</a></p>
+</blockquote>
+<h1 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h1><p>SpringMVC再熟悉不过的框架了，因为现在最火的SpringBoot的内置MVC框架就是SpringMVC。我写这篇文章的动机是想通过回顾总结一下，重新认识SpringMVC，所谓温故而知新嘛。</p>
+<p>为了了解SpringMVC，先看一个流程示意图：</p>
+<p><img src="https://static.lovebilibili.com/springmvc_1.png" srcset="/img/loading.gif" alt=""></p>
+<p>从流程图中，我们可以看到：</p>
+<ul>
+<li>接收前端传过来Request请求。</li>
+<li>根据映射路径找到对应的处理器处理请求，处理完成之后返回ModelAndView。</li>
+<li>进行视图解析，视图渲染，返回响应结果。</li>
+</ul>
+<p>总结就是：<strong>参数接收，定义映射路径，页面跳转，返回响应结果</strong>。</p>
+<p>当然这只是最基本的核心功能，除此之外还可以<strong>定义拦截器，全局异常处理，文件上传下载</strong>等等。</p>
+<h1 id="一、搭建项目"><a href="#一、搭建项目" class="headerlink" title="一、搭建项目"></a>一、搭建项目</h1><p>在以前的老项目中，因为还没有SpringBoot，没有自动配置，所以需要使用<strong>web.xml</strong>文件去定义一个DispatcherServlet。现在互联网应用基本上都使用SpringBoot，所以我就直接使用SpringBoot进行演示。很简单，引入依赖即可：</p>
+<pre><code class="xml">&lt;dependency&gt;
+    &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;
+    &lt;artifactId&gt;spring-boot-starter-web&lt;/artifactId&gt;
+&lt;/dependency&gt;</code></pre>
+<h1 id="二、定义Controller"><a href="#二、定义Controller" class="headerlink" title="二、定义Controller"></a>二、定义Controller</h1><p>使用SpringMVC定义Controller处理器，总共有五种方式。</p>
+<h2 id="2-1-实现Controller接口"><a href="#2-1-实现Controller接口" class="headerlink" title="2.1 实现Controller接口"></a>2.1 实现Controller接口</h2><p>早期的SpringMVC是通过这种方式定义：</p>
+<pre><code class="java">/**
+ * @author Ye Hongzhi 公众号：java技术爱好者
+ * @name DemoController
+ * @date 2020-08-25 22:28
+ **/
+@org.springframework.stereotype.Controller(&quot;/demo/controller&quot;)
+public class DemoController implements Controller {
+    @Override
+    public ModelAndView handleRequest(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) throws Exception {
+        //业务处理
+        return null;
+    }
+}</code></pre>
+<h2 id="2-2-实现HttpRequestHandler接口"><a href="#2-2-实现HttpRequestHandler接口" class="headerlink" title="2.2 实现HttpRequestHandler接口"></a>2.2 实现HttpRequestHandler接口</h2><p>跟第一种方式差不多，也是通过实现接口的方式：</p>
+<pre><code class="java">/**
+ * @author Ye Hongzhi 公众号：java技术爱好者
+ * @name HttpDemoController
+ * @date 2020-08-25 22:45
+ **/
+@Controller(&quot;/http/controller&quot;)
+public class HttpDemoController implements HttpRequestHandler{
+    @Override
+    public void handleRequest(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) throws ServletException, IOException {
+        //业务处理
+    }
+}</code></pre>
+<h2 id="2-3-实现Servlet接口"><a href="#2-3-实现Servlet接口" class="headerlink" title="2.3 实现Servlet接口"></a>2.3 实现Servlet接口</h2><p>这种方式已经不推荐使用了，不过从这里可以看出<strong>SpringMVC的底层使用的还是Servlet</strong>。</p>
+<pre><code class="java">@Controller(&quot;/servlet/controller&quot;)
+public class ServletDemoController implements Servlet {
+    //以下是Servlet生命周期方法
+    @Override
+    public void init(ServletConfig servletConfig) throws ServletException {
+    }
+
+    @Override
+    public ServletConfig getServletConfig() {
+        return null;
+    }
+
+    @Override
+    public void service(ServletRequest servletRequest, ServletResponse servletResponse) throws ServletException, IOException {
+    }
+
+    @Override
+    public String getServletInfo() {
+        return null;
+    }
+
+    @Override
+    public void destroy() {
+    }
+}</code></pre>
+<p>因为不推荐使用这种方式，所以默认是不加载这种适配器的，需要加上：</p>
+<pre><code class="java">@Configuration
+@EnableWebMvc
+public class WebMvcConfig extends WebMvcConfigurerAdapter {
+
+    @Bean
+    public SimpleServletHandlerAdapter simpleServletHandlerAdapter() {
+        return new SimpleServletHandlerAdapter();
+    }
+}</code></pre>
+<h2 id="2-4-使用-RequestMapping"><a href="#2-4-使用-RequestMapping" class="headerlink" title="2.4 使用@RequestMapping"></a>2.4 使用@RequestMapping</h2><p>这种方式是最常用的，因为上面那些方式定义需要使用一个类定义一个路径，就会导致产生很多类。使用注解就相对轻量级一些。</p>
+<pre><code class="java">@Controller
+@RequestMapping(&quot;/requestMapping/controller&quot;)
+public class RequestMappingController {
+
+    @RequestMapping(&quot;/demo&quot;)
+    public String demo() {
+        return &quot;HelloWord&quot;;
+    }
+}</code></pre>
+<h3 id="2-4-1-支持Restful风格"><a href="#2-4-1-支持Restful风格" class="headerlink" title="2.4.1 支持Restful风格"></a>2.4.1 支持Restful风格</h3><p>而且支持<strong>Restful风格</strong>，使用<strong>method</strong>属性定义对资源的操作方式：</p>
+<pre><code class="java">    @RequestMapping(value = &quot;/restful&quot;, method = RequestMethod.GET)
+    public String get() {
+        //查询
+        return &quot;get&quot;;
+    }
+
+    @RequestMapping(value = &quot;/restful&quot;, method = RequestMethod.POST)
+    public String post() {
+        //创建
+        return &quot;post&quot;;
+    }
+
+    @RequestMapping(value = &quot;/restful&quot;, method = RequestMethod.PUT)
+    public String put() {
+        //更新
+        return &quot;put&quot;;
+    }
+
+    @RequestMapping(value = &quot;/restful&quot;, method = RequestMethod.DELETE)
+    public String del() {
+        //删除
+        return &quot;post&quot;;
+    }</code></pre>
+<h3 id="2-4-2-支持Ant风格"><a href="#2-4-2-支持Ant风格" class="headerlink" title="2.4.2 支持Ant风格"></a>2.4.2 支持Ant风格</h3><pre><code class="java">    //匹配 /antA 或者 /antB 等URL
+    @RequestMapping(&quot;/ant?&quot;)
+    public String ant() {
+        return &quot;ant&quot;;
+    }
+
+    //匹配 /ant/a/create 或者 /ant/b/create 等URL
+    @RequestMapping(&quot;/ant/*/create&quot;)
+    public String antCreate() {
+        return &quot;antCreate&quot;;
+    }
+
+    //匹配 /ant/create 或者 /ant/a/b/create 等URL
+    @RequestMapping(&quot;/ant/**/create&quot;)
+    public String antAllCreate() {
+        return &quot;antAllCreate&quot;;
+    }</code></pre>
+<h2 id="2-5-使用HandlerFunction"><a href="#2-5-使用HandlerFunction" class="headerlink" title="2.5 使用HandlerFunction"></a>2.5 使用HandlerFunction</h2><p>最后一种是使用HandlerFunction函数式接口，这是<code>Spring5.0</code>后引入的方式，主要用于做响应式接口的开发，也就是Webflux的开发。</p>
+<p>有兴趣的可以网上搜索相关资料学习，这个讲起来可能要很大篇幅，这里就不赘述了。</p>
+<h1 id="三、接收参数"><a href="#三、接收参数" class="headerlink" title="三、接收参数"></a>三、接收参数</h1><p>定义完Controller之后，需要接收前端传入的参数，怎么接收呢。</p>
+<h2 id="3-1-接收普通参数"><a href="#3-1-接收普通参数" class="headerlink" title="3.1 接收普通参数"></a>3.1 接收普通参数</h2><p>在@RequestMapping映射方法上写上接收参数名即可：</p>
+<pre><code class="java">@RequestMapping(value = &quot;/restful&quot;, method = RequestMethod.POST)
+public String post(Integer id, String name, int money) {
+    System.out.println(&quot;id:&quot; + id + &quot;,name:&quot; + name + &quot;,money:&quot; + money);
+    return &quot;post&quot;;
+}</code></pre>
+<p><img src="https://static.lovebilibili.com/springmvc_2.png" srcset="/img/loading.gif" alt=""></p>
+<h2 id="3-2-RequestParam参数名绑定"><a href="#3-2-RequestParam参数名绑定" class="headerlink" title="3.2 @RequestParam参数名绑定"></a>3.2 @RequestParam参数名绑定</h2><p>如果不想使用形参名称作为参数名称，可以使用@RequestParam进行参数名称绑定：</p>
+<pre><code class="java">    /**
+     * value: 参数名
+     * required: 是否request中必须包含此参数，默认是true。
+     * defaultValue: 默认参数值
+     */
+    @RequestMapping(value = &quot;/restful&quot;, method = RequestMethod.GET)
+    public String get(@RequestParam(value = &quot;userId&quot;, required = false, defaultValue = &quot;0&quot;) String id) {
+        System.out.println(&quot;id:&quot; + id);
+        return &quot;get&quot;;
+    }</code></pre>
+<p><img src="https://static.lovebilibili.com/springmvc_3.png" srcset="/img/loading.gif" alt=""></p>
+<h2 id="3-3-PathVariable路径参数"><a href="#3-3-PathVariable路径参数" class="headerlink" title="3.3 @PathVariable路径参数"></a>3.3 @PathVariable路径参数</h2><p>通过@PathVariable将URL中的占位符{xxx}参数映射到操作方法的入参。演示代码如下：</p>
+<pre><code class="java">@RequestMapping(value = &quot;/restful/{id}&quot;, method = RequestMethod.GET)
+public String search(@PathVariable(&quot;id&quot;) String id) {
+    System.out.println(&quot;id:&quot; + id);
+    return &quot;search&quot;;
+}</code></pre>
+<p><img src="https://static.lovebilibili.com/springmvc_4.png" srcset="/img/loading.gif" alt=""></p>
+<h2 id="3-4-RequestHeader绑定请求头属性"><a href="#3-4-RequestHeader绑定请求头属性" class="headerlink" title="3.4 @RequestHeader绑定请求头属性"></a>3.4 @RequestHeader绑定请求头属性</h2><p>获取请求头的信息怎么获取呢？</p>
+<p><img src="https://static.lovebilibili.com/springmvc_5.png" srcset="/img/loading.gif" alt=""></p>
+<p>使用@RequestHeader注解，用法和@RequestParam类似：</p>
+<pre><code class="java">    @RequestMapping(&quot;/head&quot;)
+    public String head(@RequestHeader(&quot;Accept-Language&quot;) String acceptLanguage) {
+        return acceptLanguage;
+    }</code></pre>
+<p><img src="https://static.lovebilibili.com/springmvc_6.png" srcset="/img/loading.gif" alt=""></p>
+<h2 id="3-5-CookieValue绑定请求的Cookie值"><a href="#3-5-CookieValue绑定请求的Cookie值" class="headerlink" title="3.5 @CookieValue绑定请求的Cookie值"></a>3.5 @CookieValue绑定请求的Cookie值</h2><p>获取Request中Cookie的值：</p>
+<pre><code class="java">    @RequestMapping(&quot;/cookie&quot;)
+    public String cookie(@CookieValue(&quot;_ga&quot;) String _ga) {
+        return _ga;
+    }</code></pre>
+<p><img src="https://static.lovebilibili.com/springmvc_7.png" srcset="/img/loading.gif" alt=""></p>
+<h2 id="3-6-绑定请求参数到POJO对象"><a href="#3-6-绑定请求参数到POJO对象" class="headerlink" title="3.6 绑定请求参数到POJO对象"></a>3.6 绑定请求参数到POJO对象</h2><p>定义了一个User实体类：</p>
+<pre><code class="java">public class User {
+    private String id;
+    private String name;
+    private Integer age;
+    //getter、setter方法
+}</code></pre>
+<p>定义一个@RequestMapping操作方法：</p>
+<pre><code class="java">    @RequestMapping(&quot;/body&quot;)
+    public String body(User user) {
+        return user.toString();
+    }</code></pre>
+<p>只要请求参数与属性名相同自动填充到user对象中：</p>
+<p><img src="https://static.lovebilibili.com/springmvc_8.png" srcset="/img/loading.gif" alt=""></p>
+<p><img src="https://static.lovebilibili.com/springmvc_9.png" srcset="/img/loading.gif" alt=""></p>
+<h3 id="3-6-1-支持级联属性"><a href="#3-6-1-支持级联属性" class="headerlink" title="3.6.1 支持级联属性"></a>3.6.1 支持级联属性</h3><p>现在多了一个Address类存储地址信息：</p>
+<pre><code class="java">public class Address {
+    private String id;
+    private String name;
+    //getter、setter方法
+}</code></pre>
+<p>在User中加上address属性：</p>
+<pre><code class="java">public class User {
+    private String id;
+    private String name;
+    private Integer age;
+    private Address address;
+    //getter、setter方法
+}</code></pre>
+<p>传参时只要传入address.name、address.id即会自动填充：</p>
+<p><img src="https://static.lovebilibili.com/springmvc_11.png" srcset="/img/loading.gif" alt=""></p>
+<p><img src="https://static.lovebilibili.com/springmvc_10.png" srcset="/img/loading.gif" alt=""></p>
+<h3 id="3-6-2-InitBinder解决接收多对象时属性名冲突"><a href="#3-6-2-InitBinder解决接收多对象时属性名冲突" class="headerlink" title="3.6.2 @InitBinder解决接收多对象时属性名冲突"></a>3.6.2 @InitBinder解决接收多对象时属性名冲突</h3><p>如果有两个POJO对象拥有相同的属性名，不就产生冲突了吗？比如刚刚的user和address，其中他们都有id和name这两个属性，如果同时接收，就会冲突：</p>
+<pre><code class="java">    //user和address都有id和name这两个属性    
+    @RequestMapping(value = &quot;/twoBody&quot;, method = RequestMethod.POST)
+    public String twoBody(User user, Address address) {
+        return user.toString() + &quot;,&quot; + address.toString();
+    }</code></pre>
+<p>这时就可以使用@InitBinder绑定参数名称：</p>
+<pre><code class="java">    @InitBinder(&quot;user&quot;)
+    public void initBindUser(WebDataBinder webDataBinder) {
+        webDataBinder.setFieldDefaultPrefix(&quot;u.&quot;);
+    }
+
+    @InitBinder(&quot;address&quot;)
+    public void initBindAddress(WebDataBinder webDataBinder) {
+        webDataBinder.setFieldDefaultPrefix(&quot;addr.&quot;);
+    }</code></pre>
+<p><img src="https://static.lovebilibili.com/springmvc_12.png" srcset="/img/loading.gif" alt=""></p>
+<p><img src="https://static.lovebilibili.com/springmvc_13.png" srcset="/img/loading.gif" alt=""></p>
+<h3 id="3-6-3-Requestbody自动解析JSON字符串封装到对象"><a href="#3-6-3-Requestbody自动解析JSON字符串封装到对象" class="headerlink" title="3.6.3 @Requestbody自动解析JSON字符串封装到对象"></a>3.6.3 @Requestbody自动解析JSON字符串封装到对象</h3><p>前端传入一个json字符串，自动转换成pojo对象，演示代码：</p>
+<pre><code class="java">    @RequestMapping(value = &quot;/requestBody&quot;, method = RequestMethod.POST)
+    public String requestBody(@RequestBody User user) {
+        return user.toString();
+    }</code></pre>
+<p>注意的是，要使用<strong>POST请求，发送端的Content-Type设置为application/json，数据是json字符串</strong>：</p>
+<p><img src="https://static.lovebilibili.com/springmvc_14.png" srcset="/img/loading.gif" alt=""></p>
+<p><img src="https://static.lovebilibili.com/springmvc_15.png" srcset="/img/loading.gif" alt=""></p>
+<p>甚至有一些人喜欢用一个Map接收：</p>
+<p><img src="https://static.lovebilibili.com/springmvc_16.png" srcset="/img/loading.gif" alt=""></p>
+<p>但是<strong>千万不要用Map接收，否则会造成代码很难维护</strong>，后面的老哥估计看不懂你这个Map里面有什么数据，所以最好还是定义一个POJO对象。</p>
+<h1 id="四、参数类型转换"><a href="#四、参数类型转换" class="headerlink" title="四、参数类型转换"></a>四、参数类型转换</h1><p>实际上，SpringMVC框架本身就内置了很多类型转换器，比如你传入字符串的数字，接收的入参定为int，long类型，都会自动帮你转换。</p>
+<p>就在包<strong>org.springframework.core.convert.converter</strong>下，如图所示：</p>
+<p><img src="https://static.lovebilibili.com/springmvc_17.png" srcset="/img/loading.gif" alt=""></p>
+<p>有的时候如果内置的类型转换器不足够满足业务需求呢，怎么扩展呢，很简单，看我操作。什么是Java技术爱好者(战术后仰)。</p>
+<p>首先有样学样，内置的转换器实现Converter接口，我也实现：</p>
+<pre><code class="java">public class StringToDateConverter implements Converter&lt;String, Date&gt; {
+    @Override
+    public Date convert(String source) {
+        SimpleDateFormat sdf = new SimpleDateFormat(&quot;yyyy-MM-dd&quot;);
+        try {
+            //String转换成Date类型
+            return sdf.parse(source);
+        } catch (Exception e) {
+            //类型转换错误
+            e.printStackTrace();
+        }
+        return null;
+    }
+}</code></pre>
+<p>接着把转换器注册到Spring容器中：</p>
+<pre><code class="java">@Configuration
+public class ConverterConfig extends WebMvcConfigurationSupport {
+    @Override
+    protected void addFormatters(FormatterRegistry registry) {
+        //添加类型转换器
+        registry.addConverter(new StringToDateConverter());
+    }
+}</code></pre>
+<p>接着看测试，所有的日期字符串，都自动被转换成Date类型了，非常方便：</p>
+<p><img src="https://static.lovebilibili.com/springmvc_19.png" srcset="/img/loading.gif" alt=""></p>
+<p><img src="https://static.lovebilibili.com/springmvc_18.png" srcset="/img/loading.gif" alt=""></p>
+<h1 id="五、页面跳转"><a href="#五、页面跳转" class="headerlink" title="五、页面跳转"></a>五、页面跳转</h1><p>在前后端未分离之前，页面跳转的工作都是由后端控制，采用JSP进行展示数据。虽然现在互联网项目几乎不会再使用JSP，但是我觉得还是需要学习一下，因为有些旧项目还是会用JSP，或者需要重构。</p>
+<p>如果你在RequestMapping方法中直接返回一个字符串是不会跳转到指定的JSP页面的，需要做一些配置。</p>
+<p>第一步，加入解析jsp的Maven配置。</p>
+<pre><code class="xml">&lt;dependency&gt;
+    &lt;groupId&gt;org.apache.tomcat.embed&lt;/groupId&gt;
+    &lt;artifactId&gt;tomcat-embed-jasper&lt;/artifactId&gt;
+    &lt;version&gt;7.0.59&lt;/version&gt;
+&lt;/dependency&gt;
+&lt;dependency&gt;
+    &lt;groupId&gt;javax.servlet&lt;/groupId&gt;
+    &lt;artifactId&gt;jstl&lt;/artifactId&gt;
+&lt;/dependency&gt;</code></pre>
+<p>第二步，添加视图解析器。</p>
+<pre><code class="java">@Configuration
+public class WebAppConfig extends WebMvcConfigurerAdapter {
+    @Bean
+    public InternalResourceViewResolver viewResolver() {
+        InternalResourceViewResolver viewResolver = new InternalResourceViewResolver();
+        viewResolver.setPrefix(&quot;/&quot;);
+        viewResolver.setSuffix(&quot;.jsp&quot;);
+        viewResolver.setViewClass(JstlView.class);
+        return viewResolver;
+    }
+}</code></pre>
+<p>第三步，设置IDEA的配置。</p>
+<p><img src="https://static.lovebilibili.com/springmvc_21.png" srcset="/img/loading.gif" alt=""></p>
+<p><img src="https://static.lovebilibili.com/springmvc_20.png" srcset="/img/loading.gif" alt=""></p>
+<p><img src="https://static.lovebilibili.com/springmvc_22.png" srcset="/img/loading.gif" alt=""></p>
+<p>第四步，创建jsp页面。</p>
+<p><img src="https://static.lovebilibili.com/springmvc_23.png" srcset="/img/loading.gif" alt=""></p>
+<p>第五步，创建Controller控制器。</p>
+<pre><code class="java">@Controller
+@RequestMapping(&quot;/view&quot;)
+public class ViewController {
+    @RequestMapping(&quot;/hello&quot;)
+    public String hello() throws Exception {
+        return &quot;hello&quot;;
+    }
+}</code></pre>
+<p>这样就完成了，启动项目，访问/view/hello就看到了：</p>
+<p><img src="https://static.lovebilibili.com/springmvc_25.png" srcset="/img/loading.gif" alt=""></p>
+<p>就是这么简单，对吧</p>
+<h1 id="六、-ResponseBody"><a href="#六、-ResponseBody" class="headerlink" title="六、@ResponseBody"></a>六、@ResponseBody</h1><p>如果采用前后端分离，页面跳转不需要后端控制了，后端只需要返回json即可，怎么返回呢？</p>
+<p>使用@ResponseBody注解即可，这个注解会把对象自动转成json数据返回。</p>
+<p>@ResponseBody注解可以放在类或者方法上，源码如下：</p>
+<pre><code class="java">//用在类、方法上
+@Target({ElementType.TYPE, ElementType.METHOD})
+@Retention(RetentionPolicy.RUNTIME)
+@Documented
+public @interface ResponseBody {
+}</code></pre>
+<p>演示一下：</p>
+<pre><code class="java">@RequestMapping(&quot;/userList&quot;)
+@ResponseBody
+public List&lt;User&gt; userList() throws Exception {
+    List&lt;User&gt; list = new ArrayList&lt;&gt;();
+    list.add(new User(&quot;1&quot;,&quot;姚大秋&quot;,18));
+    list.add(new User(&quot;2&quot;,&quot;李星星&quot;,18));
+    list.add(new User(&quot;3&quot;,&quot;冬敏&quot;,18));
+    return list;
+}</code></pre>
+<p>测试一下/view/userList：</p>
+<p><img src="https://static.lovebilibili.com/springmvc_26.png" srcset="/img/loading.gif" alt=""></p>
+<h1 id="七、-ModelAttribute"><a href="#七、-ModelAttribute" class="headerlink" title="七、@ModelAttribute"></a>七、@ModelAttribute</h1><p>@ModelAttribute用法比较多，下面一一讲解。</p>
+<h2 id="7-1-用在无返回值的方法上"><a href="#7-1-用在无返回值的方法上" class="headerlink" title="7.1 用在无返回值的方法上"></a>7.1 用在无返回值的方法上</h2><p>在Controller类中，在执行所有的RequestMapping方法前都会先执行@ModelAttribute注解的方法。</p>
+<pre><code class="java">@Controller
+@RequestMapping(&quot;/modelAttribute&quot;)
+public class ModelAttributeController {
+    //先执行这个方法
+    @ModelAttribute
+    public void modelAttribute(Model model){
+        //在request域中放入数据
+        model.addAttribute(&quot;userName&quot;,&quot;公众号：java技术爱好者&quot;);
+    }
+
+    @RequestMapping(&quot;/index&quot;)
+    public String index(){
+        //跳转到inex.jsp页面
+        return &quot;index&quot;;
+    }
+}</code></pre>
+<p>index.jsp页面如下：</p>
+<pre><code class="jsp">&lt;%@ page contentType=&quot;text/html;charset=UTF-8&quot; language=&quot;java&quot; %&gt;
+&lt;html&gt;
+&lt;head&gt;
+    &lt;title&gt;首页&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;!-- 获取到userName属性值 --&gt;
+&lt;h1&gt;${userName}&lt;/h1&gt;
+&lt;/body&gt;
+&lt;/html&gt;</code></pre>
+<p>相当于一个Controller的拦截器一样，在执行RequestMapping方法前先执行@ModelAttribute注解的方法。所以要慎用。</p>
+<p>启动项目，访问/modelAttribute/index可以看到：</p>
+<p><img src="https://static.lovebilibili.com/springmvc_27.png" srcset="/img/loading.gif" alt=""></p>
+<p>即使在index()方法中没有放入userName属性值，jsp页面也能获取到，因为在执行index()方法之前的modelAttribute()方法已经放入了。</p>
+<h2 id="7-2-放在有返回值的方法上"><a href="#7-2-放在有返回值的方法上" class="headerlink" title="7.2 放在有返回值的方法上"></a>7.2 放在有返回值的方法上</h2><p>其实调用顺序是一样，也是在RequestMapping方法前执行，不同的在于，方法的返回值直接帮你放入到Request域中。</p>
+<pre><code class="java">//放在有参数的方法上
+@ModelAttribute
+public User userAttribute() {
+    //相当于model.addAttribute(&quot;user&quot;,new User(&quot;1&quot;, &quot;Java技术爱好者&quot;, 18));
+    return new User(&quot;1&quot;, &quot;Java技术爱好者&quot;, 18);
+}
+
+@RequestMapping(&quot;/user&quot;)
+public String user() {
+    return &quot;user&quot;;
+}</code></pre>
+<p>创建一个user.jsp:</p>
+<pre><code class="jsp">&lt;%@ page contentType=&quot;text/html;charset=UTF-8&quot; language=&quot;java&quot; %&gt;
+&lt;html&gt;
+&lt;head&gt;
+    &lt;title&gt;首页&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;h1&gt;ID:${user.id}&lt;/h1&gt;
+&lt;h1&gt;名称:${user.name}&lt;/h1&gt;
+&lt;h1&gt;年龄:${user.age}岁&lt;/h1&gt;
+&lt;/body&gt;
+&lt;/html&gt;</code></pre>
+<p>测试一下：</p>
+<p><img src="https://static.lovebilibili.com/springmvc_28.png" srcset="/img/loading.gif" alt=""></p>
+<p>放入Request域中的属性值默认是类名的首字母小写驼峰写法，如果你想自定义呢？很简单，可以这样写：</p>
+<pre><code class="java">//自定义属性名为&quot;u&quot;
+@ModelAttribute(&quot;u&quot;)
+public User userAttribute() {
+    return new User(&quot;1&quot;, &quot;Java技术爱好者&quot;, 18);
+}
+/**
+JSP就要改成这样写：
+&lt;h1&gt;ID:${u.id}&lt;/h1&gt;
+&lt;h1&gt;名称:${u.name}&lt;/h1&gt;
+&lt;h1&gt;年龄:${u.age}岁&lt;/h1&gt;
+*/</code></pre>
+<h2 id="7-3-放在RequestMapping方法上"><a href="#7-3-放在RequestMapping方法上" class="headerlink" title="7.3 放在RequestMapping方法上"></a>7.3 放在RequestMapping方法上</h2><pre><code class="java">@Controller
+@RequestMapping(&quot;/modelAttribute&quot;)
+public class ModelAttributeController {
+
+    @RequestMapping(&quot;/jojo&quot;)
+    @ModelAttribute(&quot;attributeName&quot;)
+    public String jojo() {
+        return &quot;JOJO！我不做人了！&quot;;
+    }
+}</code></pre>
+<p>这种情况下RequestMapping方法的返回的值就不是JSP视图了。而是把返回值放入Request域中的属性值，属性名为attributeName。视图则是RequestMapping注解上的URL，所以创建一个对应的JSP页面：</p>
+<p><img src="https://static.lovebilibili.com/springmvc_29.png" srcset="/img/loading.gif" alt=""></p>
+<pre><code class="jsp">&lt;%@ page contentType=&quot;text/html;charset=UTF-8&quot; language=&quot;java&quot; %&gt;
+&lt;html&gt;
+&lt;head&gt;
+    &lt;title&gt;首页&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;h1&gt;${attributeName}&lt;/h1&gt;
+&lt;/body&gt;
+&lt;/html&gt;</code></pre>
+<p>测试一下：</p>
+<p><img src="https://static.lovebilibili.com/springmvc_30.png" srcset="/img/loading.gif" alt=""></p>
+<h2 id="7-4-放在方法入参上"><a href="#7-4-放在方法入参上" class="headerlink" title="7.4 放在方法入参上"></a>7.4 放在方法入参上</h2><p>放在入参上，意思是从前面的Model中提取出对应的属性值，当做入参传入方法中使用。如下所示：</p>
+<pre><code class="java">@ModelAttribute(&quot;u&quot;)
+public User userAttribute() {
+    return new User(&quot;1&quot;, &quot;Java技术爱好者&quot;, 18);
+}
+
+@RequestMapping(&quot;/java&quot;)
+public String user1(@ModelAttribute(&quot;u&quot;) User user) {
+    //拿到@ModelAttribute(&quot;u&quot;)方法返回的值，打印出来
+    System.out.println(&quot;user:&quot; + user);
+    return &quot;java&quot;;
+}</code></pre>
+<p>测试一下：</p>
+<p><img src="https://static.lovebilibili.com/springmvc_31.png" srcset="/img/loading.gif" alt=""></p>
+<h1 id="八、拦截器"><a href="#八、拦截器" class="headerlink" title="八、拦截器"></a>八、拦截器</h1><p>拦截器算重点内容了，很多时候都要用拦截器，比如登录校验，权限校验等等。SpringMVC怎么添加拦截器呢？</p>
+<p>很简单，实现HandlerInterceptor接口，接口有三个方法需要重写。</p>
+<ul>
+<li>preHandle()：在业务处理器处理请求之前被调用。预处理。</li>
+<li>postHandle()：在业务处理器处理请求执行完成后，生成视图之前执行。后处理。</li>
+<li>afterCompletion()：在DispatcherServlet完全处理完请求后被调用，可用于清理资源等。返回处理（已经渲染了页面）；</li>
+</ul>
+<p>自定义的拦截器，实现的接口HandlerInterceptor：</p>
+<pre><code class="java">public class DemoInterceptor implements HandlerInterceptor {
+
+    @Override
+    public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
+        //预处理，返回true则继续执行。如果需要登录校验，校验不通过返回false即可，通过则返回true。
+        System.out.println(&quot;执行preHandle()方法&quot;);
+        return true;
+    }
+
+    @Override
+    public void postHandle(HttpServletRequest request, HttpServletResponse response, Object handler, ModelAndView modelAndView) throws Exception {
+        //后处理
+        System.out.println(&quot;执行postHandle()方法&quot;);
+    }
+
+    @Override
+    public void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object handler, Exception ex) throws Exception {
+        //在DispatcherServlet完全处理完请求后被调用
+        System.out.println(&quot;执行afterCompletion()方法&quot;);
+    }
+}</code></pre>
+<p>然后把拦截器添加到Spring容器中：</p>
+<pre><code class="java">@Configuration
+public class ConverterConfig extends WebMvcConfigurationSupport {
+
+    @Override
+    public void addInterceptors(InterceptorRegistry registry) {
+        registry.addInterceptor(new DemoInterceptor()).addPathPatterns(&quot;/**&quot;);
+    }
+}</code></pre>
+<p>/**代表所有路径，测试一下：</p>
+<p><img src="https://static.lovebilibili.com/springmvc_32.png" srcset="/img/loading.gif" alt=""></p>
+<h1 id="九、全局异常处理"><a href="#九、全局异常处理" class="headerlink" title="九、全局异常处理"></a>九、全局异常处理</h1><p>SpringMVC本身就对一些异常进行了全局处理，所以有内置的异常处理器，在哪里呢？</p>
+<p>看<code>HandlerExceptionResolver</code>接口的类图就知道了：</p>
+<p><img src="https://static.lovebilibili.com/HandlerExceptionResolver.png" srcset="/img/loading.gif" alt=""></p>
+<p>从类图可以看出有四种异常处理器：</p>
+<ul>
+<li><code>DefaultHandlerExceptionResolver</code>，默认的异常处理器。根据各个不同类型的异常，返回不同的异常视图。</li>
+<li><code>SimpleMappingExceptionResolver</code>，简单映射异常处理器。通过配置异常类和view的关系来解析异常。</li>
+<li><code>ResponseStatusExceptionResolver</code>，状态码异常处理器。解析带有<code>@ResponseStatus</code>注释类型的异常。</li>
+<li><code>ExceptionHandlerExceptionResolver</code>，注解形式的异常处理器。对<code>@ExceptionHandler</code>注解的方法进行异常解析。</li>
+</ul>
+<p>第一个默认的异常处理器是内置的异常处理器，对一些常见的异常处理，一般来说不用管它。后面的三个才是需要注意的，是用来扩展的。</p>
+<h2 id="9-1-SimpleMappingExceptionResolver"><a href="#9-1-SimpleMappingExceptionResolver" class="headerlink" title="9.1 SimpleMappingExceptionResolver"></a>9.1 SimpleMappingExceptionResolver</h2><p>翻译过来就是简单映射异常处理器。用途是，我们可以<strong>指定某种异常，当抛出这种异常之后跳转到指定的页面</strong>。请看演示。</p>
+<p>第一步，添加spring-config.xml文件，放在resources目录下，文件名见文知意即可：</p>
+<pre><code class="xml">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;
+&lt;beans xmlns=&quot;http://www.springframework.org/schema/beans&quot;
+       xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot;
+       xsi:schemaLocation=&quot;http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd&quot;&gt;
+    &lt;bean class=&quot;org.springframework.web.servlet.handler.SimpleMappingExceptionResolver&quot;&gt;
+        &lt;!-- 定义默认的异常处理页面 --&gt;
+        &lt;property name=&quot;defaultErrorView&quot; value=&quot;err&quot;/&gt;
+        &lt;!-- 定义异常处理页面用来获取异常信息的属性名，默认名为exception --&gt;
+        &lt;property name=&quot;exceptionAttribute&quot; value=&quot;ex&quot;/&gt;
+        &lt;!-- 定义需要特殊处理的异常，用类名或完全路径名作为key，异常也页名作为值 --&gt;
+        &lt;property name=&quot;exceptionMappings&quot;&gt;
+            &lt;props&gt;
+                &lt;!-- 异常，err表示err.jsp页面 --&gt;
+                &lt;prop key=&quot;java.lang.Exception&quot;&gt;err&lt;/prop&gt;
+                &lt;!-- 可配置多个prop --&gt;
+            &lt;/props&gt;
+        &lt;/property&gt;
+    &lt;/bean&gt;
+&lt;/beans&gt;</code></pre>
+<p>第二步，在启动类加载xml文件：</p>
+<pre><code class="java">@SpringBootApplication
+@ImportResource(&quot;classpath:spring-config.xml&quot;)
+public class SpringmvcApplication {
+
+    public static void main(String[] args) {
+        SpringApplication.run(SpringmvcApplication.class, args);
+    }
+
+}</code></pre>
+<p>第三步，在webapp目录下创建一个err.jsp页面：</p>
+<pre><code class="jsp">&lt;%@ page contentType=&quot;text/html;charset=UTF-8&quot; language=&quot;java&quot; %&gt;
+&lt;html&gt;
+&lt;head&gt;
+    &lt;title&gt;异常页面&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;h1&gt;出现异常，这是一张500页面&lt;/h1&gt;
+&lt;br&gt;
+&lt;%-- 打印异常到页面上 --%&gt;
+&lt;% Exception ex = (Exception)request.getAttribute(&quot;ex&quot;); %&gt;
+&lt;br&gt;
+&lt;div&gt;&lt;%=ex.getMessage()%&gt;&lt;/div&gt;
+&lt;% ex.printStackTrace(new java.io.PrintWriter(out)); %&gt;
+&lt;/body&gt;
+&lt;/html&gt;</code></pre>
+<p>这样就完成了，写一个接口测试一下：</p>
+<pre><code class="java">@Controller
+@RequestMapping(&quot;/exception&quot;)
+public class ExceptionController {
+    @RequestMapping(&quot;/index&quot;)
+    public String index(String msg) throws Exception {
+        if (&quot;null&quot;.equals(msg)) {
+            //抛出空指针异常
+            throw new NullPointerException();
+        }
+        return &quot;index&quot;;
+    }
+}</code></pre>
+<p>效果如下：</p>
+<p><img src="https://static.lovebilibili.com/springmvc_33.png" srcset="/img/loading.gif" alt=""></p>
+<p>这种异常处理器，在现在前后端分离的项目中几乎已经看不到了。</p>
+<h2 id="9-2-ResponseStatusExceptionResolver"><a href="#9-2-ResponseStatusExceptionResolver" class="headerlink" title="9.2 ResponseStatusExceptionResolver"></a>9.2 ResponseStatusExceptionResolver</h2><p>这种异常处理器主要用于处理带有<code>@ResponseStatus</code>注释的异常。请看演示代码：</p>
+<p>自定义一个异常类，并且使用<code>@ResponseStatus</code>注解修饰：</p>
+<pre><code class="java">//HttpStatus枚举有所有的状态码，这里返回一个400的响应码
+@ResponseStatus(value = HttpStatus.BAD_REQUEST)
+public class DefinedException extends Exception{
+}</code></pre>
+<p>写一个Controller接口进行测试：</p>
+<pre><code class="java">@RequestMapping(&quot;/defined&quot;)
+public String defined(String msg) throws Exception {
+    if (&quot;defined&quot;.equals(msg)) {
+        throw new DefinedException();
+    }
+    return &quot;index&quot;;
+}</code></pre>
+<p>启动项目，测试一下，效果如下：</p>
+<p><img src="https://static.lovebilibili.com/springmvc_34.png" srcset="/img/loading.gif" alt=""></p>
+<h2 id="9-3-ExceptionHandlerExceptionResolver"><a href="#9-3-ExceptionHandlerExceptionResolver" class="headerlink" title="9.3 ExceptionHandlerExceptionResolver"></a>9.3 ExceptionHandlerExceptionResolver</h2><p>注解形式的异常处理器，这是用得最多的。使用起来非常简单方便。</p>
+<p>第一步，定义自定义异常BaseException：</p>
+<pre><code class="java">public class BaseException extends Exception {
+    public BaseException(String message) {
+        super(message);
+    }
+}</code></pre>
+<p>第二步，定义一个错误提示实体类ErrorInfo：</p>
+<pre><code class="java">public class ErrorInfo {
+    public static final Integer OK = 0;
+    public static final Integer ERROR = -1;
+    private Integer code;
+    private String message;
+    private String url;
+    //getter、setter
+}</code></pre>
+<p>第三步，定义全局异常处理类GlobalExceptionHandler：</p>
+<pre><code class="java">//这里使用了RestControllerAdvice，是@ResponseBody和@ControllerAdvice的结合
+//会把实体类转成JSON格式的提示返回，符合前后端分离的架构
+@RestControllerAdvice
+public class GlobalExceptionHandler {
+
+    //这里自定义了一个BaseException，当抛出BaseException异常就会被此方法处理
+    @ExceptionHandler(BaseException.class)
+    public ErrorInfo errorHandler(HttpServletRequest req, BaseException e) throws Exception {
+        ErrorInfo r = new ErrorInfo();
+        r.setMessage(e.getMessage());
+        r.setCode(ErrorInfo.ERROR);
+        r.setUrl(req.getRequestURL().toString());
+        return r;
+    }
+}</code></pre>
+<p>完成之后，写一个测试接口：</p>
+<pre><code class="java">@RequestMapping(&quot;/base&quot;)
+public String base(String msg) throws Exception {
+    if (&quot;base&quot;.equals(msg)) {
+        throw new BaseException(&quot;测试抛出BaseException异常，欧耶！&quot;);
+    }
+    return &quot;index&quot;;
+}</code></pre>
+<p>启动项目，测试：</p>
+<p><img src="https://static.lovebilibili.com/springmvc_35.png" srcset="/img/loading.gif" alt=""></p>
+<h1 id="絮叨"><a href="#絮叨" class="headerlink" title="絮叨"></a>絮叨</h1><p>SpringMVC的功能实际上肯定还不止我写的这些，不过学会上面这些之后，基本上已经可以应对日常的工作了。</p>
+<p>如果要再深入一些，最好是看看SpringMVC源码，我之前写过三篇，<strong>责任链模式与SpringMVC拦截器，适配器模式与SpringMVC，全局异常处理源码分析</strong>。有兴趣可以关注公众号看看我的历史文章。</p>
+<p>上面所有例子的代码都上传Github了：</p>
+<blockquote>
+<p><a href="https://github.com/yehongzhi/mall" target="_blank" rel="noopener">https://github.com/yehongzhi/mall</a></p>
+</blockquote>
+<p><strong>觉得有用就点个赞吧，你的点赞是我创作的最大动力</strong>~</p>
+<p><strong>拒绝做一条咸鱼，我是一个努力让大家记住的程序员。我们下期再见！！！</strong></p>
+<p><img src="https://static.lovebilibili.com/dashacha.png" srcset="/img/loading.gif" alt=""></p>
+<blockquote>
+<p>能力有限，如果有什么错误或者不当之处，请大家批评指正，一起学习交流！</p>
+</blockquote>
+
+            <hr>
+          </div>
+          <br>
+          <div>
+            <p>
+            
+            
+              <span>
+                <i class="iconfont icon-tag"></i>
+                
+                  <a class="hover-with-bg" href="/tags/java">java</a>
+                
+                  <a class="hover-with-bg" href="/tags/SpringMVC">SpringMVC</a>
+                
+              </span>
+            
+            </p>
+            
+              <p class="note note-warning">本博客所有文章除特别声明外，均采用 <a href="https://zh.wikipedia.org/wiki/Wikipedia:CC_BY-SA_3.0%E5%8D%8F%E8%AE%AE%E6%96%87%E6%9C%AC" target="_blank" rel="nofollow noopener noopener">CC BY-SA 3.0协议</a> 。转载请注明出处！</p>
+            
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="d-none d-lg-block col-lg-2 toc-container">
+      
+  <div id="toc">
+    <p class="h4"><i class="far fa-list-alt"></i>&nbsp;目录</p>
+    <div id="tocbot"></div>
+  </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- custom -->
+
+
+<!-- Comments -->
+<div class="col-lg-7 mx-auto nopadding-md">
+  <div class="container comments mx-auto" id="comments">
+    
+  </div>
+</div>
+
+    
+  </main>
+
+  
+    <a class="z-depth-1" id="scroll-top-button" href="#" role="button">
+      <i class="fa fa-chevron-up scroll-top-arrow" aria-hidden="true"></i>
+    </a>
+  
+
+  
+    <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v"
+                 for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+  
+
+  <footer class="mt-5">
+  <div class="text-center py-3">
+    <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><b>Hexo</b></a>
+    <i class="iconfont icon-love"></i>
+    <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"> <b>Fluid</b></a>
+    <br>
+
+    
+  
+    <!-- 不蒜子统计PV -->
+    
+    &nbsp;<span id="busuanzi_container_site_pv"></span>总访问量 
+          <span id="busuanzi_value_site_pv"></span> 次&nbsp;
+  
+  
+    <!-- 不蒜子统计UV -->
+    
+    &nbsp;<span id="busuanzi_container_site_uv"></span>总访客数 
+            <span id="busuanzi_value_site_uv"></span> 人&nbsp;
+  
+  <br>
+
+
+
+    
+
+
+    <!-- cnzz Analytics icon -->
+    
+
+  </div>
+</footer>
+
+<!-- SCRIPTS -->
+<script src="/lib/jquery/jquery.min.js" ></script>
+<script src="/lib/popper/popper.min.js" ></script>
+<script src="/lib/bootstrap/js/bootstrap.min.js" ></script>
+<script src="/lib/mdbootstrap/js/mdb.min.js" ></script>
+<script src="/js/main.js" ></script>
+
+
+  <script src="/js/lazyload.js" ></script>
+
+
+
+  
+    <script src="/lib/tocbot/tocbot.min.js" ></script>
+  
+  <script src="/js/post.js" ></script>
+
+
+
+  <script src="/lib/smooth-scroll/smooth-scroll.min.js" ></script>
+
+
+
+  <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" ></script>
+
+
+<!-- Plugins -->
+
+
+  
+
+  
+
+  
+
+  
+
+  <!-- cnzz Analytics -->
+  
+
+
+
+  <script src="/lib/prettify/prettify.min.js" ></script>
+  <script>
+    $(document).ready(function () {
+      $('pre').addClass('prettyprint  linenums');
+      prettyPrint();
+    })
+  </script>
+
+
+
+  <script src="/lib/typed/typed.min.js" ></script>
+  <script>
+    var typed = new Typed('#subtitle', {
+      strings: [
+        '  ',
+        "5千字的SpringMVC总结，你值得拥有&nbsp;",
+      ],
+      cursorChar: "_",
+      typeSpeed: 70,
+      loop: false,
+    });
+    typed.stop();
+    $(document).ready(function () {
+      $(".typed-cursor").addClass("h2");
+      typed.start();
+    });
+  </script>
+
+
+
+  <script src="/lib/anchor/anchor.min.js" ></script>
+  <script>
+    anchors.options = {
+      placement: "right",
+      visible: "false",
+      
+    };
+    var el = "h1,h2,h3,h4,h5,h6".split(",");
+    var res = [];
+    for (item of el) {
+      res.push(".markdown-body > " + item)
+    }
+    anchors.add(res.join(", "))
+  </script>
+
+
+
+  <script src="/js/local-search.js" ></script>
+  <script>
+    var path = "/local-search.xml";
+    var inputArea = document.querySelector("#local-search-input");
+    inputArea.onclick = function () {
+      getSearchFile(path);
+      this.onclick = null
+    }
+  </script>
+
+
+
+  <script src="/lib/fancybox/jquery.fancybox.min.js" ></script>
+  <script>
+    $("#post img:not(.no-zoom img, img[no-zoom])").each(
+      function () {
+        var element = document.createElement("a");
+        $(element).attr("data-fancybox", "images");
+        $(element).attr("href", $(this).attr("src"));
+        $(this).wrap(element);
+      }
+    );
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+</body>
+</html>
