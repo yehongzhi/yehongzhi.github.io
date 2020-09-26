@@ -1,0 +1,675 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/apple-touch-icon.png">
+  <link rel="icon" type="image/png" href="/img/favicon.png">
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="description" content="">
+  <meta name="author" content="Ye hongzhi">
+  <meta name="keywords" content="">
+  <title>微服务之注册中心 - 叶洪智的技术分享</title>
+
+  <link rel="stylesheet" href="/lib/font-awesome/css/all.min.css"  >
+<link rel="stylesheet" href="/lib/bootstrap/css/bootstrap.min.css"  >
+<link rel="stylesheet" href="/lib/mdbootstrap/css/mdb.min.css"  >
+<link rel="stylesheet" href="/lib/github-markdown/github-markdown.min.css"  >
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1067060_qzomjdt8bmp.css">
+
+
+
+  <link rel="stylesheet" href="/lib/prettify/tomorrow-night-eighties.min.css"  >
+
+<link rel="stylesheet" href="/css/main.css"  >
+
+
+  <link rel="stylesheet" href="/lib/fancybox/jquery.fancybox.min.css"  >
+
+
+<meta name="generator" content="Hexo 4.2.0"></head>
+
+
+<body>
+  <header style="height: 70vh;">
+    <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand"
+       href="/">&nbsp;<strong>YeHongzhi's Blog</strong>&nbsp;</a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+          <li class="nav-item">
+            <a class="nav-link" href="/">首页</a>
+          </li>
+        
+          
+          
+          
+          
+          <li class="nav-item">
+            <a class="nav-link" href="/archives/">归档</a>
+          </li>
+        
+          
+          
+          
+          
+          <li class="nav-item">
+            <a class="nav-link" href="/tags/">标签</a>
+          </li>
+        
+          
+          
+          
+          
+          <li class="nav-item">
+            <a class="nav-link" href="/about/">关于</a>
+          </li>
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" data-toggle="modal" data-target="#modalSearch">&nbsp;&nbsp;<i
+                class="iconfont icon-search"></i>&nbsp;&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+    <div class="view intro-2" id="background" false
+         style="background: url('/img/post.png')no-repeat center center;
+           background-size: cover;">
+      <div class="full-bg-img">
+        <div class="mask rgba-black-light flex-center">
+          <div class="container text-center white-text fadeInUp">
+            <span class="h2" id="subtitle">
+              
+            </span>
+
+            
+              <br>
+              
+                <p class="mt-3">
+                  <i class="fas fa-calendar-alt" aria-hidden="true"></i>&nbsp;
+                  星期六, 九月 26日 2020, 9:47 晚上
+                </p>
+              
+
+              <p>
+                
+                  
+                  &nbsp;<i class="far fa-chart-bar"></i>
+                  <span class="post-count">
+                    2.8k 字
+                  </span>&nbsp;
+                
+
+                
+                  
+                  &nbsp;<i class="far fa-clock"></i>
+                  <span class="post-count">
+                      12 分钟
+                  </span>&nbsp;
+                
+
+                
+                  <!-- 不蒜子统计文章PV -->
+                  
+                  &nbsp;<i class="far fa-eye" aria-hidden="true"></i>&nbsp;
+                  <span id="busuanzi_container_page_pv">
+                    <span id="busuanzi_value_page_pv"></span> 次
+                  </span>&nbsp;
+                
+              </p>
+            
+          </div>
+
+          
+            <div class="scroll-down-bar">
+              <i class="fas fa-angle-down scroll-down-arrow"></i>
+            </div>
+          
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid">
+  <div class="row">
+    <div class="d-none d-lg-block col-lg-2"></div>
+    <div class="col-lg-8 nopadding-md">
+      <div class="py-5 z-depth-3" id="board">
+        <div class="post-content mx-auto" id="post">
+          <div class="markdown-body">
+            <h1 id="思维导图"><a href="#思维导图" class="headerlink" title="思维导图"></a>思维导图</h1><p><img src="https://static.lovebilibili.com/zczx_swdt.png" srcset="/img/loading.gif" alt=""></p>
+<h1 id="一、前言"><a href="#一、前言" class="headerlink" title="一、前言"></a>一、前言</h1><p>伴随着Eurka2.0版本已停止维护，开始要考虑使用微服务新一代的开源的注册中心替代Eureka。</p>
+<p><img src="https://static.lovebilibili.com/zczx_27.png" srcset="/img/loading.gif" alt=""></p>
+<p>目前据我了解，Consul和Nacos是比较流行的两种替代方案。这篇文章就介绍一下这两种注册中心在微服务中的简单使用，希望对读者有所帮助。</p>
+<a id="more"></a>
+
+<h1 id="二、注册中心的作用"><a href="#二、注册中心的作用" class="headerlink" title="二、注册中心的作用"></a>二、注册中心的作用</h1><p>注册中心在微服务的架构中相当于一个“服务的通讯录”。当一个服务启动时，需要向注册中心注册服务，注册中心保存了所有服务的服务名称和服务地址的映射关系。当服务A想调用服务D时，则从注册中心获取服务D的服务地址，然后调用。</p>
+<p>我画张图给大家描述会更清楚一点，大概如下：</p>
+<p><img src="https://static.lovebilibili.com/zczx_1.png" srcset="/img/loading.gif" alt=""></p>
+<p>可能会有人问，为什么不直接通过服务地址调用服务D呢，还要从注册中心去获取服务D的服务地址。因为一个服务背后是不止一台机器的，比如服务D可能在实际生产中是由三台机器支持的，对外只暴露一个服务名称，这样可以避免写死服务的IP地址在代码中(写在配置文件里)，在服务扩展时就非常方便了。</p>
+<p>除了<strong>服务注册</strong>之外，注册中心还提供<strong>服务订阅</strong>，当有新的服务注册时，注册中心会实时推送到各个服务。</p>
+<p>还有<strong>服务健康监测</strong>，可以在管理界面看到注册中心中的服务的状态。</p>
+<h1 id="三、Consul"><a href="#三、Consul" class="headerlink" title="三、Consul"></a>三、Consul</h1><p>由Go语言开发，支持多数据中心分布式高可用的服务发布和服务注册，采用ralt算法保证服务的一致性，且支持健康检查。</p>
+<h2 id="3-1-安装-win10版"><a href="#3-1-安装-win10版" class="headerlink" title="3.1 安装(win10版)"></a>3.1 安装(win10版)</h2><p>第一步，上官网下载安装包。</p>
+<p><img src="https://static.lovebilibili.com/zczx_2.png" srcset="/img/loading.gif" alt=""></p>
+<p>第二步，解压zip包，并配置环境变量。</p>
+<p><img src="https://static.lovebilibili.com/zczx_3.png" srcset="/img/loading.gif" alt=""></p>
+<p><img src="https://static.lovebilibili.com/zczx_4.png" srcset="/img/loading.gif" alt=""></p>
+<p>第三步，唱跳rap篮球键ctrl+R，cmd，输入命令<code>consul</code>：</p>
+<p><img src="https://static.lovebilibili.com/zczx_5.png" srcset="/img/loading.gif" alt=""></p>
+<p>这就安装成功了，超简单！输入consul -version验证一下，会显示版本号：</p>
+<p><img src="https://static.lovebilibili.com/zczx_7.png" srcset="/img/loading.gif" alt=""></p>
+<p>第四步，启动。输入命令<code>consul.exe agent -dev</code>本地启动：</p>
+<p><img src="https://static.lovebilibili.com/zczx_8.png" srcset="/img/loading.gif" alt=""></p>
+<p>第五步，在浏览器中输入<code>http://localhost:8500</code>打开管理界面。</p>
+<p><img src="https://static.lovebilibili.com/zczx_9.png" srcset="/img/loading.gif" alt=""></p>
+<h2 id="3-2-服务注册"><a href="#3-2-服务注册" class="headerlink" title="3.2 服务注册"></a>3.2 服务注册</h2><p>接下来就需要创建两个服务，分别是订单(order)和用户(user)，注册到consul。下面我就演示其中一个user服务。</p>
+<p>首先创建一个SpringBoot工程，Maven配置如下：</p>
+<pre><code class="xml">&lt;parent&gt;
+    &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;
+    &lt;artifactId&gt;spring-boot-starter-parent&lt;/artifactId&gt;
+    &lt;version&gt;2.0.1.RELEASE&lt;/version&gt;
+&lt;/parent&gt;
+&lt;groupId&gt;io.github.yehongzhi&lt;/groupId&gt;
+&lt;artifactId&gt;user&lt;/artifactId&gt;
+&lt;version&gt;0.0.1-SNAPSHOT&lt;/version&gt;
+&lt;dependencies&gt;
+    &lt;dependency&gt;
+        &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;
+        &lt;artifactId&gt;spring-boot-starter&lt;/artifactId&gt;
+    &lt;/dependency&gt;
+    &lt;dependency&gt;&lt;!-- 健康监测的包 --&gt;
+        &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;
+        &lt;artifactId&gt;spring-boot-starter-actuator&lt;/artifactId&gt;
+    &lt;/dependency&gt;
+    &lt;dependency&gt;&lt;!-- spring-cloud-consul服务治理的jar包 --&gt;
+        &lt;groupId&gt;org.springframework.cloud&lt;/groupId&gt;
+        &lt;artifactId&gt;spring-cloud-starter-consul-discovery&lt;/artifactId&gt;
+        &lt;version&gt;2.0.1.RELEASE&lt;/version&gt;
+    &lt;/dependency&gt;
+    &lt;dependency&gt;
+        &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;
+        &lt;artifactId&gt;spring-boot-starter-web&lt;/artifactId&gt;
+    &lt;/dependency&gt;
+&lt;/dependencies&gt;
+
+&lt;dependencyManagement&gt;
+    &lt;dependencies&gt;
+        &lt;dependency&gt;
+            &lt;groupId&gt;org.springframework.cloud&lt;/groupId&gt;
+            &lt;artifactId&gt;spring-cloud-dependencies&lt;/artifactId&gt;
+            &lt;version&gt;Finchley.SR1&lt;/version&gt;
+            &lt;type&gt;pom&lt;/type&gt;
+            &lt;scope&gt;import&lt;/scope&gt;
+        &lt;/dependency&gt;
+    &lt;/dependencies&gt;
+&lt;/dependencyManagement&gt;</code></pre>
+<p>然后yml配置文件如下：</p>
+<pre><code class="yaml">server:
+  port: 8601
+spring:
+  application:
+    name: user
+  cloud:
+    consul:
+      port: 8500
+      host: 127.0.0.1
+      discovery:
+        service-name: user
+        instance-id: ${spring.application.name}:${spring.cloud.consul.host}:${server.port}
+        health-check-path: /actuator/health
+        health-check-interval: 10s
+        prefer-ip-address: true
+        heartbeat:
+          enabled: true</code></pre>
+<p>在启动类加上开启服务注册的注解：</p>
+<pre><code class="java">@SpringBootApplication
+@EnableDiscoveryClient
+public class UserApplication {
+    public static void main(String[] args) {
+        SpringApplication.run(UserApplication.class, args);
+    }
+
+}</code></pre>
+<p>最后启动项目即可，我这里启动两个user，端口号分别是8601，8602：</p>
+<p><img src="https://static.lovebilibili.com/zczx_10.png" srcset="/img/loading.gif" alt=""></p>
+<h2 id="3-3-服务调用"><a href="#3-3-服务调用" class="headerlink" title="3.3 服务调用"></a>3.3 服务调用</h2><p>再创建一个订单项目(order)，和user配置类似，注册服务到consul中。</p>
+<p><img src="https://static.lovebilibili.com/zczx_11.png" srcset="/img/loading.gif" alt=""></p>
+<p>下面演示一下用order服务调用user服务，首先定义user的接口：</p>
+<pre><code class="java">@RestController
+@RequestMapping(&quot;/mall/user&quot;)
+public class UserController {
+    @RequestMapping(&quot;/list&quot;)
+    public Map&lt;String, Object&gt; list() throws Exception {
+        Map&lt;String, Object&gt; userMap = new HashMap&lt;&gt;();
+        userMap.put(&quot;1号佳丽&quot;, &quot;李嘉欣&quot;);
+        userMap.put(&quot;2号佳丽&quot;, &quot;袁咏仪&quot;);
+        userMap.put(&quot;3号佳丽&quot;, &quot;张敏&quot;);
+        userMap.put(&quot;4号佳丽&quot;, &quot;张曼玉&quot;);
+        return userMap;
+    }
+}</code></pre>
+<p>接着在order服务调用user服务，使用RestTemplate的方式：</p>
+<pre><code class="java">@RestController
+@RequestMapping(&quot;/mall/order&quot;)
+public class OrderController {
+
+    @Resource
+    private LoadBalancerClient loadBalancerClient;
+
+    @RequestMapping(&quot;/callUser&quot;)
+    public String list() throws Exception {
+        //从注册中心中获取user服务实例，包括服务的IP，端口号等信息
+        ServiceInstance instance = loadBalancerClient.choose(&quot;user&quot;);
+        //调用user服务
+        String userList = new RestTemplate().getForObject(instance.getUri().toString() + &quot;/mall/user/list&quot;, String.class);
+        return &quot;调用&quot; + instance.getServiceId() + &quot;服务，端口号：&quot; + instance.getPort() + &quot;,返回结果：&quot; + userList;
+    }
+}</code></pre>
+<p>启动两个user服务，一个order服务，调用order的接口，可以看到结果：</p>
+<p><img src="https://static.lovebilibili.com/zczx_12.png" srcset="/img/loading.gif" alt=""></p>
+<p><img src="https://static.lovebilibili.com/zczx_13.png" srcset="/img/loading.gif" alt=""></p>
+<p>负载均衡<strong>默认是轮询访问</strong>，所以交替调用8601和8602的user服务。</p>
+<p>consul的简单入门就讲到这里了，除了<strong>服务治理</strong>之外，consul还可以用于做配置中心，读者有兴趣可以自己探索一下。<strong>我这里用的是dev模式，相当于单机模式，仅用于学习，实际生产的话肯定是集群模式</strong>，后面如果有时间我再专门写一篇演示一下consul集群的搭建。</p>
+<p>下面讲另一款注册中心，阿里出品的Nacos。</p>
+<h1 id="四、Nacos"><a href="#四、Nacos" class="headerlink" title="四、Nacos"></a>四、Nacos</h1><p>以下介绍来源于官网：</p>
+<p>Nacos 致力于帮助您<strong>发现、配置和管理微服务</strong>。Nacos 提供了一组简单易用的特性集，帮助您快速实现<strong>动态服务发现、服务配置、服务元数据及流量管理</strong>。</p>
+<p>Nacos 帮助您更敏捷和容易地构建、交付和管理微服务平台。 Nacos 是构建以“服务”为中心的现代应用架构 (例如微服务范式、云原生范式) 的服务基础设施。</p>
+<p>总结就是，Nacos提供三种功能：服务发现及管理、动态配置服务、动态DNS服务。</p>
+<p>我这里主要讲服务发现，也就是作为<strong>注册中心</strong>的功能。</p>
+<h2 id="4-1-安装"><a href="#4-1-安装" class="headerlink" title="4.1 安装"></a>4.1 安装</h2><p>首先<a href="https://github.com/alibaba/nacos/releases/tag/1.3.1" target="_blank" rel="noopener">下载</a>安装包，目前稳定版是1.3.1，推荐在Linux或者Mac系统上使用，我懒得开虚拟机，所以我就直接在win系统安装。</p>
+<p><img src="https://static.lovebilibili.com/zczx_14.png" srcset="/img/loading.gif" alt=""></p>
+<p>我这里仅用于学习，使用单机模式，官网上介绍，双击startup.cmd文件启动即可。</p>
+<p><img src="https://static.lovebilibili.com/zczx_15.png" srcset="/img/loading.gif" alt=""></p>
+<p>实际上，会报错。</p>
+<p><img src="https://static.lovebilibili.com/zczx_17.png" srcset="/img/loading.gif" alt=""></p>
+<p>这个错误，我发现github上有人提出来，再后面加个参数就可以了。</p>
+<p><img src="https://static.lovebilibili.com/zczx_18.png" srcset="/img/loading.gif" alt=""></p>
+<p>但是又有人说后面的版本已经优化了，没有这个错误。反正如果遇到的话，就加个参数启动吧。完整命令是<code>startup.cmd -m standalone</code>。</p>
+<p>如果不想在启动命令后面加参数，可以配置mysql(版本要求：5.6.5+)，初始化mysql数据库，数据库初始化文件：nacos-mysql.sql。</p>
+<p><img src="https://static.lovebilibili.com/zczx_26.png" srcset="/img/loading.gif" alt=""></p>
+<p>修改conf/application.properties文件配置：</p>
+<pre><code class="properties">db.num=1
+db.url.0=jdbc:mysql://数据库地址:3306/nacos_config?characterEncoding=utf8&amp;connectTimeout=1000&amp;socketTimeout=3000&amp;autoReconnect=true&amp;useUnicode=true&amp;useSSL=false&amp;serverTimezone=UTC
+db.user=账号
+db.password=密码</code></pre>
+<p>启动成功，命令行窗口可以看到以下提示：</p>
+<p><img src="https://static.lovebilibili.com/zczx_19.png" srcset="/img/loading.gif" alt=""></p>
+<p>启动成功后，可以在浏览器打开<code>http://localhost:8848/nacos/</code>，进入管理界面。账号密码默认都是nacos。</p>
+<p><img src="https://static.lovebilibili.com/zczx_20.png" srcset="/img/loading.gif" alt=""></p>
+<p><img src="https://static.lovebilibili.com/zczx_21.png" srcset="/img/loading.gif" alt=""></p>
+<h2 id="4-2-服务注册"><a href="#4-2-服务注册" class="headerlink" title="4.2 服务注册"></a>4.2 服务注册</h2><p>接下来还是一样，创建两个服务注册到nacos，为了跟前面的区分，项目名后缀加上”nacos”。首先添加maven配置，如下：</p>
+<pre><code class="java">&lt;parent&gt;
+    &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;
+    &lt;artifactId&gt;spring-boot-starter-parent&lt;/artifactId&gt;
+    &lt;version&gt;2.0.5.RELEASE&lt;/version&gt;
+    &lt;relativePath/&gt; &lt;!-- lookup parent from repository --&gt;
+&lt;/parent&gt;
+&lt;dependencyManagement&gt;
+    &lt;dependencies&gt;
+        &lt;dependency&gt;
+            &lt;groupId&gt;org.springframework.cloud&lt;/groupId&gt;
+            &lt;artifactId&gt;spring-cloud-dependencies&lt;/artifactId&gt;
+            &lt;version&gt;Finchley.SR1&lt;/version&gt;
+            &lt;type&gt;pom&lt;/type&gt;
+            &lt;scope&gt;import&lt;/scope&gt;
+        &lt;/dependency&gt;
+        &lt;dependency&gt;
+            &lt;groupId&gt;org.springframework.cloud&lt;/groupId&gt;
+            &lt;artifactId&gt;spring-cloud-alibaba-dependencies&lt;/artifactId&gt;
+            &lt;version&gt;0.2.2.RELEASE&lt;/version&gt;
+            &lt;type&gt;pom&lt;/type&gt;
+            &lt;scope&gt;import&lt;/scope&gt;
+        &lt;/dependency&gt;
+    &lt;/dependencies&gt;
+&lt;/dependencyManagement&gt;
+&lt;dependencies&gt;
+    &lt;dependency&gt;&lt;!-- SpringWeb依赖 --&gt;
+        &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;
+        &lt;artifactId&gt;spring-boot-starter-web&lt;/artifactId&gt;
+    &lt;/dependency&gt;
+    &lt;dependency&gt;&lt;!-- SpringCloud nacos服务发现的依赖 --&gt;
+        &lt;groupId&gt;org.springframework.cloud&lt;/groupId&gt;
+        &lt;artifactId&gt;spring-cloud-starter-alibaba-nacos-discovery&lt;/artifactId&gt;
+    &lt;/dependency&gt;
+&lt;/dependencies&gt;</code></pre>
+<p>启动类加上注解@EnableDiscoveryClient。</p>
+<pre><code class="java">@SpringBootApplication
+@EnableDiscoveryClient
+public class UsernacosApplication {
+    public static void main(String[] args) {
+        SpringApplication.run(UsernacosApplication.class, args);
+    }
+}</code></pre>
+<p>配置文件application.properties文件加上配置。</p>
+<pre><code class="properties">server.port=8070
+spring.application.name=usernacos
+spring.cloud.nacos.discovery.server-addr=127.0.0.1:8848</code></pre>
+<p>创建一个UserController接口，提供给其他微服务调用。</p>
+<pre><code class="java">@RestController
+@RequestMapping(&quot;/mall/userNacos&quot;)
+public class UserController {
+    @RequestMapping(&quot;/list&quot;)
+    public Map&lt;String, Object&gt; list() {
+        Map&lt;String, Object&gt; userMap = new HashMap&lt;&gt;();
+        userMap.put(&quot;周杰伦&quot;, &quot;爱在西元前&quot;);
+        userMap.put(&quot;张学友&quot;, &quot;只想一生跟你走&quot;);
+        userMap.put(&quot;刘德华&quot;, &quot;忘情水&quot;);
+        userMap.put(&quot;陈奕迅&quot;, &quot;K歌之王&quot;);
+        userMap.put(&quot;卫兰&quot;, &quot;就算世界没有童话&quot;);
+        return userMap;
+    }
+}</code></pre>
+<p>运行启动类的main方法，可以看到注册中心多了一个usernacos服务。</p>
+<p><img src="https://static.lovebilibili.com/zczx_22.png" srcset="/img/loading.gif" alt=""></p>
+<h2 id="4-3-服务调用"><a href="#4-3-服务调用" class="headerlink" title="4.3 服务调用"></a>4.3 服务调用</h2><p>相同的配置和方法，再创建一个ordernacos服务，作为消费者。</p>
+<pre><code class="java">@RestController
+@RequestMapping(&quot;/mall/orderNacos&quot;)
+public class OrderController {
+    @Resource
+    private LoadBalancerClient loadBalancerClient;
+
+    @RequestMapping(&quot;/callUser&quot;)
+    public String callUser() {
+        ServiceInstance instance = loadBalancerClient.choose(&quot;usernacos&quot;);
+        String url = instance.getUri().toString() + &quot;/mall/userNacos/list&quot;;
+        RestTemplate restTemplate = new RestTemplate();
+        //调用usernacos服务
+        String result = restTemplate.getForObject(url, String.class);
+        return &quot;调用&quot; + instance.getServiceId() + &quot;服务，端口号：&quot; + instance.getPort() + &quot;,返回结果：&quot; + result;
+    }
+}</code></pre>
+<p>启动2个usernacos服务，1个ordernacos服务。</p>
+<p><img src="https://static.lovebilibili.com/zczx_23.png" srcset="/img/loading.gif" alt=""></p>
+<p>测试接口<code>http://localhost:8170/mall/orderNacos/callUser</code>，order能顺利调用user，默认负载均衡策略也是轮询机制。</p>
+<p><img src="https://static.lovebilibili.com/zczx_24.png" srcset="/img/loading.gif" alt=""></p>
+<p><img src="https://static.lovebilibili.com/zczx_25.png" srcset="/img/loading.gif" alt=""></p>
+<h1 id="五、总结"><a href="#五、总结" class="headerlink" title="五、总结"></a>五、总结</h1><p>国内用的比较多的是Nacos，我觉得原因有几点：</p>
+<ul>
+<li>因为阿里目前用的就是Nacos，经历过双十一，各种秒杀活动等高并发场景的验证。</li>
+<li>文档比较齐全，关键有中文文档，对于国内很多英文水平不是很好的开发者看起来真的很爽。</li>
+<li>很多从阿里出来的程序员，把阿里的技术带到了各个中小型互联网公司，一般技术选型肯定选自己熟悉的嘛。</li>
+<li>管理界面有中(英)文版本，易于操作。</li>
+<li>还有社区比较活跃，很多问题可以在网上找到解决方案。</li>
+</ul>
+<p>这篇文章主要介绍了SpringCloud微服务关于注册中心的两种流行的实现方案，接下来还会继续介绍其他关于微服务的组件，敬请期待。</p>
+<p>上面所有例子的代码都上传Github了：</p>
+<blockquote>
+<p><a href="https://github.com/yehongzhi/mall" target="_blank" rel="noopener">https://github.com/yehongzhi/mall</a></p>
+</blockquote>
+<p><strong>觉得有用就点个赞吧，你的点赞是我创作的最大动力</strong>~</p>
+<p><strong>拒绝做一条咸鱼，我是一个努力让大家记住的程序员。我们下期再见！！！</strong></p>
+<p><img src="https://static.lovebilibili.com/dashacha.png" srcset="/img/loading.gif" alt=""></p>
+<blockquote>
+<p>能力有限，如果有什么错误或者不当之处，请大家批评指正，一起学习交流！</p>
+</blockquote>
+
+            <hr>
+          </div>
+          <br>
+          <div>
+            <p>
+            
+            
+              <span>
+                <i class="iconfont icon-tag"></i>
+                
+                  <a class="hover-with-bg" href="/tags/java">java</a>
+                
+                  <a class="hover-with-bg" href="/tags/%E5%BE%AE%E6%9C%8D%E5%8A%A1">微服务</a>
+                
+                  <a class="hover-with-bg" href="/tags/%E6%B3%A8%E5%86%8C%E4%B8%AD%E5%BF%83">注册中心</a>
+                
+              </span>
+            
+            </p>
+            
+              <p class="note note-warning">本博客所有文章除特别声明外，均采用 <a href="https://zh.wikipedia.org/wiki/Wikipedia:CC_BY-SA_3.0%E5%8D%8F%E8%AE%AE%E6%96%87%E6%9C%AC" target="_blank" rel="nofollow noopener noopener">CC BY-SA 3.0协议</a> 。转载请注明出处！</p>
+            
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="d-none d-lg-block col-lg-2 toc-container">
+      
+  <div id="toc">
+    <p class="h4"><i class="far fa-list-alt"></i>&nbsp;目录</p>
+    <div id="tocbot"></div>
+  </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- custom -->
+
+
+<!-- Comments -->
+<div class="col-lg-7 mx-auto nopadding-md">
+  <div class="container comments mx-auto" id="comments">
+    
+  </div>
+</div>
+
+    
+  </main>
+
+  
+    <a class="z-depth-1" id="scroll-top-button" href="#" role="button">
+      <i class="fa fa-chevron-up scroll-top-arrow" aria-hidden="true"></i>
+    </a>
+  
+
+  
+    <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v"
+                 for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+  
+
+  <footer class="mt-5">
+  <div class="text-center py-3">
+    <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><b>Hexo</b></a>
+    <i class="iconfont icon-love"></i>
+    <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"> <b>Fluid</b></a>
+    <br>
+
+    
+  
+    <!-- 不蒜子统计PV -->
+    
+    &nbsp;<span id="busuanzi_container_site_pv"></span>总访问量 
+          <span id="busuanzi_value_site_pv"></span> 次&nbsp;
+  
+  
+    <!-- 不蒜子统计UV -->
+    
+    &nbsp;<span id="busuanzi_container_site_uv"></span>总访客数 
+            <span id="busuanzi_value_site_uv"></span> 人&nbsp;
+  
+  <br>
+
+
+
+    
+
+
+    <!-- cnzz Analytics icon -->
+    
+
+  </div>
+</footer>
+
+<!-- SCRIPTS -->
+<script src="/lib/jquery/jquery.min.js" ></script>
+<script src="/lib/popper/popper.min.js" ></script>
+<script src="/lib/bootstrap/js/bootstrap.min.js" ></script>
+<script src="/lib/mdbootstrap/js/mdb.min.js" ></script>
+<script src="/js/main.js" ></script>
+
+
+  <script src="/js/lazyload.js" ></script>
+
+
+
+  
+    <script src="/lib/tocbot/tocbot.min.js" ></script>
+  
+  <script src="/js/post.js" ></script>
+
+
+
+  <script src="/lib/smooth-scroll/smooth-scroll.min.js" ></script>
+
+
+
+  <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" ></script>
+
+
+<!-- Plugins -->
+
+
+  
+
+  
+
+  
+
+  
+
+  <!-- cnzz Analytics -->
+  
+
+
+
+  <script src="/lib/prettify/prettify.min.js" ></script>
+  <script>
+    $(document).ready(function () {
+      $('pre').addClass('prettyprint  linenums');
+      prettyPrint();
+    })
+  </script>
+
+
+
+  <script src="/lib/typed/typed.min.js" ></script>
+  <script>
+    var typed = new Typed('#subtitle', {
+      strings: [
+        '  ',
+        "微服务之注册中心&nbsp;",
+      ],
+      cursorChar: "_",
+      typeSpeed: 70,
+      loop: false,
+    });
+    typed.stop();
+    $(document).ready(function () {
+      $(".typed-cursor").addClass("h2");
+      typed.start();
+    });
+  </script>
+
+
+
+  <script src="/lib/anchor/anchor.min.js" ></script>
+  <script>
+    anchors.options = {
+      placement: "right",
+      visible: "false",
+      
+    };
+    var el = "h1,h2,h3,h4,h5,h6".split(",");
+    var res = [];
+    for (item of el) {
+      res.push(".markdown-body > " + item)
+    }
+    anchors.add(res.join(", "))
+  </script>
+
+
+
+  <script src="/js/local-search.js" ></script>
+  <script>
+    var path = "/local-search.xml";
+    var inputArea = document.querySelector("#local-search-input");
+    inputArea.onclick = function () {
+      getSearchFile(path);
+      this.onclick = null
+    }
+  </script>
+
+
+
+  <script src="/lib/fancybox/jquery.fancybox.min.js" ></script>
+  <script>
+    $("#post img:not(.no-zoom img, img[no-zoom])").each(
+      function () {
+        var element = document.createElement("a");
+        $(element).attr("data-fancybox", "images");
+        $(element).attr("href", $(this).attr("src"));
+        $(this).wrap(element);
+      }
+    );
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+</body>
+</html>

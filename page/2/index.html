@@ -136,6 +136,59 @@
     
     
       <div class="col-12 col-md-4 m-auto">
+        <a href="/2020/07/26/ZooKeeper%E5%85%A5%E9%97%A8/" target="_blank">
+          <img src="https://static.lovebilibili.com/ZooKeeper_index.jpg" srcset="/img/loading.gif" alt="ZooKeeper入门" class="index-img img-fluid rounded index-thumbnails">
+        </a>
+      </div>
+    
+    <div class="col-12 col-md-8 mx-auto index-info">
+      <a href="/2020/07/26/ZooKeeper%E5%85%A5%E9%97%A8/">
+        <p class="h4 index-header">ZooKeeper入门</p>
+      </a>
+
+      <a href="/2020/07/26/ZooKeeper%E5%85%A5%E9%97%A8/">
+        
+        
+          
+        
+        <div class="index-excerpt" >
+          <div class="index-text mb-1">思维导图
+前言在很多时候，我们都可以在各种框架应用中看到ZooKeeper的身影，比如Kafka中间件，Dubbo框架，Hadoop等等。为什么到处都看到ZooKeeper？
+一、什么是ZooKeeperZooKeeper是一个分布式服务协调框架，提供了分布式数据一致性的解决方案，基于ZooKeeper的数据结构，Watcher，选举机制等特点，可以实现数据的发布/订阅，软负载均衡，命名服务，统一配置管理，分布式锁，集群管理等等。
+二、为什么使用ZooKeeperZooKeeper能保证：
+
+更新请求顺序进行。来自同一个client的更新请求按其发送顺序依次执行
+数据更新原子性。一次数据更新要么成功，要么失败
+全局唯一数据视图。client无论连接到哪个server，数据视图都是一致的
+实时性。在一定时间范围内，client读到的数据是最新的
+
+三、数据结构ZooKeeper的数据结构和Unix文件系统很类似，总体上可以看做是一棵树，每一个节点称之为一个ZNode，每一个ZNode默认能存储1M的数据。每一个ZNode可通过唯一的路径标识。如下图所示：
+
+创建ZNode时，可以指定以下</div>
+        </div>
+      </a>
+
+      <div class="index-btm">
+        
+          <i class="iconfont icon-riqi2"></i>&nbsp;2020-07-26&nbsp;&nbsp;
+        
+        
+        
+          <i class="iconfont icon-tag"></i>
+          
+            <a href="/tags/java">java</a>&nbsp;
+          
+            <a href="/tags/zookeeper">zookeeper</a>&nbsp;
+          
+        
+      </div>
+    </div>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+      <div class="col-12 col-md-4 m-auto">
         <a href="/2020/07/26/%E4%BB%8E%E7%A7%92%E6%9D%80%E8%81%8A%E5%88%B0ZooKeeper%E5%88%86%E5%B8%83%E5%BC%8F%E9%94%81/" target="_blank">
           <img src="https://static.lovebilibili.com/zookeeper_lock_index.jpg" srcset="/img/loading.gif" alt="从秒杀聊到ZooKeeper分布式锁" class="index-img img-fluid rounded index-thumbnails">
         </a>
@@ -556,53 +609,11 @@ S</div>
     </div>
   </div>
 
-  <div class="row mx-auto index-card">
-    
-    
-      <div class="col-12 col-md-4 m-auto">
-        <a href="/2020/05/31/%E9%80%82%E9%85%8D%E5%99%A8%E6%A8%A1%E5%BC%8F%E4%B8%8ESpringMVC/" target="_blank">
-          <img src="https://static.lovebilibili.com/adaptera_index.jpg" srcset="/img/loading.gif" alt="适配器模式与SpringMVC" class="index-img img-fluid rounded index-thumbnails">
-        </a>
-      </div>
-    
-    <div class="col-12 col-md-8 mx-auto index-info">
-      <a href="/2020/05/31/%E9%80%82%E9%85%8D%E5%99%A8%E6%A8%A1%E5%BC%8F%E4%B8%8ESpringMVC/">
-        <p class="h4 index-header">适配器模式与SpringMVC</p>
-      </a>
-
-      <a href="/2020/05/31/%E9%80%82%E9%85%8D%E5%99%A8%E6%A8%A1%E5%BC%8F%E4%B8%8ESpringMVC/">
-        
-        
-          
-          
-        
-        <div class="index-excerpt" style="max-height: none;">
-          <div class="index-text mb-1">适配器模式定义适配器模式是将一个接口转换成客户希望的另一个接口，使接口不兼容的那些类可以一起工作，其别名为包装器(Wrapper)。适配器模式既可以作为类结构型模式，也可以作为对象结构型模式。...</div>
-        </div>
-      </a>
-
-      <div class="index-btm">
-        
-          <i class="iconfont icon-riqi2"></i>&nbsp;2020-05-31&nbsp;&nbsp;
-        
-        
-        
-          <i class="iconfont icon-tag"></i>
-          
-            <a href="/tags/java">java</a>&nbsp;
-          
-            <a href="/tags/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F">设计模式</a>&nbsp;
-          
-        
-      </div>
-    </div>
-  </div>
-
 
 
   <nav aria-label="index posts navigation">
     <span class="pagination pg-blue justify-content-center mt-5" id="pagination">
-      <a class="extend prev" rel="prev" href="/"><i class="fas fa-angle-double-left"></i></a><a class="page-number" href="/">1</a><span class="page-number current">2</span><a class="page-number" href="/page/3/">3</a><a class="extend next" rel="next" href="/page/3/"><i class="fas fa-angle-double-right"></i></a>
+      <a class="extend prev" rel="prev" href="/"><i class="fas fa-angle-double-left"></i></a><a class="page-number" href="/">1</a><span class="page-number current">2</span><a class="page-number" href="/page/3/">3</a><a class="page-number" href="/page/4/">4</a><a class="extend next" rel="next" href="/page/3/"><i class="fas fa-angle-double-right"></i></a>
     </span>
   </nav>
   
