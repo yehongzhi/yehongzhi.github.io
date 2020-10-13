@@ -136,6 +136,126 @@
     
     
       <div class="col-12 col-md-4 m-auto">
+        <a href="/2020/10/13/3%E5%8D%83%E5%AD%97%E8%AF%A6%E7%BB%86%E8%AE%B2%E8%A7%A3OpenFeign%E7%9A%84%E4%BD%BF%E7%94%A8%E5%A7%BF%E5%8A%BF/" target="_blank">
+          <img src="https://static.lovebilibili.com/fegin_index.jpg" srcset="/img/loading.gif" alt="3千字详细讲解OpenFeign的使用姿势" class="index-img img-fluid rounded index-thumbnails">
+        </a>
+      </div>
+    
+    <div class="col-12 col-md-8 mx-auto index-info">
+      <a href="/2020/10/13/3%E5%8D%83%E5%AD%97%E8%AF%A6%E7%BB%86%E8%AE%B2%E8%A7%A3OpenFeign%E7%9A%84%E4%BD%BF%E7%94%A8%E5%A7%BF%E5%8A%BF/">
+        <p class="h4 index-header">3千字详细讲解OpenFeign的使用姿势</p>
+      </a>
+
+      <a href="/2020/10/13/3%E5%8D%83%E5%AD%97%E8%AF%A6%E7%BB%86%E8%AE%B2%E8%A7%A3OpenFeign%E7%9A%84%E4%BD%BF%E7%94%A8%E5%A7%BF%E5%8A%BF/">
+        
+        
+          
+        
+        <div class="index-excerpt" >
+          <div class="index-text mb-1">思维导图
+
+文章已收录Github精选，欢迎Star：https://github.com/yehongzhi/learningSummary
+
+前言目前在SpringCloud技术栈中，调用服务用得最多的就是OpenFeign，所以这篇文章讲一下OpenFeign，希望对大家有所帮助。
+一、构建工程使用Nacos作为注册中心，不会搭建Nacos的话，可以参考上一篇注册中心的文章。
+首先父工程parent引入依赖。
+&lt;dependencyManagement&gt;
+    &lt;dependencies&gt;
+        &lt;dependency&gt;
+            &lt;groupId&gt;org.springframework.cloud&lt;/groupId&gt;
+            &lt;artifactId&gt;spring-cloud-dependencies&lt;/artifactId&gt;
+            &lt;version&gt;Finchley.SR1&lt;/version&gt;
+         </div>
+        </div>
+      </a>
+
+      <div class="index-btm">
+        
+          <i class="iconfont icon-riqi2"></i>&nbsp;2020-10-13&nbsp;&nbsp;
+        
+        
+        
+          <i class="iconfont icon-tag"></i>
+          
+            <a href="/tags/java">java</a>&nbsp;
+          
+            <a href="/tags/OpenFeign">OpenFeign</a>&nbsp;
+          
+            <a href="/tags/%E5%BE%AE%E6%9C%8D%E5%8A%A1">微服务</a>&nbsp;
+          
+        
+      </div>
+    </div>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+      <div class="col-12 col-md-4 m-auto">
+        <a href="/2020/10/13/3%E5%8D%83%E5%AD%97%E5%B8%A6%E4%BD%A0%E6%90%9E%E6%87%82XXL-JOB%E4%BB%BB%E5%8A%A1%E8%B0%83%E5%BA%A6%E5%B9%B3%E5%8F%B0/" target="_blank">
+          <img src="https://static.lovebilibili.com/xxljob_index.jpg" srcset="/img/loading.gif" alt="3千字带你搞懂XXL-JOB任务调度平台" class="index-img img-fluid rounded index-thumbnails">
+        </a>
+      </div>
+    
+    <div class="col-12 col-md-8 mx-auto index-info">
+      <a href="/2020/10/13/3%E5%8D%83%E5%AD%97%E5%B8%A6%E4%BD%A0%E6%90%9E%E6%87%82XXL-JOB%E4%BB%BB%E5%8A%A1%E8%B0%83%E5%BA%A6%E5%B9%B3%E5%8F%B0/">
+        <p class="h4 index-header">3千字带你搞懂XXL-JOB任务调度平台</p>
+      </a>
+
+      <a href="/2020/10/13/3%E5%8D%83%E5%AD%97%E5%B8%A6%E4%BD%A0%E6%90%9E%E6%87%82XXL-JOB%E4%BB%BB%E5%8A%A1%E8%B0%83%E5%BA%A6%E5%B9%B3%E5%8F%B0/">
+        
+        
+          
+        
+        <div class="index-excerpt" >
+          <div class="index-text mb-1">思维导图
+
+文章已收录Github精选，欢迎Star：https://github.com/yehongzhi/learningSummary
+
+一、概述在平时的业务场景中，经常有一些场景需要使用定时任务，比如：
+
+时间驱动的场景：某个时间点发送优惠券，发送短信等等。
+批量处理数据：批量统计上个月的账单，统计上个月销售数据等等。
+固定频率的场景：每隔5分钟需要执行一次。
+
+所以定时任务在平时开发中并不少见，而且对于现在快速消费的时代，每天都需要发送各种推送，消息都需要依赖定时任务去完成，应用非常广泛。
+二、为什么需要任务调度平台在Java中，传统的定时任务实现方案，比如Timer，Quartz等都或多或少存在一些问题：
+
+不支持集群、不支持统计、没有管理平台、没有失败报警、没有监控等等
+
+而且在现在分布式的架构中，有一些场景需要分布式任务调度：
+
+同一个服务多个实例的任务存在互斥时，需要统一的调度。
+任务调度需要支持高可用、监控、故障告警。
+需要统一管理和追踪各个服务节点任务调度的结果，需要记录保存任务属性信息等。
+
+显然传统的定时任务已经不满足现在的分布式架构，所以需要一个分布式任务</div>
+        </div>
+      </a>
+
+      <div class="index-btm">
+        
+          <i class="iconfont icon-riqi2"></i>&nbsp;2020-10-13&nbsp;&nbsp;
+        
+        
+        
+          <i class="iconfont icon-tag"></i>
+          
+            <a href="/tags/java">java</a>&nbsp;
+          
+            <a href="/tags/%E5%88%86%E5%B8%83%E5%BC%8F">分布式</a>&nbsp;
+          
+            <a href="/tags/%E4%BB%BB%E5%8A%A1%E8%B0%83%E5%BA%A6%E5%B9%B3%E5%8F%B0">任务调度平台</a>&nbsp;
+          
+        
+      </div>
+    </div>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+      <div class="col-12 col-md-4 m-auto">
         <a href="/2020/09/26/%E5%BE%AE%E6%9C%8D%E5%8A%A1%E4%B9%8B%E6%B3%A8%E5%86%8C%E4%B8%AD%E5%BF%83/" target="_blank">
           <img src="https://static.lovebilibili.com/nacos_index.jpg" srcset="/img/loading.gif" alt="微服务之注册中心" class="index-img img-fluid rounded index-thumbnails">
         </a>
@@ -478,11 +598,11 @@ Java内存模型规定所有的变量都存储在主内存中，包括实例变�
           
             <a href="/tags/java">java</a>&nbsp;
           
-            <a href="/tags/mysql">mysql</a>&nbsp;
-          
             <a href="/tags/canal">canal</a>&nbsp;
           
             <a href="/tags/kafka">kafka</a>&nbsp;
+          
+            <a href="/tags/mysql">mysql</a>&nbsp;
           
         
       </div>
@@ -529,102 +649,9 @@ Java内存模型规定所有的变量都存储在主内存中，包括实例变�
           
             <a href="/tags/java">java</a>&nbsp;
           
-            <a href="/tags/mysql">mysql</a>&nbsp;
-          
             <a href="/tags/canal">canal</a>&nbsp;
           
-        
-      </div>
-    </div>
-  </div>
-
-  <div class="row mx-auto index-card">
-    
-    
-      <div class="col-12 col-md-4 m-auto">
-        <a href="/2020/08/08/RabbitMQ%E5%A6%82%E4%BD%95%E9%98%B2%E6%AD%A2%E6%B6%88%E6%81%AF%E4%B8%A2%E5%A4%B1/" target="_blank">
-          <img src="https://static.lovebilibili.com/rabbitmq_jinjie_index.jpg" srcset="/img/loading.gif" alt="RabbitMQ如何防止消息丢失" class="index-img img-fluid rounded index-thumbnails">
-        </a>
-      </div>
-    
-    <div class="col-12 col-md-8 mx-auto index-info">
-      <a href="/2020/08/08/RabbitMQ%E5%A6%82%E4%BD%95%E9%98%B2%E6%AD%A2%E6%B6%88%E6%81%AF%E4%B8%A2%E5%A4%B1/">
-        <p class="h4 index-header">RabbitMQ如何防止消息丢失</p>
-      </a>
-
-      <a href="/2020/08/08/RabbitMQ%E5%A6%82%E4%BD%95%E9%98%B2%E6%AD%A2%E6%B6%88%E6%81%AF%E4%B8%A2%E5%A4%B1/">
-        
-        
-          
-          
-        
-        <div class="index-excerpt" style="max-height: none;">
-          <div class="index-text mb-1">思维导图
-一、分析数据丢失的原因分析RabbitMQ消息丢失的情况，不妨先看看一条消息从生产者发送到消费者消费的过程：
-
-可以看出，一条消息整个过程要经历两次的网络传输：从生产者发送到RabbitMQ服务器，从RabbitMQ服务器发送到消费者。...</div>
-        </div>
-      </a>
-
-      <div class="index-btm">
-        
-          <i class="iconfont icon-riqi2"></i>&nbsp;2020-08-08&nbsp;&nbsp;
-        
-        
-        
-          <i class="iconfont icon-tag"></i>
-          
-            <a href="/tags/%E6%B6%88%E6%81%AF%E9%98%9F%E5%88%97">消息队列</a>&nbsp;
-          
-            <a href="/tags/RabbitMQ">RabbitMQ</a>&nbsp;
-          
-            <a href="/tags/%E4%B8%AD%E9%97%B4%E4%BB%B6">中间件</a>&nbsp;
-          
-        
-      </div>
-    </div>
-  </div>
-
-  <div class="row mx-auto index-card">
-    
-    
-      <div class="col-12 col-md-4 m-auto">
-        <a href="/2020/08/08/RabbitMQ%E5%85%A5%E9%97%A8/" target="_blank">
-          <img src="https://static.lovebilibili.com/rabbitmq_index.jpg" srcset="/img/loading.gif" alt="RabbitMQ入门" class="index-img img-fluid rounded index-thumbnails">
-        </a>
-      </div>
-    
-    <div class="col-12 col-md-8 mx-auto index-info">
-      <a href="/2020/08/08/RabbitMQ%E5%85%A5%E9%97%A8/">
-        <p class="h4 index-header">RabbitMQ入门</p>
-      </a>
-
-      <a href="/2020/08/08/RabbitMQ%E5%85%A5%E9%97%A8/">
-        
-        
-          
-          
-        
-        <div class="index-excerpt" style="max-height: none;">
-          <div class="index-text mb-1">思维导图
-一、什么是消息队列消息指的是两个应用间传递的数据。数据的类型有很多种形式，可能只包含文本字符串，也可能包含嵌入对象。
-“消息队列(Message Queue)”是在消息的传输过程中保存消息的容器。在消息队列中，通常有生产者和消费者两个角色。生产者只负责发送数据到消息队列，谁从消息队列中取出数据处理，他不管。消费者只负责从消息队列中取出数据处理，他不管这是谁发送的数据。...</div>
-        </div>
-      </a>
-
-      <div class="index-btm">
-        
-          <i class="iconfont icon-riqi2"></i>&nbsp;2020-08-08&nbsp;&nbsp;
-        
-        
-        
-          <i class="iconfont icon-tag"></i>
-          
-            <a href="/tags/%E6%B6%88%E6%81%AF%E9%98%9F%E5%88%97">消息队列</a>&nbsp;
-          
-            <a href="/tags/RabbitMQ">RabbitMQ</a>&nbsp;
-          
-            <a href="/tags/%E4%B8%AD%E9%97%B4%E4%BB%B6">中间件</a>&nbsp;
+            <a href="/tags/mysql">mysql</a>&nbsp;
           
         
       </div>
