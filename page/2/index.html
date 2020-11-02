@@ -136,6 +136,63 @@
     
     
       <div class="col-12 col-md-4 m-auto">
+        <a href="/2020/08/16/Canal-Kafka%E5%AE%9E%E7%8E%B0MySQL%E4%B8%8ERedis%E6%95%B0%E6%8D%AE%E5%90%8C%E6%AD%A5/" target="_blank">
+          <img src="https://static.lovebilibili.com/canal_jinjie_index.jpg" srcset="/img/loading.gif" alt="Canal+Kafka实现MySQL与Redis数据同步" class="index-img img-fluid rounded index-thumbnails">
+        </a>
+      </div>
+    
+    <div class="col-12 col-md-8 mx-auto index-info">
+      <a href="/2020/08/16/Canal-Kafka%E5%AE%9E%E7%8E%B0MySQL%E4%B8%8ERedis%E6%95%B0%E6%8D%AE%E5%90%8C%E6%AD%A5/">
+        <p class="h4 index-header">Canal+Kafka实现MySQL与Redis数据同步</p>
+      </a>
+
+      <a href="/2020/08/16/Canal-Kafka%E5%AE%9E%E7%8E%B0MySQL%E4%B8%8ERedis%E6%95%B0%E6%8D%AE%E5%90%8C%E6%AD%A5/">
+        
+        
+          
+        
+        <div class="index-excerpt" >
+          <div class="index-text mb-1">思维导图
+前言在很多业务情况下，我们都会在系统中加入redis缓存做查询优化。
+如果数据库数据发生更新，这时候就需要在业务代码中写一段同步更新redis的代码。
+这种数据同步的代码跟业务代码糅合在一起会不太优雅，能不能把这些数据同步的代码抽出来形成一个独立的模块呢，答案是可以的。
+架构图canal是一个伪装成slave订阅mysql的binlog，实现数据同步的中间件。上一篇文章《canal入门》
+我已经介绍了最简单的使用方法，也就是tcp模式。
+实际上canal是支持直接发送到MQ的，目前最新版是支持主流的三种MQ：Kafka、RocketMQ、RabbitMQ。而canal的RabbitMQ模式目前是有一定的bug，所以一般使用Kafka或者RocketMQ。
+
+本文使用Kafka，实现Redis与MySQL的数据同步。架构图如下：
+
+通过架构图，我们很清晰就知道要用到的组件：MySQL、Canal、Kafka、ZooKeeper、Redis。
+下面演示Kafka的搭建，MySQL搭建大家应该都会，ZooKeeper、Redis这些网上也有很多资料参考。
+搭建Kafka首先在官网下</div>
+        </div>
+      </a>
+
+      <div class="index-btm">
+        
+          <i class="iconfont icon-riqi2"></i>&nbsp;2020-08-16&nbsp;&nbsp;
+        
+        
+        
+          <i class="iconfont icon-tag"></i>
+          
+            <a href="/tags/java">java</a>&nbsp;
+          
+            <a href="/tags/canal">canal</a>&nbsp;
+          
+            <a href="/tags/kafka">kafka</a>&nbsp;
+          
+            <a href="/tags/mysql">mysql</a>&nbsp;
+          
+        
+      </div>
+    </div>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+      <div class="col-12 col-md-4 m-auto">
         <a href="/2020/08/08/%E8%B6%85%E8%AF%A6%E7%BB%86canal%E5%85%A5%E9%97%A8/" target="_blank">
           <img src="https://static.lovebilibili.com/canal_index.jpg" srcset="/img/loading.gif" alt="超详细canal入门" class="index-img img-fluid rounded index-thumbnails">
         </a>
@@ -554,53 +611,6 @@ CREATE TABLE `tb_commodity_info` (
             <a href="/tags/java">java</a>&nbsp;
           
             <a href="/tags/NIO">NIO</a>&nbsp;
-          
-        
-      </div>
-    </div>
-  </div>
-
-  <div class="row mx-auto index-card">
-    
-    
-      <div class="col-12 col-md-4 m-auto">
-        <a href="/2020/06/21/List%E9%9B%86%E5%90%88%E7%9A%84%E5%9D%91/" target="_blank">
-          <img src="https://static.lovebilibili.com/List集合的坑.jpg" srcset="/img/loading.gif" alt="List集合的坑" class="index-img img-fluid rounded index-thumbnails">
-        </a>
-      </div>
-    
-    <div class="col-12 col-md-8 mx-auto index-info">
-      <a href="/2020/06/21/List%E9%9B%86%E5%90%88%E7%9A%84%E5%9D%91/">
-        <p class="h4 index-header">List集合的坑</p>
-      </a>
-
-      <a href="/2020/06/21/List%E9%9B%86%E5%90%88%E7%9A%84%E5%9D%91/">
-        
-        
-          
-          
-        
-        <div class="index-excerpt" style="max-height: none;">
-          <div class="index-text mb-1">
-学如逆水行舟，不进则退
-
-经过几年的工作经验，我发现List有很多坑，之前公司有些实习生一不小心就踩到了，所以我打算写一篇文章总结一下，希望看到这篇文章的人能不再踩到坑，代码没bug。做个快乐的程序员。...</div>
-        </div>
-      </a>
-
-      <div class="index-btm">
-        
-          <i class="iconfont icon-riqi2"></i>&nbsp;2020-06-21&nbsp;&nbsp;
-        
-        
-        
-          <i class="iconfont icon-tag"></i>
-          
-            <a href="/tags/java">java</a>&nbsp;
-          
-            <a href="/tags/%E9%9B%86%E5%90%88">集合</a>&nbsp;
-          
-            <a href="/tags/%E7%BB%8F%E9%AA%8C%E6%80%BB%E7%BB%93">经验总结</a>&nbsp;
           
         
       </div>
