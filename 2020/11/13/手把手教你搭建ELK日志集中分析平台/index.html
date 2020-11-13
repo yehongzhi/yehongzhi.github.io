@@ -1,0 +1,536 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/apple-touch-icon.png">
+  <link rel="icon" type="image/png" href="/img/favicon.png">
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="description" content="">
+  <meta name="author" content="Ye hongzhi">
+  <meta name="keywords" content="">
+  <title>手把手教你搭建ELK日志集中分析平台 - 叶洪智的技术分享</title>
+
+  <link rel="stylesheet" href="/lib/font-awesome/css/all.min.css"  >
+<link rel="stylesheet" href="/lib/bootstrap/css/bootstrap.min.css"  >
+<link rel="stylesheet" href="/lib/mdbootstrap/css/mdb.min.css"  >
+<link rel="stylesheet" href="/lib/github-markdown/github-markdown.min.css"  >
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1067060_qzomjdt8bmp.css">
+
+
+
+  <link rel="stylesheet" href="/lib/prettify/tomorrow-night-eighties.min.css"  >
+
+<link rel="stylesheet" href="/css/main.css"  >
+
+
+  <link rel="stylesheet" href="/lib/fancybox/jquery.fancybox.min.css"  >
+
+
+<meta name="generator" content="Hexo 4.2.0"></head>
+
+
+<body>
+  <header style="height: 70vh;">
+    <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand"
+       href="/">&nbsp;<strong>YeHongzhi's Blog</strong>&nbsp;</a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+          <li class="nav-item">
+            <a class="nav-link" href="/">首页</a>
+          </li>
+        
+          
+          
+          
+          
+          <li class="nav-item">
+            <a class="nav-link" href="/archives/">归档</a>
+          </li>
+        
+          
+          
+          
+          
+          <li class="nav-item">
+            <a class="nav-link" href="/tags/">标签</a>
+          </li>
+        
+          
+          
+          
+          
+          <li class="nav-item">
+            <a class="nav-link" href="/about/">关于</a>
+          </li>
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" data-toggle="modal" data-target="#modalSearch">&nbsp;&nbsp;<i
+                class="iconfont icon-search"></i>&nbsp;&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+    <div class="view intro-2" id="background" false
+         style="background: url('/img/post.png')no-repeat center center;
+           background-size: cover;">
+      <div class="full-bg-img">
+        <div class="mask rgba-black-light flex-center">
+          <div class="container text-center white-text fadeInUp">
+            <span class="h2" id="subtitle">
+              
+            </span>
+
+            
+              <br>
+              
+                <p class="mt-3">
+                  <i class="fas fa-calendar-alt" aria-hidden="true"></i>&nbsp;
+                  星期五, 十一月 13日 2020, 10:57 晚上
+                </p>
+              
+
+              <p>
+                
+                  
+                  &nbsp;<i class="far fa-chart-bar"></i>
+                  <span class="post-count">
+                    1.6k 字
+                  </span>&nbsp;
+                
+
+                
+                  
+                  &nbsp;<i class="far fa-clock"></i>
+                  <span class="post-count">
+                      6 分钟
+                  </span>&nbsp;
+                
+
+                
+                  <!-- 不蒜子统计文章PV -->
+                  
+                  &nbsp;<i class="far fa-eye" aria-hidden="true"></i>&nbsp;
+                  <span id="busuanzi_container_page_pv">
+                    <span id="busuanzi_value_page_pv"></span> 次
+                  </span>&nbsp;
+                
+              </p>
+            
+          </div>
+
+          
+            <div class="scroll-down-bar">
+              <i class="fas fa-angle-down scroll-down-arrow"></i>
+            </div>
+          
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid">
+  <div class="row">
+    <div class="d-none d-lg-block col-lg-2"></div>
+    <div class="col-lg-8 nopadding-md">
+      <div class="py-5 z-depth-3" id="board">
+        <div class="post-content mx-auto" id="post">
+          <div class="markdown-body">
+            <h1 id="思维导图"><a href="#思维导图" class="headerlink" title="思维导图"></a>思维导图</h1><p><img src="https://static.lovebilibili.com/elk_swdt.png" srcset="/img/loading.gif" alt=""></p>
+<blockquote>
+<p><strong>文章已收录Github精选，欢迎Star</strong>：<a href="https://github.com/yehongzhi/learningSummary" target="_blank" rel="noopener">https://github.com/yehongzhi/learningSummary</a></p>
+</blockquote>
+<h1 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h1><p>我们都知道，在生产环境中经常会遇到很多异常，报错信息，需要查看日志信息排查错误。现在的系统大多比较复杂，即使是一个服务背后也是一个集群的机器在运行，<strong>如果逐台机器去查看日志显然是很费力的，也不现实</strong>。</p>
+<p>如果能把日志全部收集到一个平台，然后像百度，谷歌一样<strong>通过关键字搜索出相关的日志</strong>，岂不快哉。于是就有了<strong>集中式日志系统</strong>。ELK就是其中一款使用最多的开源产品。</p>
+<h1 id="一、什么是ELK"><a href="#一、什么是ELK" class="headerlink" title="一、什么是ELK"></a>一、什么是ELK</h1><p>ELK其实是Elasticsearch，Logstash 和 Kibana三个产品的首字母缩写，这三款都是开源产品。</p>
+<p><strong>ElasticSearch</strong>(简称ES)，是一个实时的分布式搜索和分析引擎，它可以用于全文搜索，结构化搜索以及分析。</p>
+<p><strong>Logstash</strong>，是一个数据收集引擎，主要用于进行数据收集、解析，并将数据发送给ES。支持的数据源包括本地文件、ElasticSearch、MySQL、Kafka等等。</p>
+<p><strong>Kibana</strong>，为 Elasticsearch 提供了分析和 Web 可视化界面，并生成各种维度表格、图形。</p>
+<p><img src="https://static.lovebilibili.com/elk_2.png" srcset="/img/loading.gif" alt=""></p>
+<h1 id="二、搭建ELK"><a href="#二、搭建ELK" class="headerlink" title="二、搭建ELK"></a>二、搭建ELK</h1><p>环境依赖：CentOS7.5，JDK1.8，ElasticSearch7.9.3，Logstash 7.9.3，Kibana7.9.3。</p>
+<h2 id="2-1-安装ElasticSearch"><a href="#2-1-安装ElasticSearch" class="headerlink" title="2.1 安装ElasticSearch"></a>2.1 安装ElasticSearch</h2><p>首先，到<a href="https://www.elastic.co/cn/downloads/elasticsearch" target="_blank" rel="noopener">官网</a>下载安装包，然后使用<code>tar -zxvf</code>命令解压。</p>
+<p><img src="https://static.lovebilibili.com/elk_3.png" srcset="/img/loading.gif" alt=""></p>
+<p>找到config目录下的elasticsearch.yml文件，修改配置：</p>
+<pre><code class="yaml">cluster.name: es-application
+node.name: node-1
+#对所有IP开放
+network.host: 0.0.0.0
+#HTTP端口号
+http.port: 9200
+#elasticsearch数据文件存放目录
+path.data: /usr/elasticsearch-7.9.3/data
+#elasticsearch日志文件存放目录
+path.logs: /usr/elasticsearch-7.9.3/logs</code></pre>
+<p>配置完之后，因为ElasticSearch使用非root用户启动，所以创建一个用户。</p>
+<pre><code class="java"># 创建用户
+useradd yehongzhi
+# 设置密码
+passwd yehongzhi
+# 赋予用户权限
+chown -R yehongzhi:yehongzhi /usr/elasticsearch-7.9.3/</code></pre>
+<p>然后切换用户，启动：</p>
+<pre><code># 切换用户
+su yehongzhi
+# 启动 -d表示后台启动
+./bin/elasticsearch -d</code></pre><p>使用命令<code>netstat -nltp</code>查看端口号：</p>
+<p><img src="https://static.lovebilibili.com/elk_4.png" srcset="/img/loading.gif" alt=""></p>
+<p>访问<code>http://192.168.0.109:9200/</code>可以看到如下信息，表示安装成功。</p>
+<p><img src="https://static.lovebilibili.com/elk_5.png" srcset="/img/loading.gif" alt=""></p>
+<h2 id="2-2-安装Logstash"><a href="#2-2-安装Logstash" class="headerlink" title="2.2 安装Logstash"></a>2.2 安装Logstash</h2><p>首先在官网下载安装压缩包，然后解压，找到/config目录下的logstash-sample.conf文件，修改配置：</p>
+<pre><code class="yaml">input {
+  file{
+    path =&gt; [&#39;/usr/local/user/*.log&#39;]
+    type =&gt; &#39;user_log&#39;
+    start_position =&gt; &quot;beginning&quot;
+  }
+}
+
+output {
+  elasticsearch {
+    hosts =&gt; [&quot;http://192.168.0.109:9200&quot;]
+    index =&gt; &quot;user-%{+YYYY.MM.dd}&quot;
+  }
+}</code></pre>
+<p>input表示输入源，output表示输出，还可以配置filter过滤，架构如下：</p>
+<p><img src="https://static.lovebilibili.com/elk_11.png" srcset="/img/loading.gif" alt=""></p>
+<p>配置完之后，要有数据源，也就是日志文件，准备一个user.jar应用程序，然后后台启动，并且输出到日志文件user.log中，命令如下：</p>
+<pre><code class="shell">nohup java -jar user.jar &gt;/usr/local/user/user.log &amp;</code></pre>
+<p>接着再后台启动Logstash，命令如下：</p>
+<pre><code class="shell">nohup ./bin/logstash -f /usr/logstash-7.9.3/config/logstash-sample.conf &amp;</code></pre>
+<p>启动完之后，使用<code>jps</code>命令，可以看到两个进程在运行：</p>
+<p><img src="https://static.lovebilibili.com/elk_8.png" srcset="/img/loading.gif" alt=""></p>
+<h2 id="2-3-安装Kibana"><a href="#2-3-安装Kibana" class="headerlink" title="2.3 安装Kibana"></a>2.3 安装Kibana</h2><p>首先还是到<a href="https://www.elastic.co/cn/downloads/kibana" target="_blank" rel="noopener">官网</a>下载压缩包，然后解压，找到/config目录下的kibana.yml文件，修改配置：</p>
+<pre><code class="yaml">server.port: 5601
+server.host: &quot;192.168.0.111&quot;
+elasticsearch.hosts: [&quot;http://192.168.0.109:9200&quot;]</code></pre>
+<p>和elasticSearch一样，不能使用root用户启动，需要创建一个用户：</p>
+<pre><code># 创建用户
+useradd kibana
+# 设置密码
+passwd kibana
+# 赋予用户权限
+chown -R kibana:kibana /usr/kibana/</code></pre><p>然后使用命令启动：</p>
+<pre><code>#切换用户
+su kibana
+#非后台启动，关闭shell窗口即退出
+./bin/kibana
+#后台启动
+nohup ./bin/kibana &amp;</code></pre><p>启动后在浏览器打开<code>http://192.168.0.111:5601</code>，可以看到kibana的web交互界面：</p>
+<p><img src="https://static.lovebilibili.com/elk_6.png" srcset="/img/loading.gif" alt=""></p>
+<h2 id="2-4-效果展示"><a href="#2-4-效果展示" class="headerlink" title="2.4 效果展示"></a>2.4 效果展示</h2><p>全部启动成功后，整个过程应该是这样，我们看一下：</p>
+<p><img src="https://static.lovebilibili.com/elk_12.png" srcset="/img/loading.gif" alt=""></p>
+<p>浏览器打开<code>http://192.168.0.111:5601</code>，到管理界面，点击“Index Management”可以看到，有一个<code>user-2020.10.31</code>的索引。</p>
+<p><img src="https://static.lovebilibili.com/elk_10.png" srcset="/img/loading.gif" alt=""></p>
+<p>点击<code>Index Patterns</code>菜单栏，然后创建，命名为user-*。</p>
+<p><img src="https://static.lovebilibili.com/elk_9.png" srcset="/img/loading.gif" alt=""></p>
+<p>最后，就可以到Discover栏进行选择，选择user-*的Index Pattern，然后搜索关键字，就找到相关的日志了！</p>
+<p><img src="https://static.lovebilibili.com/elk_7.png" srcset="/img/loading.gif" alt=""></p>
+<h1 id="三、改进优化"><a href="#三、改进优化" class="headerlink" title="三、改进优化"></a>三、改进优化</h1><p>上面只是用到了核心的三个组件简单搭建的ELK，实际上是有缺陷的。如果Logstash需要添加插件，那就全部服务器的Logstash都要添加插件，扩展性差。所以就有了<strong>FileBeat</strong>，占用资源少，只负责采集日志，不做其他的事情，这样就轻量级，把Logstash抽出来，做一些滤处理之类的工作。</p>
+<p><img src="https://static.lovebilibili.com/elk_13.png" srcset="/img/loading.gif" alt=""></p>
+<p>FileBeat也是官方推荐用的日志采集器，首先下载Linux安装压缩包：</p>
+<pre><code>https://artifacts.elastic.co/downloads/beats/filebeat/filebeat-7.9.3-linux-x86_64.tar.gz</code></pre><p>下载完成后，解压。然后修改filebeat.yml配置文件：</p>
+<pre><code class="yaml">#输入源
+filebeat.inputs:
+- type: log
+  enabled: true
+  paths:
+    - /usr/local/user/*.log
+#输出，Logstash的服务器地址
+output.logstash:
+  hosts: [&quot;192.168.0.110:5044&quot;]
+#输出，如果直接输出到ElasticSearch则填写这个
+#output.elasticsearch:
+  #hosts: [&quot;localhost:9200&quot;]
+  #protocol: &quot;https&quot;</code></pre>
+<p>然后Logstash的配置文件logstash-sample.conf，也要改一下：</p>
+<pre><code>#输入源改成beats
+input {
+  beats {
+    port =&gt; 5044
+    codec =&gt; &quot;json&quot;
+  }
+}</code></pre><p>然后启动FileBeat：</p>
+<pre><code class="shell">#后台启动命令
+nohup ./filebeat -e -c filebeat.yml &gt;/dev/null 2&gt;&amp;1 &amp;</code></pre>
+<p>再启动Logstash：</p>
+<pre><code class="shell">#后台启动命令
+nohup ./bin/logstash -f /usr/logstash-7.9.3/config/logstash-sample.conf &amp;</code></pre>
+<p>怎么判断启动成功呢，看Logstash应用的/logs目录下的logstash-plain.log日志文件：</p>
+<p><img src="https://static.lovebilibili.com/elk_14.png" srcset="/img/loading.gif" alt=""></p>
+<h1 id="写在最后"><a href="#写在最后" class="headerlink" title="写在最后"></a>写在最后</h1><p>目前，很多互联网公司都是采用ELK来做日志集中式系统，原因很简单：<strong>开源、插件多、易扩展、支持数据源多、社区活跃、开箱即用</strong>等等。我见过有一个公司在上面的架构中还会加多一个Kafka的集群，主要是基于日志数据量比较大的考虑。但是呢，基本的三大组件ElasticSearch，Logstash，Kibana是不能少的。</p>
+<p>希望这篇文章能帮助大家对ELK有一些初步的认识，感谢大家的阅读。</p>
+<p><strong>觉得有用就点个赞吧，你的点赞是我创作的最大动力</strong>~</p>
+<p><strong>拒绝做一条咸鱼，我是一个努力让大家记住的程序员。我们下期再见！！！</strong></p>
+<p><img src="https://static.lovebilibili.com/dashacha.png" srcset="/img/loading.gif" alt=""></p>
+<blockquote>
+<p>能力有限，如果有什么错误或者不当之处，请大家批评指正，一起学习交流！</p>
+</blockquote>
+
+            <hr>
+          </div>
+          <br>
+          <div>
+            <p>
+            
+            
+              <span>
+                <i class="iconfont icon-tag"></i>
+                
+                  <a class="hover-with-bg" href="/tags/%E5%88%86%E5%B8%83%E5%BC%8F">分布式</a>
+                
+                  <a class="hover-with-bg" href="/tags/ELK">ELK</a>
+                
+              </span>
+            
+            </p>
+            
+              <p class="note note-warning">本博客所有文章除特别声明外，均采用 <a href="https://zh.wikipedia.org/wiki/Wikipedia:CC_BY-SA_3.0%E5%8D%8F%E8%AE%AE%E6%96%87%E6%9C%AC" target="_blank" rel="nofollow noopener noopener">CC BY-SA 3.0协议</a> 。转载请注明出处！</p>
+            
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="d-none d-lg-block col-lg-2 toc-container">
+      
+  <div id="toc">
+    <p class="h4"><i class="far fa-list-alt"></i>&nbsp;目录</p>
+    <div id="tocbot"></div>
+  </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- custom -->
+
+
+<!-- Comments -->
+<div class="col-lg-7 mx-auto nopadding-md">
+  <div class="container comments mx-auto" id="comments">
+    
+  </div>
+</div>
+
+    
+  </main>
+
+  
+    <a class="z-depth-1" id="scroll-top-button" href="#" role="button">
+      <i class="fa fa-chevron-up scroll-top-arrow" aria-hidden="true"></i>
+    </a>
+  
+
+  
+    <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v"
+                 for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+  
+
+  <footer class="mt-5">
+  <div class="text-center py-3">
+    <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><b>Hexo</b></a>
+    <i class="iconfont icon-love"></i>
+    <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"> <b>Fluid</b></a>
+    <br>
+
+    
+  
+    <!-- 不蒜子统计PV -->
+    
+    &nbsp;<span id="busuanzi_container_site_pv"></span>总访问量 
+          <span id="busuanzi_value_site_pv"></span> 次&nbsp;
+  
+  
+    <!-- 不蒜子统计UV -->
+    
+    &nbsp;<span id="busuanzi_container_site_uv"></span>总访客数 
+            <span id="busuanzi_value_site_uv"></span> 人&nbsp;
+  
+  <br>
+
+
+
+    
+
+
+    <!-- cnzz Analytics icon -->
+    
+
+  </div>
+</footer>
+
+<!-- SCRIPTS -->
+<script src="/lib/jquery/jquery.min.js" ></script>
+<script src="/lib/popper/popper.min.js" ></script>
+<script src="/lib/bootstrap/js/bootstrap.min.js" ></script>
+<script src="/lib/mdbootstrap/js/mdb.min.js" ></script>
+<script src="/js/main.js" ></script>
+
+
+  <script src="/js/lazyload.js" ></script>
+
+
+
+  
+    <script src="/lib/tocbot/tocbot.min.js" ></script>
+  
+  <script src="/js/post.js" ></script>
+
+
+
+  <script src="/lib/smooth-scroll/smooth-scroll.min.js" ></script>
+
+
+
+  <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" ></script>
+
+
+<!-- Plugins -->
+
+
+  
+
+  
+
+  
+
+  
+
+  <!-- cnzz Analytics -->
+  
+
+
+
+  <script src="/lib/prettify/prettify.min.js" ></script>
+  <script>
+    $(document).ready(function () {
+      $('pre').addClass('prettyprint  linenums');
+      prettyPrint();
+    })
+  </script>
+
+
+
+  <script src="/lib/typed/typed.min.js" ></script>
+  <script>
+    var typed = new Typed('#subtitle', {
+      strings: [
+        '  ',
+        "手把手教你搭建ELK日志集中分析平台&nbsp;",
+      ],
+      cursorChar: "_",
+      typeSpeed: 70,
+      loop: false,
+    });
+    typed.stop();
+    $(document).ready(function () {
+      $(".typed-cursor").addClass("h2");
+      typed.start();
+    });
+  </script>
+
+
+
+  <script src="/lib/anchor/anchor.min.js" ></script>
+  <script>
+    anchors.options = {
+      placement: "right",
+      visible: "false",
+      
+    };
+    var el = "h1,h2,h3,h4,h5,h6".split(",");
+    var res = [];
+    for (item of el) {
+      res.push(".markdown-body > " + item)
+    }
+    anchors.add(res.join(", "))
+  </script>
+
+
+
+  <script src="/js/local-search.js" ></script>
+  <script>
+    var path = "/local-search.xml";
+    var inputArea = document.querySelector("#local-search-input");
+    inputArea.onclick = function () {
+      getSearchFile(path);
+      this.onclick = null
+    }
+  </script>
+
+
+
+  <script src="/lib/fancybox/jquery.fancybox.min.js" ></script>
+  <script>
+    $("#post img:not(.no-zoom img, img[no-zoom])").each(
+      function () {
+        var element = document.createElement("a");
+        $(element).attr("data-fancybox", "images");
+        $(element).attr("href", $(this).attr("src"));
+        $(this).wrap(element);
+      }
+    );
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+</body>
+</html>
