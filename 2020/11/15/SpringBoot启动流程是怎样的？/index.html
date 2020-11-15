@@ -1,0 +1,609 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/apple-touch-icon.png">
+  <link rel="icon" type="image/png" href="/img/favicon.png">
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="description" content="">
+  <meta name="author" content="Ye hongzhi">
+  <meta name="keywords" content="">
+  <title>SpringBoot启动流程是怎样的？ - 叶洪智的技术分享</title>
+
+  <link rel="stylesheet" href="/lib/font-awesome/css/all.min.css"  >
+<link rel="stylesheet" href="/lib/bootstrap/css/bootstrap.min.css"  >
+<link rel="stylesheet" href="/lib/mdbootstrap/css/mdb.min.css"  >
+<link rel="stylesheet" href="/lib/github-markdown/github-markdown.min.css"  >
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1067060_qzomjdt8bmp.css">
+
+
+
+  <link rel="stylesheet" href="/lib/prettify/tomorrow-night-eighties.min.css"  >
+
+<link rel="stylesheet" href="/css/main.css"  >
+
+
+  <link rel="stylesheet" href="/lib/fancybox/jquery.fancybox.min.css"  >
+
+
+<meta name="generator" content="Hexo 4.2.0"></head>
+
+
+<body>
+  <header style="height: 70vh;">
+    <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand"
+       href="/">&nbsp;<strong>YeHongzhi's Blog</strong>&nbsp;</a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+          <li class="nav-item">
+            <a class="nav-link" href="/">首页</a>
+          </li>
+        
+          
+          
+          
+          
+          <li class="nav-item">
+            <a class="nav-link" href="/archives/">归档</a>
+          </li>
+        
+          
+          
+          
+          
+          <li class="nav-item">
+            <a class="nav-link" href="/tags/">标签</a>
+          </li>
+        
+          
+          
+          
+          
+          <li class="nav-item">
+            <a class="nav-link" href="/about/">关于</a>
+          </li>
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" data-toggle="modal" data-target="#modalSearch">&nbsp;&nbsp;<i
+                class="iconfont icon-search"></i>&nbsp;&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+    <div class="view intro-2" id="background" false
+         style="background: url('/img/post.png')no-repeat center center;
+           background-size: cover;">
+      <div class="full-bg-img">
+        <div class="mask rgba-black-light flex-center">
+          <div class="container text-center white-text fadeInUp">
+            <span class="h2" id="subtitle">
+              
+            </span>
+
+            
+              <br>
+              
+                <p class="mt-3">
+                  <i class="fas fa-calendar-alt" aria-hidden="true"></i>&nbsp;
+                  星期日, 十一月 15日 2020, 9:54 晚上
+                </p>
+              
+
+              <p>
+                
+                  
+                  &nbsp;<i class="far fa-chart-bar"></i>
+                  <span class="post-count">
+                    1.7k 字
+                  </span>&nbsp;
+                
+
+                
+                  
+                  &nbsp;<i class="far fa-clock"></i>
+                  <span class="post-count">
+                      7 分钟
+                  </span>&nbsp;
+                
+
+                
+                  <!-- 不蒜子统计文章PV -->
+                  
+                  &nbsp;<i class="far fa-eye" aria-hidden="true"></i>&nbsp;
+                  <span id="busuanzi_container_page_pv">
+                    <span id="busuanzi_value_page_pv"></span> 次
+                  </span>&nbsp;
+                
+              </p>
+            
+          </div>
+
+          
+            <div class="scroll-down-bar">
+              <i class="fas fa-angle-down scroll-down-arrow"></i>
+            </div>
+          
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid">
+  <div class="row">
+    <div class="d-none d-lg-block col-lg-2"></div>
+    <div class="col-lg-8 nopadding-md">
+      <div class="py-5 z-depth-3" id="board">
+        <div class="post-content mx-auto" id="post">
+          <div class="markdown-body">
+            <h1 id="思维导图"><a href="#思维导图" class="headerlink" title="思维导图"></a>思维导图</h1><p><img src="https://static.lovebilibili.com/SpringBoot_7.png" srcset="/img/loading.gif" alt=""></p>
+<blockquote>
+<p><strong>文章已收录Github精选，欢迎Star</strong>：<a href="https://github.com/yehongzhi/learningSummary" target="_blank" rel="noopener">https://github.com/yehongzhi/learningSummary</a></p>
+</blockquote>
+<h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>SpringBoot一开始最让我印象深刻的就是通过一个启动类就能启动应用。在SpringBoot以前，启动应用虽然也不麻烦，但是还是有点繁琐，要打包成war包，又要配置tomcat，tomcat又有一个server.xml文件去配置。</p>
+<p>然而SpringBoot则内置了tomcat，通过启动类启动，配置也集中在一个application.yml中，简直不要太舒服。好奇心驱动，于是我很想搞清楚启动类的启动过程，那么开始吧。</p>
+<h1 id="一、启动类"><a href="#一、启动类" class="headerlink" title="一、启动类"></a>一、启动类</h1><p>首先我们看最常见的启动类写法。</p>
+<pre><code class="java">@SpringBootApplication
+public class SpringmvcApplication {
+    public static void main(String[] args) {
+        SpringApplication.run(SpringmvcApplication.class, args);
+    }
+}</code></pre>
+<p>把启动类分解一下，实际上就是两部分：</p>
+<ul>
+<li>@SpringBootApplication注解</li>
+<li>一个main()方法，里面调用SpringApplication.run()方法。</li>
+</ul>
+<h1 id="二、-SpringBootApplication"><a href="#二、-SpringBootApplication" class="headerlink" title="二、@SpringBootApplication"></a>二、@SpringBootApplication</h1><p>首先看@SpringBootApplication注解的源码。</p>
+<pre><code class="java">@Target(ElementType.TYPE)
+@Retention(RetentionPolicy.RUNTIME)
+@Documented
+@Inherited
+@SpringBootConfiguration
+@EnableAutoConfiguration
+@ComponentScan(excludeFilters = { @Filter(type = FilterType.CUSTOM, classes = TypeExcludeFilter.class),@Filter(type = FilterType.CUSTOM, classes = AutoConfigurationExcludeFilter.class) })
+public @interface SpringBootApplication {
+
+}</code></pre>
+<p>很明显，@SpringBootApplication注解由三个注解组合而成，分别是：</p>
+<ul>
+<li>@ComponentScan</li>
+<li>@EnableAutoConfiguration</li>
+<li>@SpringBootConfiguration</li>
+</ul>
+<h2 id="2-1-ComponentScan"><a href="#2-1-ComponentScan" class="headerlink" title="2.1 @ComponentScan"></a>2.1 @ComponentScan</h2><pre><code class="java">@Retention(RetentionPolicy.RUNTIME)
+@Target(ElementType.TYPE)
+@Documented
+@Repeatable(ComponentScans.class)
+public @interface ComponentScan {
+
+}</code></pre>
+<p>这个注解的作用是<strong>告诉Spring扫描哪个包下面类，加载符合条件的组件</strong>(比如贴有@Component和@Repository等的类)或者bean的定义。</p>
+<p>所以有一个basePackages的属性，如果默认不写，则从声明@ComponentScan所在类的package进行扫描。</p>
+<p>所以<strong>启动类最好定义在Root package下</strong>，因为一般我们在使用@SpringBootApplication时，都不指定basePackages的。</p>
+<h2 id="2-2-EnableAutoConfiguration"><a href="#2-2-EnableAutoConfiguration" class="headerlink" title="2.2 @EnableAutoConfiguration"></a>2.2 @EnableAutoConfiguration</h2><pre><code class="java">@Target(ElementType.TYPE)
+@Retention(RetentionPolicy.RUNTIME)
+@Documented
+@Inherited
+@AutoConfigurationPackage
+@Import(AutoConfigurationImportSelector.class)
+public @interface EnableAutoConfiguration {
+
+}</code></pre>
+<p>这是一个复合注解，看起来很多注解，实际上关键在@Import注解，它会加载AutoConfigurationImportSelector类，然后就会触发这个类的selectImports()方法。根据返回的String数组(配置类的Class的名称)加载配置类。</p>
+<pre><code class="java">public class AutoConfigurationImportSelector implements DeferredImportSelector, BeanClassLoaderAware,
+ResourceLoaderAware, BeanFactoryAware, EnvironmentAware, Ordered {
+    //返回的String[]数组，是配置类Class的类名
+    @Override
+    public String[] selectImports(AnnotationMetadata annotationMetadata) {
+        if (!isEnabled(annotationMetadata)) {
+            return NO_IMPORTS;
+        }
+        AutoConfigurationEntry autoConfigurationEntry = getAutoConfigurationEntry(annotationMetadata);
+        //返回配置类的类名
+        return StringUtils.toStringArray(autoConfigurationEntry.getConfigurations());
+    }
+}</code></pre>
+<p>我们一直点下去，就可以找到最后的幕后英雄，就是SpringFactoriesLoader类，通过loadSpringFactories()方法加载META-INF/spring.factories中的配置类。</p>
+<p><img src="https://static.lovebilibili.com/SpringBoot_1.png" srcset="/img/loading.gif" alt=""></p>
+<p><img src="https://static.lovebilibili.com/SpringBoot_2.png" srcset="/img/loading.gif" alt=""></p>
+<p>这里使用了spring.factories文件的方式加载配置类，提供了很好的扩展性。</p>
+<p>所以@EnableAutoConfiguration注解的作用其实就是开启自动配置，自动配置主要则依靠这种加载方式来实现。</p>
+<h2 id="2-3-SpringBootConfiguration"><a href="#2-3-SpringBootConfiguration" class="headerlink" title="2.3 @SpringBootConfiguration"></a>2.3 @SpringBootConfiguration</h2><p><strong>@SpringBootConfiguration继承自@Configuration，二者功能也一致</strong>，标注当前类是配置类，<br>并会将当前类内声明的一个或多个以@Bean注解标记的方法的实例纳入到spring容器中，并且实例名就是方法名。</p>
+<h2 id="2-4-小结"><a href="#2-4-小结" class="headerlink" title="2.4 小结"></a>2.4 小结</h2><p>我们在这里画张图把@SpringBootApplication注解包含的三个注解分别解释一下。</p>
+<p><img src="https://static.lovebilibili.com/SpringBoot_3.png" srcset="/img/loading.gif" alt=""></p>
+<h1 id="三、SpringApplication类"><a href="#三、SpringApplication类" class="headerlink" title="三、SpringApplication类"></a>三、SpringApplication类</h1><p>接下来讲main方法里执行的这句代码，这是SpringApplication类的静态方法run()。</p>
+<pre><code class="java">//启动类的main方法
+public static void main(String[] args) {
+    SpringApplication.run(SpringmvcApplication.class, args);
+}
+
+//启动类调的run方法
+public static ConfigurableApplicationContext run(Class&lt;?&gt; primarySource, String... args) {
+    //调的是下面的，参数是数组的run方法
+    return run(new Class&lt;?&gt;[] { primarySource }, args);
+}
+
+//和上面的方法区别在于第一个参数是一个数组
+public static ConfigurableApplicationContext run(Class&lt;?&gt;[] primarySources, String[] args) {
+    //实际上new一个SpringApplication实例，调的是一个实例方法run()
+    return new SpringApplication(primarySources).run(args);
+}</code></pre>
+<p>通过上面的源码，发现实际上最后调的并不是静态方法，而是实例方法，需要new一个SpringApplication实例，这个构造器还带有一个primarySources的参数。所以我们直接定位到构造器。</p>
+<pre><code class="java">public SpringApplication(ResourceLoader resourceLoader, Class&lt;?&gt;... primarySources) {
+    this.resourceLoader = resourceLoader;
+    //断言primarySources不能为null，如果为null，抛出异常提示
+    Assert.notNull(primarySources, &quot;PrimarySources must not be null&quot;);
+    //启动类传入的Class
+    this.primarySources = new LinkedHashSet&lt;&gt;(Arrays.asList(primarySources));
+    //判断当前项目类型，有三种：NONE、SERVLET、REACTIVE
+    this.webApplicationType = WebApplicationType.deduceFromClasspath();
+    //设置ApplicationContextInitializer
+    setInitializers((Collection) getSpringFactoriesInstances(ApplicationContextInitializer.class));
+    //设置监听器
+    setListeners((Collection) getSpringFactoriesInstances(ApplicationListener.class));
+    //判断主类，初始化入口类
+    this.mainApplicationClass = deduceMainApplicationClass();
+}
+
+//判断主类
+private Class&lt;?&gt; deduceMainApplicationClass() {
+    try {
+        StackTraceElement[] stackTrace = new RuntimeException().getStackTrace();
+        for (StackTraceElement stackTraceElement : stackTrace) {
+            if (&quot;main&quot;.equals(stackTraceElement.getMethodName())) {
+                return Class.forName(stackTraceElement.getClassName());
+            }
+        }
+    }
+    catch (ClassNotFoundException ex) {
+        // Swallow and continue
+    }
+    return null;
+}</code></pre>
+<p>以上就是创建SpringApplication实例做的事情，下面用张图来表示一下。</p>
+<p><img src="https://static.lovebilibili.com/SpringBoot_4.png" srcset="/img/loading.gif" alt=""></p>
+<p>创建了SpringApplication实例之后，就完成了SpringApplication类的初始化工作，这个实例里包括监听器、初始化器，项目应用类型，启动类集合，类加载器。如图所示。</p>
+<p><img src="https://static.lovebilibili.com/SpringBoot_5.png" srcset="/img/loading.gif" alt=""></p>
+<p>得到SpringApplication实例后，接下来就调用实例方法run()。继续看。</p>
+<pre><code class="java">public ConfigurableApplicationContext run(String... args) {
+    //创建计时器
+    StopWatch stopWatch = new StopWatch();
+    //开始计时
+    stopWatch.start();
+    //定义上下文对象
+    ConfigurableApplicationContext context = null;
+    Collection&lt;SpringBootExceptionReporter&gt; exceptionReporters = new ArrayList&lt;&gt;();
+    //Headless模式设置
+    configureHeadlessProperty();
+    //加载SpringApplicationRunListeners监听器
+    SpringApplicationRunListeners listeners = getRunListeners(args);
+    //发送ApplicationStartingEvent事件
+    listeners.starting();
+    try {
+        //封装ApplicationArguments对象
+        ApplicationArguments applicationArguments = new DefaultApplicationArguments(args);
+        //配置环境模块
+        ConfigurableEnvironment environment = prepareEnvironment(listeners, applicationArguments);
+        //根据环境信息配置要忽略的bean信息
+        configureIgnoreBeanInfo(environment);
+        //打印Banner标志
+        Banner printedBanner = printBanner(environment);
+        //创建ApplicationContext应用上下文
+        context = createApplicationContext();
+        //加载SpringBootExceptionReporter
+        exceptionReporters = getSpringFactoriesInstances(SpringBootExceptionReporter.class,
+                                                         new Class[] { ConfigurableApplicationContext.class }, context);
+        //ApplicationContext基本属性配置
+        prepareContext(context, environment, listeners, applicationArguments, printedBanner);
+        //刷新上下文
+        refreshContext(context);
+        //刷新后的操作，由子类去扩展
+        afterRefresh(context, applicationArguments);
+        //计时结束
+        stopWatch.stop();
+        //打印日志
+        if (this.logStartupInfo) {
+            new StartupInfoLogger(this.mainApplicationClass).logStarted(getApplicationLog(), stopWatch);
+        }
+        //发送ApplicationStartedEvent事件，标志spring容器已经刷新，此时所有的bean实例都已经加载完毕
+        listeners.started(context);
+        //查找容器中注册有CommandLineRunner或者ApplicationRunner的bean，遍历并执行run方法
+        callRunners(context, applicationArguments);
+    }
+    catch (Throwable ex) {
+        //发送ApplicationFailedEvent事件，标志SpringBoot启动失败
+        handleRunFailure(context, ex, exceptionReporters, listeners);
+        throw new IllegalStateException(ex);
+    }
+
+    try {
+        //发送ApplicationReadyEvent事件，标志SpringApplication已经正在运行，即已经成功启动，可以接收服务请求。
+        listeners.running(context);
+    }
+    catch (Throwable ex) {
+        //报告异常，但是不发送任何事件
+        handleRunFailure(context, ex, exceptionReporters, null);
+        throw new IllegalStateException(ex);
+    }
+    return context;
+}</code></pre>
+<p>结合注释和源码，其实很清晰了，为了加深印象，画张图看一下整个流程。</p>
+<p><img src="https://static.lovebilibili.com/SpringBoot_6.png" srcset="/img/loading.gif" alt=""></p>
+<h1 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h1><p>表面启动类看起来就一个@SpringBootApplication注解，一个run()方法。其实是经过高度封装后的结果。我们可以从这个分析中学到很多东西。比如使用了spring.factories文件来完成自动配置，提高了扩展性。在启动时使用观察者模式，以事件发布的形式通知，降低耦合，易于扩展等等。</p>
+<p>那么SpringBoot的启动类分析就讲到这里了，感谢大家的阅读。</p>
+<p><strong>觉得有用就点个赞吧，你的点赞是我创作的最大动力</strong>~</p>
+<p><strong>我是一个努力让大家记住的程序员。我们下期再见！！！</strong></p>
+<p><img src="https://static.lovebilibili.com/dashacha.png" srcset="/img/loading.gif" alt=""></p>
+<blockquote>
+<p>能力有限，如果有什么错误或者不当之处，请大家批评指正，一起学习交流！</p>
+</blockquote>
+
+            <hr>
+          </div>
+          <br>
+          <div>
+            <p>
+            
+            
+              <span>
+                <i class="iconfont icon-tag"></i>
+                
+                  <a class="hover-with-bg" href="/tags/java">java</a>
+                
+                  <a class="hover-with-bg" href="/tags/SpringBoot">SpringBoot</a>
+                
+              </span>
+            
+            </p>
+            
+              <p class="note note-warning">本博客所有文章除特别声明外，均采用 <a href="https://zh.wikipedia.org/wiki/Wikipedia:CC_BY-SA_3.0%E5%8D%8F%E8%AE%AE%E6%96%87%E6%9C%AC" target="_blank" rel="nofollow noopener noopener">CC BY-SA 3.0协议</a> 。转载请注明出处！</p>
+            
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="d-none d-lg-block col-lg-2 toc-container">
+      
+  <div id="toc">
+    <p class="h4"><i class="far fa-list-alt"></i>&nbsp;目录</p>
+    <div id="tocbot"></div>
+  </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- custom -->
+
+
+<!-- Comments -->
+<div class="col-lg-7 mx-auto nopadding-md">
+  <div class="container comments mx-auto" id="comments">
+    
+  </div>
+</div>
+
+    
+  </main>
+
+  
+    <a class="z-depth-1" id="scroll-top-button" href="#" role="button">
+      <i class="fa fa-chevron-up scroll-top-arrow" aria-hidden="true"></i>
+    </a>
+  
+
+  
+    <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v"
+                 for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+  
+
+  <footer class="mt-5">
+  <div class="text-center py-3">
+    <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><b>Hexo</b></a>
+    <i class="iconfont icon-love"></i>
+    <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"> <b>Fluid</b></a>
+    <br>
+
+    
+  
+    <!-- 不蒜子统计PV -->
+    
+    &nbsp;<span id="busuanzi_container_site_pv"></span>总访问量 
+          <span id="busuanzi_value_site_pv"></span> 次&nbsp;
+  
+  
+    <!-- 不蒜子统计UV -->
+    
+    &nbsp;<span id="busuanzi_container_site_uv"></span>总访客数 
+            <span id="busuanzi_value_site_uv"></span> 人&nbsp;
+  
+  <br>
+
+
+
+    
+
+
+    <!-- cnzz Analytics icon -->
+    
+
+  </div>
+</footer>
+
+<!-- SCRIPTS -->
+<script src="/lib/jquery/jquery.min.js" ></script>
+<script src="/lib/popper/popper.min.js" ></script>
+<script src="/lib/bootstrap/js/bootstrap.min.js" ></script>
+<script src="/lib/mdbootstrap/js/mdb.min.js" ></script>
+<script src="/js/main.js" ></script>
+
+
+  <script src="/js/lazyload.js" ></script>
+
+
+
+  
+    <script src="/lib/tocbot/tocbot.min.js" ></script>
+  
+  <script src="/js/post.js" ></script>
+
+
+
+  <script src="/lib/smooth-scroll/smooth-scroll.min.js" ></script>
+
+
+
+  <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" ></script>
+
+
+<!-- Plugins -->
+
+
+  
+
+  
+
+  
+
+  
+
+  <!-- cnzz Analytics -->
+  
+
+
+
+  <script src="/lib/prettify/prettify.min.js" ></script>
+  <script>
+    $(document).ready(function () {
+      $('pre').addClass('prettyprint  linenums');
+      prettyPrint();
+    })
+  </script>
+
+
+
+  <script src="/lib/typed/typed.min.js" ></script>
+  <script>
+    var typed = new Typed('#subtitle', {
+      strings: [
+        '  ',
+        "SpringBoot启动流程是怎样的？&nbsp;",
+      ],
+      cursorChar: "_",
+      typeSpeed: 70,
+      loop: false,
+    });
+    typed.stop();
+    $(document).ready(function () {
+      $(".typed-cursor").addClass("h2");
+      typed.start();
+    });
+  </script>
+
+
+
+  <script src="/lib/anchor/anchor.min.js" ></script>
+  <script>
+    anchors.options = {
+      placement: "right",
+      visible: "false",
+      
+    };
+    var el = "h1,h2,h3,h4,h5,h6".split(",");
+    var res = [];
+    for (item of el) {
+      res.push(".markdown-body > " + item)
+    }
+    anchors.add(res.join(", "))
+  </script>
+
+
+
+  <script src="/js/local-search.js" ></script>
+  <script>
+    var path = "/local-search.xml";
+    var inputArea = document.querySelector("#local-search-input");
+    inputArea.onclick = function () {
+      getSearchFile(path);
+      this.onclick = null
+    }
+  </script>
+
+
+
+  <script src="/lib/fancybox/jquery.fancybox.min.js" ></script>
+  <script>
+    $("#post img:not(.no-zoom img, img[no-zoom])").each(
+      function () {
+        var element = document.createElement("a");
+        $(element).attr("data-fancybox", "images");
+        $(element).attr("href", $(this).attr("src"));
+        $(this).wrap(element);
+      }
+    );
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+</body>
+</html>
