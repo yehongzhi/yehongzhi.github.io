@@ -136,6 +136,57 @@
     
     
       <div class="col-12 col-md-4 m-auto">
+        <a href="/2020/12/06/5%E5%8D%83%E5%AD%97%E8%AF%A6%E7%BB%86%E8%AE%B2%E8%A7%A3JUC%E4%B8%AD%E9%87%8D%E8%A6%81%E7%9A%84AQS/" target="_blank">
+          <img src="https://static.lovebilibili.com/aqs_index.jpg" srcset="/img/loading.gif" alt="5千字详细讲解JUC中重要的AQS" class="index-img img-fluid rounded index-thumbnails">
+        </a>
+      </div>
+    
+    <div class="col-12 col-md-8 mx-auto index-info">
+      <a href="/2020/12/06/5%E5%8D%83%E5%AD%97%E8%AF%A6%E7%BB%86%E8%AE%B2%E8%A7%A3JUC%E4%B8%AD%E9%87%8D%E8%A6%81%E7%9A%84AQS/">
+        <p class="h4 index-header">5千字详细讲解JUC中重要的AQS</p>
+      </a>
+
+      <a href="/2020/12/06/5%E5%8D%83%E5%AD%97%E8%AF%A6%E7%BB%86%E8%AE%B2%E8%A7%A3JUC%E4%B8%AD%E9%87%8D%E8%A6%81%E7%9A%84AQS/">
+        
+        
+          
+        
+        <div class="index-excerpt" >
+          <div class="index-text mb-1">思维导图
+
+文章已收录Github精选，欢迎Star：https://github.com/yehongzhi/learningSummary
+
+一、什么是AQS谈到并发编程，不得不说AQS(AbstractQueuedSynchronizer)，这可谓是Doug Lea老爷子的大作之一。AQS即是抽象队列同步器，是用来构建Lock锁和同步组件的基础框架，很多我们熟知的锁和同步组件都是基于AQS构建，比如ReentrantLock、ReentrantReadWriteLock、CountDownLatch、Semaphore。
+实际上AQS是一个抽象类，我们不妨先看一下源码：
+public abstract class AbstractQueuedSynchronizer extends AbstractOwnableSynchronizer implements java.io.Serializable {
+    //头结点
+    private transient volatile Node head;
+    //尾节点
+    private transient volat</div>
+        </div>
+      </a>
+
+      <div class="index-btm">
+        
+          <i class="iconfont icon-riqi2"></i>&nbsp;2020-12-06&nbsp;&nbsp;
+        
+        
+        
+          <i class="iconfont icon-tag"></i>
+          
+            <a href="/tags/java">java</a>&nbsp;
+          
+            <a href="/tags/%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B">并发编程</a>&nbsp;
+          
+        
+      </div>
+    </div>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+      <div class="col-12 col-md-4 m-auto">
         <a href="/2020/11/29/%E8%AE%B2%E8%AE%B2%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B%E7%9A%84%E6%82%B2%E8%A7%82%E9%94%81%E5%92%8C%E4%B9%90%E8%A7%82%E9%94%81/" target="_blank">
           <img src="https://static.lovebilibili.com/bllock_index.jpg" srcset="/img/loading.gif" alt="讲讲并发编程的悲观锁和乐观锁" class="index-img img-fluid rounded index-thumbnails">
         </a>
@@ -621,58 +672,11 @@ OpenTracing通过提供平台无关、厂商无关的API，使得开发人员能
     </div>
   </div>
 
-  <div class="row mx-auto index-card">
-    
-    
-      <div class="col-12 col-md-4 m-auto">
-        <a href="/2020/09/26/%E5%BE%AE%E6%9C%8D%E5%8A%A1%E4%B9%8B%E6%B3%A8%E5%86%8C%E4%B8%AD%E5%BF%83/" target="_blank">
-          <img src="https://static.lovebilibili.com/nacos_index.jpg" srcset="/img/loading.gif" alt="微服务之注册中心" class="index-img img-fluid rounded index-thumbnails">
-        </a>
-      </div>
-    
-    <div class="col-12 col-md-8 mx-auto index-info">
-      <a href="/2020/09/26/%E5%BE%AE%E6%9C%8D%E5%8A%A1%E4%B9%8B%E6%B3%A8%E5%86%8C%E4%B8%AD%E5%BF%83/">
-        <p class="h4 index-header">微服务之注册中心</p>
-      </a>
-
-      <a href="/2020/09/26/%E5%BE%AE%E6%9C%8D%E5%8A%A1%E4%B9%8B%E6%B3%A8%E5%86%8C%E4%B8%AD%E5%BF%83/">
-        
-        
-          
-          
-        
-        <div class="index-excerpt" style="max-height: none;">
-          <div class="index-text mb-1">思维导图
-一、前言伴随着Eurka2.0版本已停止维护，开始要考虑使用微服务新一代的开源的注册中心替代Eureka。
-
-目前据我了解，Consul和Nacos是比较流行的两种替代方案。这篇文章就介绍一下这两种注册中心在微服务中的简单使用，希望对读者有所帮助。...</div>
-        </div>
-      </a>
-
-      <div class="index-btm">
-        
-          <i class="iconfont icon-riqi2"></i>&nbsp;2020-09-26&nbsp;&nbsp;
-        
-        
-        
-          <i class="iconfont icon-tag"></i>
-          
-            <a href="/tags/java">java</a>&nbsp;
-          
-            <a href="/tags/%E5%BE%AE%E6%9C%8D%E5%8A%A1">微服务</a>&nbsp;
-          
-            <a href="/tags/%E6%B3%A8%E5%86%8C%E4%B8%AD%E5%BF%83">注册中心</a>&nbsp;
-          
-        
-      </div>
-    </div>
-  </div>
-
 
 
   <nav aria-label="index posts navigation">
     <span class="pagination pg-blue justify-content-center mt-5" id="pagination">
-      <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><a class="page-number" href="/page/3/">3</a><a class="page-number" href="/page/4/">4</a><a class="extend next" rel="next" href="/page/2/"><i class="fas fa-angle-double-right"></i></a>
+      <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><a class="page-number" href="/page/3/">3</a><span class="space">&hellip;</span><a class="page-number" href="/page/5/">5</a><a class="extend next" rel="next" href="/page/2/"><i class="fas fa-angle-double-right"></i></a>
     </span>
   </nav>
   
