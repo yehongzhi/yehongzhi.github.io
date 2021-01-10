@@ -136,6 +136,57 @@
     
     
       <div class="col-12 col-md-4 m-auto">
+        <a href="/2021/01/10/%E4%B8%8D%E5%BE%97%E4%B8%8D%E6%87%82%E7%9A%84explain%E5%85%B3%E9%94%AE%E5%AD%97/" target="_blank">
+          <img src="https://static.lovebilibili.com/explain_index.jpg" srcset="/img/loading.gif" alt="不得不懂的explain关键字" class="index-img img-fluid rounded index-thumbnails">
+        </a>
+      </div>
+    
+    <div class="col-12 col-md-8 mx-auto index-info">
+      <a href="/2021/01/10/%E4%B8%8D%E5%BE%97%E4%B8%8D%E6%87%82%E7%9A%84explain%E5%85%B3%E9%94%AE%E5%AD%97/">
+        <p class="h4 index-header">不得不懂的explain关键字</p>
+      </a>
+
+      <a href="/2021/01/10/%E4%B8%8D%E5%BE%97%E4%B8%8D%E6%87%82%E7%9A%84explain%E5%85%B3%E9%94%AE%E5%AD%97/">
+        
+        
+          
+        
+        <div class="index-excerpt" >
+          <div class="index-text mb-1">
+文章已收录Github精选，欢迎Star：https://github.com/yehongzhi
+
+前言在MySQL中，我们知道加索引能提高查询效率，这基本上算是常识了。但是有时候，我们加了索引还是觉得SQL查询效率低下，我想看看有没有使用到索引，扫描了多少行，表的加载顺序等等，怎么查看呢？其实MySQL自带的SQL分析神器Explain执行计划就能完成以上的事情！
+Explain有哪些信息先确认一下试验的MySQL版本，这里使用的是5.7.31版本。
+
+只需要在SQL语句前加上explain关键字就可以查看执行计划，执行计划包括以下信息：id、select_type、table、partitions、type、possible_keys、key、key_len、ref、rows、filtered、Extra，总共12个字段信息。
+
+然后创建三个表：
+CREATE TABLE `tb_student` (
+  `id` int(10) NOT NULL AUTO_INCREMENT,
+  `name` varchar(36) NOT NULL,
+  PRIMARY KEY (`id</div>
+        </div>
+      </a>
+
+      <div class="index-btm">
+        
+          <i class="iconfont icon-riqi2"></i>&nbsp;2021-01-10&nbsp;&nbsp;
+        
+        
+        
+          <i class="iconfont icon-tag"></i>
+          
+            <a href="/tags/MySQL">MySQL</a>&nbsp;
+          
+        
+      </div>
+    </div>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+      <div class="col-12 col-md-4 m-auto">
         <a href="/2021/01/01/4%E5%8D%83%E5%AD%97%E8%AF%A6%E7%BB%86%E8%AE%B2%E8%A7%A3JVM%E4%B8%AD%E7%9A%84%E5%9E%83%E5%9C%BE%E5%9B%9E%E6%94%B6/" target="_blank">
           <img src="https://static.lovebilibili.com/jvm_gc_index.jpg" srcset="/img/loading.gif" alt="4千字详细讲解JVM中的垃圾回收" class="index-img img-fluid rounded index-thumbnails">
         </a>
@@ -598,58 +649,6 @@ OpenTracing通过提供平台无关、厂商无关的API，使得开发人员能
             <a href="/tags/%E5%88%86%E5%B8%83%E5%BC%8F">分布式</a>&nbsp;
           
             <a href="/tags/ELK">ELK</a>&nbsp;
-          
-        
-      </div>
-    </div>
-  </div>
-
-  <div class="row mx-auto index-card">
-    
-    
-      <div class="col-12 col-md-4 m-auto">
-        <a href="/2020/10/21/%E4%B8%89%E5%8D%83%E5%AD%97Apollo%E9%85%8D%E7%BD%AE%E4%B8%AD%E5%BF%83%E6%80%BB%E7%BB%93/" target="_blank">
-          <img src="https://static.lovebilibili.com/apollo_index.jpg" srcset="/img/loading.gif" alt="三千字Apollo配置中心总结" class="index-img img-fluid rounded index-thumbnails">
-        </a>
-      </div>
-    
-    <div class="col-12 col-md-8 mx-auto index-info">
-      <a href="/2020/10/21/%E4%B8%89%E5%8D%83%E5%AD%97Apollo%E9%85%8D%E7%BD%AE%E4%B8%AD%E5%BF%83%E6%80%BB%E7%BB%93/">
-        <p class="h4 index-header">三千字Apollo配置中心总结</p>
-      </a>
-
-      <a href="/2020/10/21/%E4%B8%89%E5%8D%83%E5%AD%97Apollo%E9%85%8D%E7%BD%AE%E4%B8%AD%E5%BF%83%E6%80%BB%E7%BB%93/">
-        
-        
-          
-        
-        <div class="index-excerpt" >
-          <div class="index-text mb-1">思维导图
-
-文章已收录Github精选，欢迎Star：https://github.com/yehongzhi/learningSummary
-
-一、概述Apollo（阿波罗）是携程框架部门研发的开源配置管理中心，能够集中化管理应用不同环境、不同集群的配置，配置修改后能够实时推送到应用端，并且具备规范的权限、流程治理等特性。
-目前Apollo在github有22.6k颗星，在官网登记的使用的公司有451家，算是很流行的配置中心的框架技术。所以接下来跟着我一起学习Apollo配置中心吧。
-
-二、为什么使用配置中心首先，没有配置中心之前传统的配置都是写在配置文件中，比如各种yml、perproties、xml文件。
-写在各种文件里最大的问题在于如果需要改配置信息，需要重新部署发布应用才能生效，这是第一个问题。
-后面为了做到动态读取配置信息，后面有人改进一下把配置信息存储在数据库的一张表，程序读取表中的配置信息，这种方式很多公司都还在使用，因为简单，而且灵活(修改配置只需要执行个SQL语句，不需要重新部署发布)。但是也不是最完美的，因为缺少了权限控制，没有管理界面进行统一配置，没有历史版本的</div>
-        </div>
-      </a>
-
-      <div class="index-btm">
-        
-          <i class="iconfont icon-riqi2"></i>&nbsp;2020-10-21&nbsp;&nbsp;
-        
-        
-        
-          <i class="iconfont icon-tag"></i>
-          
-            <a href="/tags/java">java</a>&nbsp;
-          
-            <a href="/tags/%E5%88%86%E5%B8%83%E5%BC%8F">分布式</a>&nbsp;
-          
-            <a href="/tags/%E9%85%8D%E7%BD%AE%E4%B8%AD%E5%BF%83">配置中心</a>&nbsp;
           
         
       </div>
