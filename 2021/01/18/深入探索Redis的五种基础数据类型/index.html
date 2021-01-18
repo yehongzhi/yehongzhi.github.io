@@ -1,0 +1,593 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/apple-touch-icon.png">
+  <link rel="icon" type="image/png" href="/img/favicon.png">
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="description" content="">
+  <meta name="author" content="Ye hongzhi">
+  <meta name="keywords" content="">
+  <title>深入探索Redis的五种基础数据类型 - 叶洪智的技术分享</title>
+
+  <link rel="stylesheet" href="/lib/font-awesome/css/all.min.css"  >
+<link rel="stylesheet" href="/lib/bootstrap/css/bootstrap.min.css"  >
+<link rel="stylesheet" href="/lib/mdbootstrap/css/mdb.min.css"  >
+<link rel="stylesheet" href="/lib/github-markdown/github-markdown.min.css"  >
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1067060_qzomjdt8bmp.css">
+
+
+
+  <link rel="stylesheet" href="/lib/prettify/tomorrow-night-eighties.min.css"  >
+
+<link rel="stylesheet" href="/css/main.css"  >
+
+
+  <link rel="stylesheet" href="/lib/fancybox/jquery.fancybox.min.css"  >
+
+
+<meta name="generator" content="Hexo 4.2.0"></head>
+
+
+<body>
+  <header style="height: 70vh;">
+    <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand"
+       href="/">&nbsp;<strong>YeHongzhi's Blog</strong>&nbsp;</a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+          <li class="nav-item">
+            <a class="nav-link" href="/">首页</a>
+          </li>
+        
+          
+          
+          
+          
+          <li class="nav-item">
+            <a class="nav-link" href="/archives/">归档</a>
+          </li>
+        
+          
+          
+          
+          
+          <li class="nav-item">
+            <a class="nav-link" href="/tags/">标签</a>
+          </li>
+        
+          
+          
+          
+          
+          <li class="nav-item">
+            <a class="nav-link" href="/about/">关于</a>
+          </li>
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" data-toggle="modal" data-target="#modalSearch">&nbsp;&nbsp;<i
+                class="iconfont icon-search"></i>&nbsp;&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+    <div class="view intro-2" id="background" false
+         style="background: url('/img/post.png')no-repeat center center;
+           background-size: cover;">
+      <div class="full-bg-img">
+        <div class="mask rgba-black-light flex-center">
+          <div class="container text-center white-text fadeInUp">
+            <span class="h2" id="subtitle">
+              
+            </span>
+
+            
+              <br>
+              
+                <p class="mt-3">
+                  <i class="fas fa-calendar-alt" aria-hidden="true"></i>&nbsp;
+                  星期一, 一月 18日 2021, 10:52 晚上
+                </p>
+              
+
+              <p>
+                
+                  
+                  &nbsp;<i class="far fa-chart-bar"></i>
+                  <span class="post-count">
+                    4.1k 字
+                  </span>&nbsp;
+                
+
+                
+                  
+                  &nbsp;<i class="far fa-clock"></i>
+                  <span class="post-count">
+                      15 分钟
+                  </span>&nbsp;
+                
+
+                
+                  <!-- 不蒜子统计文章PV -->
+                  
+                  &nbsp;<i class="far fa-eye" aria-hidden="true"></i>&nbsp;
+                  <span id="busuanzi_container_page_pv">
+                    <span id="busuanzi_value_page_pv"></span> 次
+                  </span>&nbsp;
+                
+              </p>
+            
+          </div>
+
+          
+            <div class="scroll-down-bar">
+              <i class="fas fa-angle-down scroll-down-arrow"></i>
+            </div>
+          
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid">
+  <div class="row">
+    <div class="d-none d-lg-block col-lg-2"></div>
+    <div class="col-lg-8 nopadding-md">
+      <div class="py-5 z-depth-3" id="board">
+        <div class="post-content mx-auto" id="post">
+          <div class="markdown-body">
+            <blockquote>
+<p><strong>文章已收录Github精选，欢迎Star</strong>：<a href="https://github.com/yehongzhi/learningSummary" target="_blank" rel="noopener">https://github.com/yehongzhi</a></p>
+</blockquote>
+<h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>Redis是一个<strong>开源</strong>的使用C语言编写、支持网络、可<strong>基于内存</strong>亦<strong>可持久化</strong>的日志型、<strong>Key-Value</strong>的NoSQL数据库。</p>
+<p>一般来说，我们都是使用关系型数据库MySQL来存储数据，但是面对着流量高峰，会对MySQL造成巨大的压力，导致数据库性能很差，这时就要使用缓存中间件来降低数据库的压力，这是Redis最常见的使用场景。除了作为缓存使用之外，Redis还有很多使用场景，比如分布式锁，计数，队列等等。</p>
+<p>所以Redis对于程序员来说可以算得上是必修课。</p>
+<h1 id="安装Redis"><a href="#安装Redis" class="headerlink" title="安装Redis"></a>安装Redis</h1><p>安装Redis很简单，因为网上教程很多，这里就不再详细讲解，推荐看菜鸟教程：<a href="https://www.runoob.com/redis/redis-install.html" target="_blank" rel="noopener">https://www.runoob.com/redis/redis-install.html</a></p>
+<h1 id="Redis的特点"><a href="#Redis的特点" class="headerlink" title="Redis的特点"></a>Redis的特点</h1><p>要用好Redis，首先要明白它的特点：</p>
+<ul>
+<li><strong>读写速度快</strong>。redis官网测试读写能到10万左右每秒。速度快的原因这里简单说一下，第一是因为<strong>数据存储在内存中</strong>，我们知道机器访问内存的速度是远远大于访问磁盘的，其次是<strong>Redis采用单线程的架构</strong>，避免了上下文的切换和多线程带来的竞争，也就不存在加锁释放锁的操作，减少了CPU的消耗，第三点是<strong>采用了非阻塞IO多路复用机制</strong>。</li>
+<li><strong>数据结构丰富</strong>。 Redis不仅仅支持简单的key-value类型的数据，同时还提供list，set，zset，hash等数据结构。这也是这篇文章要讲的。</li>
+<li><strong>支持持久化</strong>。Redis提供了RDB和AOF两种持久化策略，能最大限度地保证Redis服务器宕机重启后数据不会丢失。</li>
+<li><strong>支持高可用</strong>。可以使用主从复制，并且提供哨兵机制，保证服务器的高可用。</li>
+<li><strong>客户端语言多</strong>。因为Redis受到社区和各大公司的广泛认可，所以客户端语言涵盖了所有的主流编程语言，比如Java，C，C++，PHP，NodeJS等等。</li>
+</ul>
+<h1 id="Redis的数据结构"><a href="#Redis的数据结构" class="headerlink" title="Redis的数据结构"></a>Redis的数据结构</h1><p>下面我们就学习Redis的数据结构，也是使用Redis要知道的最基础的知识。</p>
+<p>Redis是一个Key-Value型的内存数据库，它所有的key都是字符串，而value常见的数据类型有五种：string，list，set，zset，hash。</p>
+<p><img src="https://static.lovebilibili.com/redis_kv_01.png" srcset="/img/loading.gif" alt=""></p>
+<p>Redis的这些数据结构，在底层都是使用redisObject来进行表示。redisObject中有三个重要的属性，分别是<strong>type、 encoding 和 ptr</strong>。</p>
+<p><strong>type</strong>表示保存的value的类型。通常有以下几种，也就是常见的五种数据结构：</p>
+<ul>
+<li>字符串 REDIS_STRING</li>
+<li>列表 REDIS_LIST</li>
+<li>集合 REDIS_SET</li>
+<li>有序集合 REDIS_ZSET</li>
+<li>字典 REDIS_HASH</li>
+</ul>
+<p><strong>encoding</strong>表示保存的value的编码，通常有以下几种：</p>
+<pre><code class="c">#define REDIS_ENCODING_RAW 0            // 编码为字符串
+#define REDIS_ENCODING_INT 1            // 编码为整数
+#define REDIS_ENCODING_HT 2             // 编码为哈希表
+#define REDIS_ENCODING_ZIPMAP 3         // 编码为 zipmap
+#define REDIS_ENCODING_LINKEDLIST 4     // 编码为双端链表
+#define REDIS_ENCODING_ZIPLIST 5        // 编码为压缩列表
+#define REDIS_ENCODING_INTSET 6         // 编码为整数集合
+#define REDIS_ENCODING_SKIPLIST 7       // 编码为跳跃表</code></pre>
+<p><strong>ptr</strong>是一个指针，指向实际保存的value的数据结构。</p>
+<p>这里要特别说明一下的是，数据类型和编码方式是有一定关系的，所以数据类型和编码方式是可以确定底层采用什么数据结构存储数据的。</p>
+<p><img src="https://static.lovebilibili.com/redis_kv_02.png" srcset="/img/loading.gif" alt=""></p>
+<h1 id="string-字符串"><a href="#string-字符串" class="headerlink" title="string(字符串)"></a>string(字符串)</h1><p>这是redis中最常用的数据类型，字符串对象的 encoding 有三种，分别是：<strong>int、raw、embstr</strong>。</p>
+<p>常用的命令有常用命令:  <strong>set、get、decr、incr、mget</strong> 等。</p>
+<p>我们知道Redis是用C语言开发的，但是底层存储不是使用C语言的字符串类型，而是自己开发了一种数据类型SDS进行存储，SDS即<em>Simple Dynamic String</em> ，是一种动态字符串。我们可以在github找到源码。</p>
+<pre><code class="c">struct sdshdr{
+ int len;/*字符串长度*/
+ int free;/*未使用的字节长度*/
+ char buf[];/*保存字符串的字节数组*/
+}</code></pre>
+<p><img src="https://static.lovebilibili.com/redis_kv_03.png" srcset="/img/loading.gif" alt=""></p>
+<p>SDS与C语言的字符串有什么区别呢？</p>
+<ul>
+<li>C语言获取字符串长度是从头到尾遍历，时间复杂度是O(n)，而SDS有len属性记录字符串长度，时间复杂度为O(1)。</li>
+<li>避免缓冲区溢出。SDS在需要修改时，会先检查空间是否满足大小，如果不满足，则先扩展至所需大小再进行修改操作。</li>
+<li>空间预分配。当SDS需要进行扩展时，Redis会为SDS分配好内存，并且根据特定的算法分配多余的free空间，避免了连续执行字符串添加带来的内存分配的消耗。</li>
+<li>惰性释放。如果需要缩短字符串，不会立即回收多余的内存空间，而是用free记录剩余的空间，以备下次扩展时使用，避免了再次分配内存的消耗。</li>
+<li>二进制安全。c语言在存储字符串时采用N+1的字符串数组，末尾使用’\0’标识字符串的结束，如果我们存储的字符串中间出现’\0’，那就会导致识别出错。而SDS因为记录了字符串的长度len，则没有这个问题。</li>
+</ul>
+<p>字符串类型的应用是非常广泛的，比如可以把对象转成JSON字符串存储到Redis中作为缓存，也可以使用decr、incr命令用于计数器的实现，又或者是用setnx命令为基础实现分布式锁等等。</p>
+<p>需要注意的是：<strong>Redis 规定了字符串的长度不得超过 512 MB。</strong></p>
+<h1 id="hash-字典"><a href="#hash-字典" class="headerlink" title="hash(字典)"></a>hash(字典)</h1><p>哈希对象的编码有两种，分别是：<strong>ziplist、hashtable</strong>。</p>
+<p>当哈希对象保存的键值对数量小于 512，并且所有键值对的长度都小于 64 字节时，使用ziplist(压缩列表)存储；否则使用 hashtable 存储。</p>
+<p>Redis中的hashtable跟Java中的HashMap类似，都是通过”数组+链表”的实现方式解决部分的哈希冲突。直接看源码定义。</p>
+<pre><code class="c">typedf struct dict{
+    dictType *type;//类型特定函数，包括一些自定义函数，这些函数使得key和value能够存储
+    void *private;//私有数据
+    dictht ht[2];//两张hash表 
+    int rehashidx;//rehash索引，字典没有进行rehash时，此值为-1
+    unsigned long iterators; //正在迭代的迭代器数量
+}dict;
+
+typedef struct dictht{
+     //哈希表数组
+     dictEntry **table;
+     //哈希表大小
+     unsigned long size;
+     //哈希表大小掩码，用于计算索引值
+     //总是等于 size-1
+     unsigned long sizemask;
+     //该哈希表已有节点的数量
+     unsigned long used; 
+}dictht;
+
+typedf struct dictEntry{
+    void *key;//键
+    union{
+        void val;
+        unit64_t u64;
+        int64_t s64;
+        double d;
+    }v;//值
+    struct dictEntry *next；//指向下一个节点的指针
+}dictEntry;</code></pre>
+<p>我们再看一个结构图就比较清楚了。</p>
+<p><img src="https://static.lovebilibili.com/redis_kv_04.webp" srcset="/img/loading.gif" alt=""></p>
+<p>下面讲一下扩容和收缩。当哈希表保存的键值太多或者太少时，就会通过rehash来进行相应的扩容和收缩。</p>
+<p><strong>扩容和收缩的过程</strong>：</p>
+<p>1、如果执行扩展操作，会基于原哈希表创建一个大小等于 ht[0].used*2n 的哈希表（也就是每次扩展都是根据原哈希表已使用的空间扩大一倍创建另一个哈希表）。相反如果执行的是收缩操作，每次收缩是根据已使用空间缩小一倍创建一个新的哈希表。</p>
+<p>2、重新利用哈希算法，计算索引值，然后将键值对放到新的哈希表位置上。</p>
+<p>3、所有键值对都迁徙完毕后，释放原哈希表的内存空间。</p>
+<p>在redis中执行扩容和收缩的规则是：</p>
+<ul>
+<li><p>服务器目前没有执行 BGSAVE 命令或者 BGREWRITEAOF (持久化)命令，并且负载因子大于等于1。</p>
+</li>
+<li><p>服务器目前正在执行 BGSAVE 命令或者 BGREWRITEAOF (持久化)命令，并且负载因子大于等于5。</p>
+</li>
+</ul>
+<p>负载因子 = 哈希表已保存节点数量 / 哈希表大小。</p>
+<p><strong>渐进式rehash</strong></p>
+<p>什么是渐进式，也就是说扩容和收缩不是一次性，集中式地完成，而是通过多次逐渐地完成的。为什么要采用这种方式呢？如果是几十个键值，那么rehash当然可以瞬间完成，如果是几十万，几百万的键值要一次性进行rehash，势必会导致redis性能严重下降，自然而然地redis开发者就想到采用渐进式rehash。过程如下：</p>
+<p>在rehash时，会使用rehashidx字段保存迁移的进度，rehashidx为0表示迁移开始。</p>
+<p>在迁移过程中ht[0]和ht[1]会同时保存数据，ht[0]指向旧哈希表，ht[1]指向新哈希表，每次对字典执行添加、删除、查找或者更新操作时，程序除了执行指定的操作以外，还会顺带将ht[0]的元素迁移到ht[1]中。</p>
+<p>随着字典操作的不断执行，最终会在某个时间节点，ht[0]的所有键值都会被迁移到ht[1]中，rehashidx设置为-1，代表迁移完成。如果没有执行字典操作，redis也会通过定时任务去判断rehash是否完成，没有完成则继续rehash。</p>
+<p>rehash完成后，ht[0]指向的旧表会被释放, 之后会将新表的持有权转交给ht[0], 再重置ht[1]指向NULL。</p>
+<p><strong>渐进式rehash的优缺点</strong>：</p>
+<p>优点是把rehash操作分散到每一个字典操作和定时函数上，避免了一次性集中式rehash带来的服务器压力。</p>
+<p>缺点是在rehash期间需要使用两个hash表，占用内存稍大。</p>
+<p>hash类型的常用命令有：hget、hset、hgetall 等。</p>
+<h1 id="list-链表"><a href="#list-链表" class="headerlink" title="list(链表)"></a>list(链表)</h1><p>列表对象的编码有两种，分别是：ziplist、linkedlist。当列表的长度小于 512，并且所有元素的长度都小于 64 字节时，使用ziplist存储；否则使用 linkedlist 存储。</p>
+<p>Redis中的linkedlist类似于Java中的LinkedList，是一个链表，底层的实现原理也和LinkedList类似。这意味着list的插入和删除操作效率会比较快，时间复杂度是O(1)。我们看源码：</p>
+<pre><code class="c">typedef struct listNode {
+    struct listNode *prev;
+    struct listNode *next;
+    void *value;
+} listNode;
+
+typedef struct listIter {
+    listNode *next;
+    int direction;
+} listIter;
+
+typedef struct list {
+    listNode *head;
+    listNode *tail;
+    void *(*dup)(void *ptr);
+    void (*free)(void *ptr);
+    int (*match)(void *ptr, void *key);
+    unsigned long len;
+} list;</code></pre>
+<p>我们可以看到，listNode就是链表中的节点元素，通过prev和next组成双向链表。</p>
+<p><img src="https://static.lovebilibili.com/redis_kv_05.png" srcset="/img/loading.gif" alt=""></p>
+<p>list则记录了头结点head，尾结点tail，还有链表长度len，match函数用于比较两个节点的值是否相等，操作起来更加方便。</p>
+<p><img src="https://static.lovebilibili.com/redis_kv_06.png" srcset="/img/loading.gif" alt=""></p>
+<p>list类型常用的命令有：lpush、rpush、lpop、rpop、lrange等。</p>
+<h1 id="set-集合"><a href="#set-集合" class="headerlink" title="set(集合)"></a>set(集合)</h1><p>set类型的特点很简单，无序，不重复，跟Java的HashSet类似。它的编码有两种，分别是intset和hashtable。如果value可以转成整数值，并且长度不超过512的话就使用intset存储，否则采用hashtable。</p>
+<p>hashtable在前面讲hash类型时已经讲过，这里的set集合采用的hashtable几乎一样，只是哈希表的value都是NULL。这个不难理解，比如用Java中的HashMap实现一个HashSet，我们只用HashMap的key就是了。</p>
+<p>我们讲一讲intset，先看源码。</p>
+<pre><code class="c">typedef struct intset{
+    uint32_t encoding;//编码方式
+
+    uint32_t length;//集合包含的元素数量
+
+    int8_t contents[];//保存元素的数组
+}intset;</code></pre>
+<p>encoding有三种，分别是INTSET_ENC_INT16、INSET_ENC_INT32、INSET_ENC_INT64，代表着整数值的取值范围。Redis会根据添加进来的元素的大小，选择不同的类型进行存储，可以尽可能地节省内存空间。</p>
+<p>length记录集合有多少个元素，这样获取元素个数的时间复杂度就是O(1)。</p>
+<p>contents，存储数据的数组，数组按照从小到大有序排列，不包含任何重复项。</p>
+<p><img src="https://static.lovebilibili.com/redis_kv_07.png" srcset="/img/loading.gif" alt=""></p>
+<p>这里我们可能会提出疑问，如果一开始存的是INTSET_ENC_INT16(范围在-32,768~32,767)，如果这时添加了一个40000的数，怎么升级为INSET_ENC_INT32呢？</p>
+<p>升级过程是这样的：</p>
+<p>1、根据新元素的类型扩展数组contents的空间。</p>
+<p>2、从尾部将数据插入。</p>
+<p>3、根据新的编码格式重置之前的值，因为这时的contents存在着两种编码的值。从插入的数据的位置，也就是尾部，从后到前将之前的数据按照新的编码格式进行移动和设置。从后到前调整是为了防止数据被覆盖。</p>
+<p>升级的优点在于，根据存储的数据大小选择合适的编码方式，节省了内存。</p>
+<p>缺点在于，升级会消耗系统资源。而且升级是不可逆的，也就是一旦对数组进行升级，编码就会一直保持升级后的状态。</p>
+<p>set数据类型常用的命令有：sadd、spop、smembers、sunion等等。</p>
+<p>Redis为set类型提供了求交集，并集，差集的操作，可以非常方便地实现譬如共同关注、共同爱好、共同好友等功能。</p>
+<h1 id="zset-有序集合"><a href="#zset-有序集合" class="headerlink" title="zset(有序集合)"></a>zset(有序集合)</h1><p>zset是Redis中比较有特色的数据类型，它和set一样是不可重复的，区别在于多了score值，用来代表排序的权重。也就是当你需要一个有序的，不可重复的集合列表时，就可以考虑使用这种数据类型。</p>
+<p>zset的编码有两种，分别是：ziplist、skiplist。当zset的长度小于 128，并且所有元素的长度都小于 64 字节时，使用ziplist存储；否则使用 skiplist 存储。</p>
+<p>这里要讲一下skiplist，也就是跳跃表。它的底层实现比较复杂，这里简单地提一下。</p>
+<p><img src="https://static.lovebilibili.com/redis_kv_08.png" srcset="/img/loading.gif" alt=""></p>
+<p>跳跃表的数据结构如上图所示，为什么要设计成这样呢？好处在于查询的时候，可以减少时间复杂度，如果是一个链表，我们要插入并且保持有序的话，那就要从头结点开始遍历，遍历到合适的位置然后插入，如果这样性能肯定是不理想的。</p>
+<p>所以问题的关键在于<strong>能不能像使用二分查找一样定位到插入的点</strong>，答案就是使用跳跃表。比如我们要插入38，那么查找的过程就是这样。</p>
+<p>首先从L4层，查询87，需要查询1次。</p>
+<p>然后到L3层，查询到在-&gt;24-&gt;87之间，需要查询2次。</p>
+<p>然后到L2层，查询-&gt;48，需要查询1次。</p>
+<p>然后到L1层，查询-&gt;37-&gt;48，查询2次。确定在37-&gt;48之间是插入点。</p>
+<p>有没有发现经过L4，L3，L2层的查询后已经跳过了很多节点，当到了L1层遍历时已经把范围缩小了很多。这就是跳跃表的优势。这种方式有点类似于二分查找，所以他的时间复杂度为<strong>O(logN)</strong>。</p>
+<p>其实生活中也有这种例子，类似于快递填写的地址是省-&gt;市-&gt;区-&gt;镇-&gt;街，当快递公司在送快递时就根据地址层层缩小范围，最终锁定在一个很小的区域去搜索，提高了效率。</p>
+<p>zet常用的命令有：zadd、zrange、zrem、zcard等。</p>
+<p>zset的特点非常适合应用于开发排行榜的功能，比如三天阅读排行榜，游戏排行榜等等。</p>
+<h1 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h1><p>Redis能够受到社区的认可，并且在互联网中如此欢迎，除了速度快之外，很大原因也跟丰富的数据类型有关，而且很多数据类型的底层实现也是会考虑到内存空间的使用，尽可能地节省内存空间。</p>
+<p>其实很多人是知道Redis常用的五种数据类型，但是对于底层的实现，就没有深入去研究，当然我以前也是没有深入的。那么在面试时就没有产生差异化，要从面试中脱颖而出最重要就是要跟普通程序员不一样，这样才能突出自身的价值。所以深入学习Redis的数据结构还是很有用的。</p>
+<p>希望这篇文章能让大家对Redis有更深入的理解，感谢大家的阅读。</p>
+<p><strong>觉得有用就点个赞吧，你的点赞是我创作的最大动力</strong>~</p>
+<p><strong>我是一个努力让大家记住的程序员。我们下期再见！！！</strong></p>
+<p><img src="https://static.lovebilibili.com/dashacha.png" srcset="/img/loading.gif" alt="img"></p>
+<blockquote>
+<p>能力有限，如果有什么错误或者不当之处，请大家批评指正，一起学习交流！</p>
+</blockquote>
+
+            <hr>
+          </div>
+          <br>
+          <div>
+            <p>
+            
+            
+              <span>
+                <i class="iconfont icon-tag"></i>
+                
+                  <a class="hover-with-bg" href="/tags/Redis">Redis</a>
+                
+              </span>
+            
+            </p>
+            
+              <p class="note note-warning">本博客所有文章除特别声明外，均采用 <a href="https://zh.wikipedia.org/wiki/Wikipedia:CC_BY-SA_3.0%E5%8D%8F%E8%AE%AE%E6%96%87%E6%9C%AC" target="_blank" rel="nofollow noopener noopener">CC BY-SA 3.0协议</a> 。转载请注明出处！</p>
+            
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="d-none d-lg-block col-lg-2 toc-container">
+      
+  <div id="toc">
+    <p class="h4"><i class="far fa-list-alt"></i>&nbsp;目录</p>
+    <div id="tocbot"></div>
+  </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- custom -->
+
+
+<!-- Comments -->
+<div class="col-lg-7 mx-auto nopadding-md">
+  <div class="container comments mx-auto" id="comments">
+    
+  </div>
+</div>
+
+    
+  </main>
+
+  
+    <a class="z-depth-1" id="scroll-top-button" href="#" role="button">
+      <i class="fa fa-chevron-up scroll-top-arrow" aria-hidden="true"></i>
+    </a>
+  
+
+  
+    <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v"
+                 for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+  
+
+  <footer class="mt-5">
+  <div class="text-center py-3">
+    <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><b>Hexo</b></a>
+    <i class="iconfont icon-love"></i>
+    <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"> <b>Fluid</b></a>
+    <br>
+
+    
+  
+    <!-- 不蒜子统计PV -->
+    
+    &nbsp;<span id="busuanzi_container_site_pv"></span>总访问量 
+          <span id="busuanzi_value_site_pv"></span> 次&nbsp;
+  
+  
+    <!-- 不蒜子统计UV -->
+    
+    &nbsp;<span id="busuanzi_container_site_uv"></span>总访客数 
+            <span id="busuanzi_value_site_uv"></span> 人&nbsp;
+  
+  <br>
+
+
+
+    
+
+
+    <!-- cnzz Analytics icon -->
+    
+
+  </div>
+</footer>
+
+<!-- SCRIPTS -->
+<script src="/lib/jquery/jquery.min.js" ></script>
+<script src="/lib/popper/popper.min.js" ></script>
+<script src="/lib/bootstrap/js/bootstrap.min.js" ></script>
+<script src="/lib/mdbootstrap/js/mdb.min.js" ></script>
+<script src="/js/main.js" ></script>
+
+
+  <script src="/js/lazyload.js" ></script>
+
+
+
+  
+    <script src="/lib/tocbot/tocbot.min.js" ></script>
+  
+  <script src="/js/post.js" ></script>
+
+
+
+  <script src="/lib/smooth-scroll/smooth-scroll.min.js" ></script>
+
+
+
+  <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" ></script>
+
+
+<!-- Plugins -->
+
+
+  
+
+  
+
+  
+
+  
+
+  <!-- cnzz Analytics -->
+  
+
+
+
+  <script src="/lib/prettify/prettify.min.js" ></script>
+  <script>
+    $(document).ready(function () {
+      $('pre').addClass('prettyprint  linenums');
+      prettyPrint();
+    })
+  </script>
+
+
+
+  <script src="/lib/typed/typed.min.js" ></script>
+  <script>
+    var typed = new Typed('#subtitle', {
+      strings: [
+        '  ',
+        "深入探索Redis的五种基础数据类型&nbsp;",
+      ],
+      cursorChar: "_",
+      typeSpeed: 70,
+      loop: false,
+    });
+    typed.stop();
+    $(document).ready(function () {
+      $(".typed-cursor").addClass("h2");
+      typed.start();
+    });
+  </script>
+
+
+
+  <script src="/lib/anchor/anchor.min.js" ></script>
+  <script>
+    anchors.options = {
+      placement: "right",
+      visible: "false",
+      
+    };
+    var el = "h1,h2,h3,h4,h5,h6".split(",");
+    var res = [];
+    for (item of el) {
+      res.push(".markdown-body > " + item)
+    }
+    anchors.add(res.join(", "))
+  </script>
+
+
+
+  <script src="/js/local-search.js" ></script>
+  <script>
+    var path = "/local-search.xml";
+    var inputArea = document.querySelector("#local-search-input");
+    inputArea.onclick = function () {
+      getSearchFile(path);
+      this.onclick = null
+    }
+  </script>
+
+
+
+  <script src="/lib/fancybox/jquery.fancybox.min.js" ></script>
+  <script>
+    $("#post img:not(.no-zoom img, img[no-zoom])").each(
+      function () {
+        var element = document.createElement("a");
+        $(element).attr("data-fancybox", "images");
+        $(element).attr("href", $(this).attr("src"));
+        $(this).wrap(element);
+      }
+    );
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+</body>
+</html>

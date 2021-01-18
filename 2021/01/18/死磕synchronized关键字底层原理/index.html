@@ -1,0 +1,510 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/apple-touch-icon.png">
+  <link rel="icon" type="image/png" href="/img/favicon.png">
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="description" content="">
+  <meta name="author" content="Ye hongzhi">
+  <meta name="keywords" content="">
+  <title>死磕synchronized关键字底层原理 - 叶洪智的技术分享</title>
+
+  <link rel="stylesheet" href="/lib/font-awesome/css/all.min.css"  >
+<link rel="stylesheet" href="/lib/bootstrap/css/bootstrap.min.css"  >
+<link rel="stylesheet" href="/lib/mdbootstrap/css/mdb.min.css"  >
+<link rel="stylesheet" href="/lib/github-markdown/github-markdown.min.css"  >
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1067060_qzomjdt8bmp.css">
+
+
+
+  <link rel="stylesheet" href="/lib/prettify/tomorrow-night-eighties.min.css"  >
+
+<link rel="stylesheet" href="/css/main.css"  >
+
+
+  <link rel="stylesheet" href="/lib/fancybox/jquery.fancybox.min.css"  >
+
+
+<meta name="generator" content="Hexo 4.2.0"></head>
+
+
+<body>
+  <header style="height: 70vh;">
+    <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand"
+       href="/">&nbsp;<strong>YeHongzhi's Blog</strong>&nbsp;</a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+          <li class="nav-item">
+            <a class="nav-link" href="/">首页</a>
+          </li>
+        
+          
+          
+          
+          
+          <li class="nav-item">
+            <a class="nav-link" href="/archives/">归档</a>
+          </li>
+        
+          
+          
+          
+          
+          <li class="nav-item">
+            <a class="nav-link" href="/tags/">标签</a>
+          </li>
+        
+          
+          
+          
+          
+          <li class="nav-item">
+            <a class="nav-link" href="/about/">关于</a>
+          </li>
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" data-toggle="modal" data-target="#modalSearch">&nbsp;&nbsp;<i
+                class="iconfont icon-search"></i>&nbsp;&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+    <div class="view intro-2" id="background" false
+         style="background: url('/img/post.png')no-repeat center center;
+           background-size: cover;">
+      <div class="full-bg-img">
+        <div class="mask rgba-black-light flex-center">
+          <div class="container text-center white-text fadeInUp">
+            <span class="h2" id="subtitle">
+              
+            </span>
+
+            
+              <br>
+              
+                <p class="mt-3">
+                  <i class="fas fa-calendar-alt" aria-hidden="true"></i>&nbsp;
+                  星期一, 一月 18日 2021, 10:43 晚上
+                </p>
+              
+
+              <p>
+                
+                  
+                  &nbsp;<i class="far fa-chart-bar"></i>
+                  <span class="post-count">
+                    3.4k 字
+                  </span>&nbsp;
+                
+
+                
+                  
+                  &nbsp;<i class="far fa-clock"></i>
+                  <span class="post-count">
+                      12 分钟
+                  </span>&nbsp;
+                
+
+                
+                  <!-- 不蒜子统计文章PV -->
+                  
+                  &nbsp;<i class="far fa-eye" aria-hidden="true"></i>&nbsp;
+                  <span id="busuanzi_container_page_pv">
+                    <span id="busuanzi_value_page_pv"></span> 次
+                  </span>&nbsp;
+                
+              </p>
+            
+          </div>
+
+          
+            <div class="scroll-down-bar">
+              <i class="fas fa-angle-down scroll-down-arrow"></i>
+            </div>
+          
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid">
+  <div class="row">
+    <div class="d-none d-lg-block col-lg-2"></div>
+    <div class="col-lg-8 nopadding-md">
+      <div class="py-5 z-depth-3" id="board">
+        <div class="post-content mx-auto" id="post">
+          <div class="markdown-body">
+            <blockquote>
+<p><strong>文章已收录Github精选，欢迎Star</strong>：<a href="https://github.com/yehongzhi/learningSummary" target="_blank" rel="noopener">https://github.com/yehongzhi</a></p>
+</blockquote>
+<h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>作为Java程序员，我们都知道在多线程的情况下，为了保证线程安全，经常会使用synchronized和Lock锁。Lock锁之前写过一篇<a href="https://mp.weixin.qq.com/s/FjLl9POXHqI8ca9EQHCCCw" target="_blank" rel="noopener">《不得不学的AQS》</a>，已经详细讲解过Lock锁的底层原理。这次我们讲一下日常开发中常用的关键字synchronized，想要用得好，底层原理必须要搞明白。</p>
+<p>synchronized是JDK自带的一个关键字，在JDK1.5之前是一个重量级锁，所以从性能上考虑大部分人会选择Lock锁，不过毕竟是JDK自带的关键字，所以在JDK1.6后对它进行优化，引入了偏向锁，轻量级锁，自旋锁等概念。</p>
+<h1 id="一、synchronized的使用方式"><a href="#一、synchronized的使用方式" class="headerlink" title="一、synchronized的使用方式"></a>一、synchronized的使用方式</h1><p>在语法上，要使用synchronized关键字，需要把任意一个非null对象作为”锁”对象，也就是需要一个<strong>对象监视器（Object Monitor）</strong>。总的来说有三种用法：</p>
+<h2 id="1-1-作用在实例方法"><a href="#1-1-作用在实例方法" class="headerlink" title="1.1 作用在实例方法"></a>1.1 作用在实例方法</h2><p>修饰实例方法，相当于对当前实例对象this加锁，this作为对象监视器。</p>
+<pre><code class="java">public synchronized void hello(){
+    System.out.println(&quot;hello world&quot;);
+}</code></pre>
+<h2 id="1-2-作用在静态方法"><a href="#1-2-作用在静态方法" class="headerlink" title="1.2 作用在静态方法"></a>1.2 作用在静态方法</h2><p>修饰静态方法，相当于对当前类的Class对象加锁，当前类的Class对象作为对象监视器。</p>
+<pre><code class="java">public synchronized static void helloStatic(){
+    System.out.println(&quot;hello world static&quot;);
+}</code></pre>
+<h2 id="1-3-修饰代码块"><a href="#1-3-修饰代码块" class="headerlink" title="1.3 修饰代码块"></a>1.3 修饰代码块</h2><p>指定加锁对象，对给定对象加锁，括号括起来的对象就是对象监视器。</p>
+<pre><code class="java">public void test(){
+    SynchronizedTest test = new SynchronizedTest();        
+    synchronized (test){
+        System.out.println(&quot;hello world&quot;);
+    }
+}</code></pre>
+<h1 id="二、synchronized锁的原理"><a href="#二、synchronized锁的原理" class="headerlink" title="二、synchronized锁的原理"></a>二、synchronized锁的原理</h1><p>在讲原理前，我们先讲一下Java对象的构成。在JVM中，对象在内存中分为三块区域：对象头，实例数据和对齐填充。如图所示：</p>
+<p><img src="https://static.lovebilibili.com/synchronized_01.png" srcset="/img/loading.gif" alt=""></p>
+<p><strong>对象头</strong>：</p>
+<ul>
+<li>Mark Word，用于存储对象自身运行时的数据，如哈希码(Hash Code)，GC分代年龄，锁状态标志，偏向线程ID、偏向时间戳等信息，它会根据对象的状态复用自己的存储空间。它是<strong>实现轻量级锁和偏向锁的关键</strong>。</li>
+<li>类型指针，对象会指向它的类的元数据的指针，虚拟机通过这个指针确定这个对象是哪个类的实例。</li>
+<li>Array length，如果对象是一个数组，还必须记录数组长度的数据。</li>
+</ul>
+<p><strong>实例数据</strong>：</p>
+<ul>
+<li>存放类的属性数据信息，包括父类的属性信息。</li>
+</ul>
+<p><strong>对齐填充</strong>：</p>
+<ul>
+<li>由于虚拟机要求 对象起始地址必须是8字节的整数倍。填充数据不是必须存在的，仅仅是为了字节对齐。</li>
+</ul>
+<h2 id="2-1-同步代码块原理"><a href="#2-1-同步代码块原理" class="headerlink" title="2.1 同步代码块原理"></a>2.1 同步代码块原理</h2><p>为了看底层实现原理，使用<code>javap -v xxx.class</code>命令进行反编译。</p>
+<p><img src="https://static.lovebilibili.com/synchronized_02.png" srcset="/img/loading.gif" alt=""></p>
+<p>这是使用同步代码块被标志的地方就是刚刚提到的对象头，它会关联一个monitor对象，也就是括号括起来的对象。</p>
+<p>1、<strong>monitorenter</strong>，如果当前monitor的进入数为0时，线程就会进入monitor，并且把进入数+1，那么该线程就是monitor的拥有者(owner)。</p>
+<p>2、如果该线程已经是monitor的拥有者，又重新进入，就会把进入数再次+1。也就是可重入的。</p>
+<p>3、<strong>monitorexit</strong>，执行monitorexit的线程必须是monitor的拥有者，指令执行后，monitor的进入数减1，如果减1后进入数为0，则该线程会退出monitor。其他被阻塞的线程就可以尝试去获取monitor的所有权。</p>
+<blockquote>
+<p>monitorexit指令出现了两次，第1次为同步正常退出释放锁；第2次为发生异步退出释放锁；</p>
+</blockquote>
+<p>总的来说，synchronized的底层原理是通过monitor对象来完成的。</p>
+<h2 id="2-2-同步方法原理"><a href="#2-2-同步方法原理" class="headerlink" title="2.2 同步方法原理"></a>2.2 同步方法原理</h2><p>比如说使用synchronized修饰的实例方法。</p>
+<pre><code class="java">public synchronized void hello(){
+    System.out.println(&quot;hello world&quot;);
+}</code></pre>
+<p>同理使用<code>javap -v</code>反编译。</p>
+<p><img src="https://static.lovebilibili.com/synchronized_03.png" srcset="/img/loading.gif" alt=""></p>
+<p>可以看到多了一个标志位<strong>ACC_SYNCHRONIZED</strong>，作用就是一旦执行到这个方法时，就会先判断是否有标志位，如果有这个标志位，就会先尝试获取monitor，获取成功才能执行方法，方法执行完成后再释放monitor。<strong>在方法执行期间，其他线程都无法获取同一个monitor</strong>。归根结底还是对monitor对象的争夺，只是同步方法是一种隐式的方式来实现。</p>
+<h2 id="2-3-Monitor"><a href="#2-3-Monitor" class="headerlink" title="2.3 Monitor"></a>2.3 Monitor</h2><p>上面经常提到monitor，它内置在每一个对象中，任何一个对象都有一个monitor与之关联，synchronized在JVM里的实现就是基于进入和退出monitor来实现的，底层则是通过成对的MonitorEnter和MonitorExit指令来实现，因此每一个Java对象都有成为Monitor的潜质。所以我们可以理解monitor是一个同步工具。</p>
+<h1 id="三、synchronized锁的优化"><a href="#三、synchronized锁的优化" class="headerlink" title="三、synchronized锁的优化"></a>三、synchronized锁的优化</h1><p>前面讲过JDK1.5之前，synchronized是属于重量级锁，重量级需要依赖于底层操作系统的Mutex Lock实现，然后操作系统需要切换用户态和内核态，这种切换的消耗非常大，所以性能相对来说并不好。</p>
+<p>既然我们都知道性能不好，JDK的开发人员肯定也是知道的，于是在JDK1.6后开始对synchronized进行优化，增加了自适应的CAS自旋、锁消除、锁粗化、偏向锁、轻量级锁这些优化策略。锁的等级从无锁，偏向锁，轻量级锁，重量级锁逐步升级，并且是单向的，不会出现锁的降级。</p>
+<h2 id="3-1-自适应性自旋锁"><a href="#3-1-自适应性自旋锁" class="headerlink" title="3.1 自适应性自旋锁"></a>3.1 自适应性自旋锁</h2><p>在说自适应自旋锁之前，先讲自旋锁。上面已经讲过，当线程没有获得monitor对象的所有权时，就会进入阻塞，当持有锁的线程释放了锁，当前线程才可以再去竞争锁，但是如果按照这样的规则，就会浪费大量的性能在阻塞和唤醒的切换上，特别是线程占用锁的时间很短的话。</p>
+<p>为了避免阻塞和唤醒的切换，在没有获得锁的时候就不进入阻塞，而是不断地循环检测锁是否被释放，这就是自旋。在占用锁的时间短的情况下，自旋锁表现的性能是很高的。</p>
+<p>但是又有问题，由于线程是一直在循环检测锁的状态，就会占用cpu资源，如果线程占用锁的时间比较长，那么自旋的次数就会变多，占用cpu时间变长导致性能变差，当然我们也可以通过参数<code>-XX:PreBlockSpin</code>设置自旋锁的自旋次数，当自旋一定的次数(时间)后就挂起，但是设置的自旋次数是多少比较合适呢？</p>
+<p>如果设置次数少了或者多了都会导致性能受到影响，而且占用锁的时间在业务高峰期和正常时期也有区别，所以在JDK1.6引入了自适应性自旋锁。</p>
+<p>自适应性自旋锁的意思是，自旋的次数不是固定的，而是由前一次在同一个锁上的自旋时间及锁的拥有者的状态来决定。</p>
+<p>表现是如果此次自旋成功了，很有可能下一次也能成功，于是允许自旋的次数就会更多，反过来说，如果很少有线程能够自旋成功，很有可能下一次也是失败，则自旋次数就更少。这样能最大化利用资源，随着程序运行和性能监控信息的不断完善，虚拟机对锁的状况预测会越来越准确，也就变得越来越智能。</p>
+<h2 id="3-2-锁消除"><a href="#3-2-锁消除" class="headerlink" title="3.2 锁消除"></a>3.2 锁消除</h2><p>锁消除是一种锁的优化策略，这种优化更加彻底，在JVM编译时，通过对运行上下文的扫描，去除不可能存在共享资源竞争的锁。这种优化策略可以消除没有必要的锁，节省毫无意义的请求锁时间。比如StringBuffer的append()方法，就是使用synchronized进行加锁的。</p>
+<pre><code class="java">public synchronized StringBuffer append(String str) {
+    toStringCache = null;
+    super.append(str);
+    return this;
+}</code></pre>
+<p>如果在实例方法中StringBuffer作为局部变量使用append()方法，StringBuffer是不可能存在共享资源竞争的，因此会自动将其锁消除。例如：</p>
+<pre><code class="java">public String add(String s1, String s2) {
+    //sb属于不可能共享的资源,JVM会自动消除内部的锁
+    StringBuffer sb = new StringBuffer();
+    sb.append(s1).append(s2);
+    return sb.toString();
+}</code></pre>
+<h2 id="3-3-锁粗化"><a href="#3-3-锁粗化" class="headerlink" title="3.3 锁粗化"></a>3.3 锁粗化</h2><p>如果一系列的连续加锁解锁操作，可能会导致不必要的性能损耗，所以引入锁粗话的概念。意思是将多个连续加锁、解锁的操作连接在一起，扩展成为一个范围更大的锁。</p>
+<h2 id="3-4-偏向锁"><a href="#3-4-偏向锁" class="headerlink" title="3.4 偏向锁"></a>3.4 偏向锁</h2><p>偏向锁是JDK1.6引入的一个重要的概念，JDK的开发人员经过研究发现，在大多数情况下，锁不仅不存在多线程竞争，而且总是由同一线程多次获得。也就是说在很多时候我们是假设有多线程的场景，但是实际上却是单线程的。所以偏向锁是在单线程执行代码块时使用的机制。</p>
+<p>原理是什么呢，我们前面提到锁的争夺实际上是Monitor对象的争夺，还有每个对象都有一个对象头，对象头是由Mark Word和Klass pointer 组成的。一旦有线程持有了这个锁对象，标志位修改为1，就进入<strong>偏向模式</strong>，同时会把这个<strong>线程的ID记录在对象的Mark Word中</strong>，当同一个线程再次进入时，就不再进行同步操作，这样就省去了大量的锁申请的操作，从而提高了性能。</p>
+<p>一旦有多个线程开始竞争锁的话呢？那么偏向锁并不会一下子升级为重量级锁，而是先升级为轻量级锁。</p>
+<h2 id="3-5-轻量级锁"><a href="#3-5-轻量级锁" class="headerlink" title="3.5 轻量级锁"></a>3.5 轻量级锁</h2><p>如果获取偏向锁失败，也就是有多个线程竞争锁的话，就会升级为JDK1.6引入的轻量级锁，Mark Word 的结构也变为轻量级锁的结构。</p>
+<p>执行同步代码块之前，JVM会在线程的栈帧中创建一个锁记录（Lock Record），并将Mark Word拷贝复制到锁记录中。然后尝试通过CAS操作将Mark Word中的锁记录的指针，指向创建的Lock Record。如果成功表示获取锁状态成功，如果失败，则进入自旋获取锁状态。</p>
+<p>自旋锁的原理在上面已经讲过了，如果自旋获取锁也失败了，则升级为重量级锁，也就是把线程阻塞起来，等待唤醒。</p>
+<h2 id="3-6-重量级锁"><a href="#3-6-重量级锁" class="headerlink" title="3.6 重量级锁"></a>3.6 重量级锁</h2><p>重量级锁就是一个悲观锁了，但是其实不是最坏的锁，因为升级到重量级锁，是因为线程占用锁的时间长(自旋获取失败)，锁竞争激烈的场景，在这种情况下，让线程进入阻塞状态，进入阻塞队列，能减少cpu消耗。所以说在不同的场景使用最佳的解决方案才是最好的技术。synchronized在不同的场景会自动选择不同的锁，这样一个升级锁的策略就体现出了这点。</p>
+<h2 id="3-7-小结"><a href="#3-7-小结" class="headerlink" title="3.7 小结"></a>3.7 小结</h2><p>偏向锁：适用于单线程执行。</p>
+<p>轻量级锁：适用于锁竞争较不激烈的情况。</p>
+<p>重量级锁：适用于锁竞争激烈的情况。</p>
+<h1 id="四、Lock锁与synchronized的区别"><a href="#四、Lock锁与synchronized的区别" class="headerlink" title="四、Lock锁与synchronized的区别"></a>四、Lock锁与synchronized的区别</h1><p>我们看一下他们的区别：</p>
+<ul>
+<li>synchronized是Java语法的一个关键字，加锁的过程是在JVM底层进行。Lock是一个类，是JDK应用层面的，在JUC包里有丰富的API。</li>
+<li>synchronized在加锁和解锁操作上都是自动完成的，Lock锁需要我们手动加锁和解锁。</li>
+<li>Lock锁有丰富的API能知道线程是否获取锁成功，而synchronized不能。</li>
+<li>synchronized能修饰方法和代码块，Lock锁只能锁住代码块。</li>
+<li>Lock锁有丰富的API，可根据不同的场景，在使用上更加灵活。</li>
+<li>synchronized是非公平锁，而Lock锁既有非公平锁也有公平锁，可以由开发者通过参数控制。</li>
+</ul>
+<p>个人觉得在锁竞争不是很激烈的场景，使用synchronized，语义清晰，实现简单，JDK1.6后引入了偏向锁，轻量级锁等概念后，性能也能保证。而在锁竞争激烈，复杂的场景下，则使用Lock锁会更灵活一点，性能也较稳定。</p>
+<h1 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h1><p>学习synchronized关键字的底层原理不是钻牛角尖，其实是从底层原理上知道了synchronized在什么场景使用会有什么样的效果，我们都知道没有最好的技术，只有最适合的技术，所以在学完之后，希望对大家有所帮助，写出更加高效的代码。所谓不积跬步无以至千里，一步一个脚印，哪怕现在还是菜鸟，总有一天也会成为雄鹰。</p>
+<p>那么这篇文章就写到这里了，感谢大家的阅读，希望看完后能有所收获！</p>
+<p><strong>觉得有用就点个赞吧，你的点赞是我创作的最大动力</strong>~</p>
+<p><strong>我是一个努力让大家记住的程序员。我们下期再见！！！</strong></p>
+<p><img src="https://static.lovebilibili.com/dashacha.png" srcset="/img/loading.gif" alt=""></p>
+<blockquote>
+<p>能力有限，如果有什么错误或者不当之处，请大家批评指正，一起学习交流！</p>
+</blockquote>
+
+            <hr>
+          </div>
+          <br>
+          <div>
+            <p>
+            
+            
+              <span>
+                <i class="iconfont icon-tag"></i>
+                
+                  <a class="hover-with-bg" href="/tags/%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B">并发编程</a>
+                
+              </span>
+            
+            </p>
+            
+              <p class="note note-warning">本博客所有文章除特别声明外，均采用 <a href="https://zh.wikipedia.org/wiki/Wikipedia:CC_BY-SA_3.0%E5%8D%8F%E8%AE%AE%E6%96%87%E6%9C%AC" target="_blank" rel="nofollow noopener noopener">CC BY-SA 3.0协议</a> 。转载请注明出处！</p>
+            
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="d-none d-lg-block col-lg-2 toc-container">
+      
+  <div id="toc">
+    <p class="h4"><i class="far fa-list-alt"></i>&nbsp;目录</p>
+    <div id="tocbot"></div>
+  </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- custom -->
+
+
+<!-- Comments -->
+<div class="col-lg-7 mx-auto nopadding-md">
+  <div class="container comments mx-auto" id="comments">
+    
+  </div>
+</div>
+
+    
+  </main>
+
+  
+    <a class="z-depth-1" id="scroll-top-button" href="#" role="button">
+      <i class="fa fa-chevron-up scroll-top-arrow" aria-hidden="true"></i>
+    </a>
+  
+
+  
+    <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v"
+                 for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+  
+
+  <footer class="mt-5">
+  <div class="text-center py-3">
+    <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><b>Hexo</b></a>
+    <i class="iconfont icon-love"></i>
+    <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"> <b>Fluid</b></a>
+    <br>
+
+    
+  
+    <!-- 不蒜子统计PV -->
+    
+    &nbsp;<span id="busuanzi_container_site_pv"></span>总访问量 
+          <span id="busuanzi_value_site_pv"></span> 次&nbsp;
+  
+  
+    <!-- 不蒜子统计UV -->
+    
+    &nbsp;<span id="busuanzi_container_site_uv"></span>总访客数 
+            <span id="busuanzi_value_site_uv"></span> 人&nbsp;
+  
+  <br>
+
+
+
+    
+
+
+    <!-- cnzz Analytics icon -->
+    
+
+  </div>
+</footer>
+
+<!-- SCRIPTS -->
+<script src="/lib/jquery/jquery.min.js" ></script>
+<script src="/lib/popper/popper.min.js" ></script>
+<script src="/lib/bootstrap/js/bootstrap.min.js" ></script>
+<script src="/lib/mdbootstrap/js/mdb.min.js" ></script>
+<script src="/js/main.js" ></script>
+
+
+  <script src="/js/lazyload.js" ></script>
+
+
+
+  
+    <script src="/lib/tocbot/tocbot.min.js" ></script>
+  
+  <script src="/js/post.js" ></script>
+
+
+
+  <script src="/lib/smooth-scroll/smooth-scroll.min.js" ></script>
+
+
+
+  <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" ></script>
+
+
+<!-- Plugins -->
+
+
+  
+
+  
+
+  
+
+  
+
+  <!-- cnzz Analytics -->
+  
+
+
+
+  <script src="/lib/prettify/prettify.min.js" ></script>
+  <script>
+    $(document).ready(function () {
+      $('pre').addClass('prettyprint  linenums');
+      prettyPrint();
+    })
+  </script>
+
+
+
+  <script src="/lib/typed/typed.min.js" ></script>
+  <script>
+    var typed = new Typed('#subtitle', {
+      strings: [
+        '  ',
+        "死磕synchronized关键字底层原理&nbsp;",
+      ],
+      cursorChar: "_",
+      typeSpeed: 70,
+      loop: false,
+    });
+    typed.stop();
+    $(document).ready(function () {
+      $(".typed-cursor").addClass("h2");
+      typed.start();
+    });
+  </script>
+
+
+
+  <script src="/lib/anchor/anchor.min.js" ></script>
+  <script>
+    anchors.options = {
+      placement: "right",
+      visible: "false",
+      
+    };
+    var el = "h1,h2,h3,h4,h5,h6".split(",");
+    var res = [];
+    for (item of el) {
+      res.push(".markdown-body > " + item)
+    }
+    anchors.add(res.join(", "))
+  </script>
+
+
+
+  <script src="/js/local-search.js" ></script>
+  <script>
+    var path = "/local-search.xml";
+    var inputArea = document.querySelector("#local-search-input");
+    inputArea.onclick = function () {
+      getSearchFile(path);
+      this.onclick = null
+    }
+  </script>
+
+
+
+  <script src="/lib/fancybox/jquery.fancybox.min.js" ></script>
+  <script>
+    $("#post img:not(.no-zoom img, img[no-zoom])").each(
+      function () {
+        var element = document.createElement("a");
+        $(element).attr("data-fancybox", "images");
+        $(element).attr("href", $(this).attr("src"));
+        $(this).wrap(element);
+      }
+    );
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+</body>
+</html>
