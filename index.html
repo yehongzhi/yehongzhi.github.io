@@ -136,6 +136,59 @@
     
     
       <div class="col-12 col-md-4 m-auto">
+        <a href="/2021/01/31/%E7%8E%A9%E8%BD%AC%E5%B8%83%E9%9A%86%E8%BF%87%E6%BB%A4%E5%99%A8%EF%BC%8C%E5%85%B6%E5%AE%9E%E5%BE%88%E7%AE%80%E5%8D%95/" target="_blank">
+          <img src="https://static.lovebilibili.com/redis_bl_shouye.jpg" srcset="/img/loading.gif" alt="玩转布隆过滤器，其实很简单" class="index-img img-fluid rounded index-thumbnails">
+        </a>
+      </div>
+    
+    <div class="col-12 col-md-8 mx-auto index-info">
+      <a href="/2021/01/31/%E7%8E%A9%E8%BD%AC%E5%B8%83%E9%9A%86%E8%BF%87%E6%BB%A4%E5%99%A8%EF%BC%8C%E5%85%B6%E5%AE%9E%E5%BE%88%E7%AE%80%E5%8D%95/">
+        <p class="h4 index-header">玩转布隆过滤器，其实很简单</p>
+      </a>
+
+      <a href="/2021/01/31/%E7%8E%A9%E8%BD%AC%E5%B8%83%E9%9A%86%E8%BF%87%E6%BB%A4%E5%99%A8%EF%BC%8C%E5%85%B6%E5%AE%9E%E5%BE%88%E7%AE%80%E5%8D%95/">
+        
+        
+          
+        
+        <div class="index-excerpt" >
+          <div class="index-text mb-1">
+文章已收录Github精选，欢迎Star：https://github.com/yehongzhi
+
+概念布隆过滤器(BloomFilter)是由一个叫“布隆”的小伙子在1970年提出的，它是一个很长的二进制向量，主要用于判断一个元素是否在一个集合中。
+原理在介绍原理之前，要先讲一下Hash函数的概念。
+我们在Java中的HashMap，HashSet其实也接触过hashcode()这个函数，哈希函数是可以将任意大小的输入数据转换成特定大小的输出数据的函数，转换后的数据称为哈希值。
+哈希函数有以下特点：
+
+如果根据同一个哈希函数得到的哈希值不同，那么这两个哈希值的原始输入值肯定不同。
+如果根据同一个哈希函数得到的两个哈希值相等，两个哈希值的原始输入值有可能相等，有可能不相等。
+
+布隆过滤器是由一个很长的二进制向量和一系列的哈希函数组成。那么布隆过滤器是怎么判断一个元素是否在一个集合中的呢？
+假设布隆过滤器的底层存储结构是一个长度为16的位数组，初始状态时，它的所有位置都设置为0。
+
+当有变量添加到布隆过滤器中，通过K个映射函数将变量映射到位数组的K个点，并把这K个点的值设置为1(假设</div>
+        </div>
+      </a>
+
+      <div class="index-btm">
+        
+          <i class="iconfont icon-riqi2"></i>&nbsp;2021-01-31&nbsp;&nbsp;
+        
+        
+        
+          <i class="iconfont icon-tag"></i>
+          
+            <a href="/tags/Redis">Redis</a>&nbsp;
+          
+        
+      </div>
+    </div>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+      <div class="col-12 col-md-4 m-auto">
         <a href="/2021/01/24/%E4%BB%80%E4%B9%88%E6%98%AF%E7%BC%93%E5%AD%98%E9%9B%AA%E5%B4%A9%EF%BC%8C%E7%BC%93%E5%AD%98%E5%87%BB%E7%A9%BF%EF%BC%8C%E7%BC%93%E5%AD%98%E7%A9%BF%E9%80%8F/" target="_blank">
           <img src="https://static.lovebilibili.com/redis_kv_index.jpg" srcset="/img/loading.gif" alt="什么是缓存雪崩，缓存击穿，缓存穿透" class="index-img img-fluid rounded index-thumbnails">
         </a>
@@ -589,60 +642,6 @@ public synchronized stat</div>
             <a href="/tags/%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B">并发编程</a>&nbsp;
           
             <a href="/tags/%E5%A4%9A%E7%BA%BF%E7%A8%8B">多线程</a>&nbsp;
-          
-        
-      </div>
-    </div>
-  </div>
-
-  <div class="row mx-auto index-card">
-    
-    
-      <div class="col-12 col-md-4 m-auto">
-        <a href="/2020/11/15/SpringBoot%E5%90%AF%E5%8A%A8%E6%B5%81%E7%A8%8B%E6%98%AF%E6%80%8E%E6%A0%B7%E7%9A%84%EF%BC%9F/" target="_blank">
-          <img src="https://static.lovebilibili.com/SpringBoot_index.jpg" srcset="/img/loading.gif" alt="SpringBoot启动流程是怎样的？" class="index-img img-fluid rounded index-thumbnails">
-        </a>
-      </div>
-    
-    <div class="col-12 col-md-8 mx-auto index-info">
-      <a href="/2020/11/15/SpringBoot%E5%90%AF%E5%8A%A8%E6%B5%81%E7%A8%8B%E6%98%AF%E6%80%8E%E6%A0%B7%E7%9A%84%EF%BC%9F/">
-        <p class="h4 index-header">SpringBoot启动流程是怎样的？</p>
-      </a>
-
-      <a href="/2020/11/15/SpringBoot%E5%90%AF%E5%8A%A8%E6%B5%81%E7%A8%8B%E6%98%AF%E6%80%8E%E6%A0%B7%E7%9A%84%EF%BC%9F/">
-        
-        
-          
-        
-        <div class="index-excerpt" >
-          <div class="index-text mb-1">思维导图
-
-文章已收录Github精选，欢迎Star：https://github.com/yehongzhi/learningSummary
-
-前言SpringBoot一开始最让我印象深刻的就是通过一个启动类就能启动应用。在SpringBoot以前，启动应用虽然也不麻烦，但是还是有点繁琐，要打包成war包，又要配置tomcat，tomcat又有一个server.xml文件去配置。
-然而SpringBoot则内置了tomcat，通过启动类启动，配置也集中在一个application.yml中，简直不要太舒服。好奇心驱动，于是我很想搞清楚启动类的启动过程，那么开始吧。
-一、启动类首先我们看最常见的启动类写法。
-@SpringBootApplication
-public class SpringmvcApplication {
-    public static void main(String[] args) {
-        SpringApplication.run(SpringmvcApplication.class, args);
-    }
-}
-把启动类分解一下，实际上就是两</div>
-        </div>
-      </a>
-
-      <div class="index-btm">
-        
-          <i class="iconfont icon-riqi2"></i>&nbsp;2020-11-15&nbsp;&nbsp;
-        
-        
-        
-          <i class="iconfont icon-tag"></i>
-          
-            <a href="/tags/java">java</a>&nbsp;
-          
-            <a href="/tags/SpringBoot">SpringBoot</a>&nbsp;
           
         
       </div>
