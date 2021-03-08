@@ -1,0 +1,747 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/apple-touch-icon.png">
+  <link rel="icon" type="image/png" href="/img/favicon.png">
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="description" content="">
+  <meta name="author" content="Ye hongzhi">
+  <meta name="keywords" content="">
+  <title>Java基础不简单，讲一讲枚举 - 叶洪智的技术分享</title>
+
+  <link rel="stylesheet" href="/lib/font-awesome/css/all.min.css"  >
+<link rel="stylesheet" href="/lib/bootstrap/css/bootstrap.min.css"  >
+<link rel="stylesheet" href="/lib/mdbootstrap/css/mdb.min.css"  >
+<link rel="stylesheet" href="/lib/github-markdown/github-markdown.min.css"  >
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1067060_qzomjdt8bmp.css">
+
+
+
+  <link rel="stylesheet" href="/lib/prettify/tomorrow-night-eighties.min.css"  >
+
+<link rel="stylesheet" href="/css/main.css"  >
+
+
+  <link rel="stylesheet" href="/lib/fancybox/jquery.fancybox.min.css"  >
+
+
+<meta name="generator" content="Hexo 4.2.0"></head>
+
+
+<body>
+  <header style="height: 70vh;">
+    <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand"
+       href="/">&nbsp;<strong>YeHongzhi's Blog</strong>&nbsp;</a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+          <li class="nav-item">
+            <a class="nav-link" href="/">首页</a>
+          </li>
+        
+          
+          
+          
+          
+          <li class="nav-item">
+            <a class="nav-link" href="/archives/">归档</a>
+          </li>
+        
+          
+          
+          
+          
+          <li class="nav-item">
+            <a class="nav-link" href="/tags/">标签</a>
+          </li>
+        
+          
+          
+          
+          
+          <li class="nav-item">
+            <a class="nav-link" href="/about/">关于</a>
+          </li>
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" data-toggle="modal" data-target="#modalSearch">&nbsp;&nbsp;<i
+                class="iconfont icon-search"></i>&nbsp;&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+    <div class="view intro-2" id="background" false
+         style="background: url('/img/post.png')no-repeat center center;
+           background-size: cover;">
+      <div class="full-bg-img">
+        <div class="mask rgba-black-light flex-center">
+          <div class="container text-center white-text fadeInUp">
+            <span class="h2" id="subtitle">
+              
+            </span>
+
+            
+              <br>
+              
+                <p class="mt-3">
+                  <i class="fas fa-calendar-alt" aria-hidden="true"></i>&nbsp;
+                  星期一, 三月 8日 2021, 10:42 晚上
+                </p>
+              
+
+              <p>
+                
+                  
+                  &nbsp;<i class="far fa-chart-bar"></i>
+                  <span class="post-count">
+                    3k 字
+                  </span>&nbsp;
+                
+
+                
+                  
+                  &nbsp;<i class="far fa-clock"></i>
+                  <span class="post-count">
+                      12 分钟
+                  </span>&nbsp;
+                
+
+                
+                  <!-- 不蒜子统计文章PV -->
+                  
+                  &nbsp;<i class="far fa-eye" aria-hidden="true"></i>&nbsp;
+                  <span id="busuanzi_container_page_pv">
+                    <span id="busuanzi_value_page_pv"></span> 次
+                  </span>&nbsp;
+                
+              </p>
+            
+          </div>
+
+          
+            <div class="scroll-down-bar">
+              <i class="fas fa-angle-down scroll-down-arrow"></i>
+            </div>
+          
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid">
+  <div class="row">
+    <div class="d-none d-lg-block col-lg-2"></div>
+    <div class="col-lg-8 nopadding-md">
+      <div class="py-5 z-depth-3" id="board">
+        <div class="post-content mx-auto" id="post">
+          <div class="markdown-body">
+            <blockquote>
+<p><strong>文章已收录Github精选，欢迎Star</strong>：<a href="https://github.com/yehongzhi/learningSummary" target="_blank" rel="noopener">https://github.com/yehongzhi/learningSummary</a></p>
+</blockquote>
+<h1 id="什么是枚举"><a href="#什么是枚举" class="headerlink" title="什么是枚举"></a>什么是枚举</h1><p>枚举是JDK1.5新增的一种数据类型，是一种特殊的类，常用于表示一组常量，比如一年四季，12个月份，星期一到星期天，服务返回的错误码，结算支付的方式等等。枚举是使用enum关键字来定义。</p>
+<h1 id="枚举的使用"><a href="#枚举的使用" class="headerlink" title="枚举的使用"></a>枚举的使用</h1><p>在使用枚举之前我们先探讨一个问题，为什么要使用枚举。</p>
+<p>现在有个业务场景是结算支付，有支付宝和微信支付两种方式，1表示支付宝，2表示微信支付，还需要根据编码(1或2)获取相应的英文名，如果不用枚举，我们就要这样写。</p>
+<pre><code class="java">public class PayTypeUtil {
+    //支付宝
+    private static final int ALI_PAY = 1;
+    //微信支付
+    private static final int WECHAT_PAY = 2;
+
+    //根据编码获取支付方式的名称
+    public String getPayName(int code) {
+        if (ALI_PAY == code) {
+            return &quot;Ali_Pay&quot;;
+        }
+        if (WECHAT_PAY == code) {
+            return &quot;Wechat_Pay&quot;;
+        }
+        return null;
+    }
+}</code></pre>
+<p>如果这时，产品经理说要增加一个银联支付，就要加多if的判断，就会造成有多少种支付方式，就有多少个<code>if</code>，非常难看。</p>
+<p>如果使用枚举，就变得很优雅，先看代码：</p>
+<pre><code class="java">public enum PayTypeEnum {
+    /** 支付宝*/
+    ALI_PAY(1, &quot;ALI_PAY&quot;),
+    /** 微信支付*/
+    WECHAT_PAY(2, &quot;WECHAT_PAY&quot;);
+
+    private int code;
+
+    private String describe;
+
+    PayTypeEnum(int code, String describe) {
+        this.code = code;
+        this.describe = describe;
+    }
+    //根据编码获取支付方式
+    public PayTypeEnum find(int code) {
+        for (PayTypeEnum payTypeEnum : values()) {
+            if (payTypeEnum.getCode() == code) {
+                return payTypeEnum;
+            }
+        }
+        return null;
+    }
+    //getter、setter方法
+}</code></pre>
+<p>当我们需要扩展，只需要定义多一个实例即可，其他代码都不用动，比如加多一个银联支付。</p>
+<pre><code class="java">/** 支付宝*/
+ALI_PAY(1, &quot;ALI_PAY&quot;),
+/** 微信支付*/
+WECHAT_PAY(2, &quot;WECHAT_PAY&quot;),
+//只需要加多一行代码即可完成扩展
+/** 银联支付*/
+UNION_PAY(3,&quot;UNION_PAY&quot;);</code></pre>
+<p>一般在实际项目中，最多的写法就是这样，主要是简单明了，易于扩展。</p>
+<p>第二种常见的用法是结合switch-case使用，比如我定义一个一年四季的枚举。</p>
+<pre><code class="java">public enum Season {
+    //春
+    SPRING,
+    //夏
+    SUMMER, 
+    //秋
+    AUTUMN, 
+    //冬
+    WINTER;
+}</code></pre>
+<p>然后结合switch使用。</p>
+<pre><code class="java">public static void main(String[] args) throws Exception{
+    doSomething(Season.SPRING);
+}
+
+private static void doSomething(Season season){
+    switch (season){
+        case SPRING:
+            System.out.println(&quot;不知细叶谁裁出，二月春风似剪刀&quot;);
+            break;
+        case SUMMER:
+            System.out.println(&quot;接天莲叶无穷碧，映日荷花别样红&quot;);
+            break;
+        case AUTUMN:
+            System.out.println(&quot;停车坐爱枫林晚，霜叶红于二月花&quot;);
+            break;
+        case WINTER:
+            System.out.println(&quot;梅花香自苦寒来，宝剑锋从磨砺出&quot;);
+            break;
+        default:
+            System.out.println(&quot;垂死病中惊坐起，笑问客从何处来&quot;);
+    }
+}</code></pre>
+<p>可能很多人觉得直接用int，String类型配合switch使用就够了，为什么还要支持枚举，这样的设计是不是显得很多余，其实非也。</p>
+<p>不妨反过来想，假如用1到4代表四季，接收的参数类型就是int，在没有提示的情况下，我们仅仅只知道数int类型是很难猜到需要传入数字的范围，字符串也是一样，如果不用枚举你是很难一眼看出需要传入什么参数，这才是最关键的。</p>
+<p>如果使用枚举，那么问题就迎刃而解，当你调用doSomething()方法时，一看到枚举就知道传入的是哪几个参数，因为已经在枚举类里面定义好了。<strong>这对于项目交接，还有代码的可读性都是非常有利的</strong>。</p>
+<p>这种限制不单止限制了调用方，也限制了传入的参数只能是定义好的枚举，不用担心传入的参数错误导致的程序错误。</p>
+<p>所以枚举类使用得恰当，对于项目的可维护性是有很大提升的。</p>
+<h1 id="枚举本身的方法"><a href="#枚举本身的方法" class="headerlink" title="枚举本身的方法"></a>枚举本身的方法</h1><p>首先我们先以上面的支付类型枚举PayTypeEnum为例子，看看有哪些自带的方法。</p>
+<h2 id="valueOf-方法"><a href="#valueOf-方法" class="headerlink" title="valueOf()方法"></a>valueOf()方法</h2><p>这是一个静态方法，传入一个字符串(枚举的名称)，获取枚举类。如果传入的名称不存在，则报错。</p>
+<pre><code class="java">public static void main(String[] args) throws Exception{
+    System.out.println(PayTypeEnum.valueOf(&quot;ALI_PAY&quot;));
+    System.out.println(PayTypeEnum.valueOf(&quot;HUAWEI_PAY&quot;));
+}</code></pre>
+<p><img src="https://static.lovebilibili.com/enum_1.png" srcset="/img/loading.gif" alt=""></p>
+<h2 id="values-方法"><a href="#values-方法" class="headerlink" title="values()方法"></a>values()方法</h2><p>返回包含枚举类中所有枚举数据的一个数组。</p>
+<pre><code class="java">public static void main(String[] args) throws Exception {
+    PayTypeEnum[] payTypeEnums = PayTypeEnum.values();
+    for (PayTypeEnum payTypeEnum : payTypeEnums) {
+        System.out.println(&quot;code: &quot; + payTypeEnum.getCode() + &quot;,describe: &quot; + payTypeEnum.getDescribe());
+    }
+}</code></pre>
+<p><img src="https://static.lovebilibili.com/enum_2.png" srcset="/img/loading.gif" alt=""></p>
+<h2 id="ordinal-方法"><a href="#ordinal-方法" class="headerlink" title="ordinal()方法"></a>ordinal()方法</h2><p>默认情况下，枚举类会给定义的枚举提供一个默认的次序，ordinal()方法就可以返回枚举的次序。</p>
+<pre><code class="java">public static void main(String[] args) throws Exception {
+    PayTypeEnum[] payTypeEnums = PayTypeEnum.values();
+    for (PayTypeEnum payTypeEnum : payTypeEnums) {
+        System.out.println(&quot;ordinal: &quot; + payTypeEnum.ordinal() + &quot;, Enum: &quot; + payTypeEnum);
+    }
+}
+/**
+ordinal: 0, Enum: ALI_PAY
+ordinal: 1, Enum: WECHAT_PAY
+ordinal: 2, Enum: UNION_PAY
+*/</code></pre>
+<h2 id="name-、toString-方法"><a href="#name-、toString-方法" class="headerlink" title="name()、toString()方法"></a>name()、toString()方法</h2><p>返回定义枚举用的名称。</p>
+<pre><code class="java">public static void main(String[] args) throws Exception {
+    for (Season season : Season.values()) {
+        System.out.println(season.name());
+    }
+    for (Season season : Season.values()) {
+        System.out.println(season.toString());
+    }
+}</code></pre>
+<p>输出结果都是一样的：</p>
+<pre><code class="java">SPRING
+SUMMER
+AUTUMN
+WINTER</code></pre>
+<p>为什么？因为底层代码是一样，返回的是name。</p>
+<pre><code class="java">public abstract class Enum&lt;E extends Enum&lt;E&gt;&gt; implements Comparable&lt;E&gt;, Serializable {
+
+    public final String name() {
+        return name;
+    }
+
+    public String toString() {
+        return name;
+    }
+}
+</code></pre>
+<p>区别在于toString()方法没有被final修饰，可以重写，name()方法不能重写。</p>
+<h2 id="compareTo-方法"><a href="#compareTo-方法" class="headerlink" title="compareTo()方法"></a>compareTo()方法</h2><p>因为枚举类实现了Comparable接口，所以必须重写compareTo()方法，比较的是枚举的次序，也就是ordinal，源码如下：</p>
+<pre><code class="java">public final int compareTo(E o) {
+    Enum&lt;?&gt; other = (Enum&lt;?&gt;)o;
+    Enum&lt;E&gt; self = this;
+    if (self.getClass() != other.getClass() &amp;&amp; // optimization
+        self.getDeclaringClass() != other.getDeclaringClass())
+        throw new ClassCastException();
+    return self.ordinal - other.ordinal;
+}</code></pre>
+<p>因为实现Comparable接口，所以可以用来排序，比如这样：</p>
+<pre><code class="java">public static void main(String[] args) throws Exception {
+    //这里是乱序的枚举数组
+    Season[] seasons = new Season[]{Season.WINTER, Season.AUTUMN, Season.SPRING, Season.SUMMER};
+    //调用sort方法排序，按默认次序排序
+    Arrays.sort(seasons);
+    for (Season season : seasons) {
+        System.out.println(season);
+    }
+}</code></pre>
+<p>输出结果，按照默认次序排序：</p>
+<pre><code class="java">SPRING
+SUMMER
+AUTUMN
+WINTER</code></pre>
+<h1 id="原理"><a href="#原理" class="headerlink" title="原理"></a>原理</h1><p>以枚举Season为例，分析一下枚举的底层。表面上看，一个枚举很简单：</p>
+<pre><code class="java">public enum Season {
+    //春
+    SPRING,
+    //夏
+    SUMMER,
+    //秋
+    AUTUMN,
+    //冬
+    WINTER;
+}</code></pre>
+<p>实际上编译器在编译的时候做了很多动作，我们使用<code>javap -v</code>对Season.class文件反编译，可以看到很多细节。</p>
+<p>首先我们看到枚举是继承了抽象类Enum的类。</p>
+<pre><code class="java">Season extends java.lang.Enum&lt;Season&gt;</code></pre>
+<p>第二，通过一段静态代码块初始化枚举。</p>
+<pre><code class="java">  static {};
+    descriptor: ()V
+    flags: ACC_STATIC
+    Code:
+      stack=4, locals=0, args_size=0
+         0: new           #4                  // class io/github/yehongzhi/user/redisLock/Season
+         3: dup
+         4: ldc           #7                  // String SPRING
+         6: iconst_0
+         7: invokespecial #8                  // Method &quot;&lt;init&gt;&quot;:(Ljava/lang/String;I)V
+        10: putstatic     #9                  // Field SPRING:Lio/github/yehongzhi/user/redisLock/Season;
+        13: new           #4                  // class io/github/yehongzhi/user/redisLock/Season
+        16: dup
+        17: ldc           #10                 // String SUMMER
+        19: iconst_1
+        20: invokespecial #8                  // Method &quot;&lt;init&gt;&quot;:(Ljava/lang/String;I)V
+        23: putstatic     #11                 // Field SUMMER:Lio/github/yehongzhi/user/redisLock/Season;
+        26: new           #4                  // class io/github/yehongzhi/user/redisLock/Season
+        29: dup
+        30: ldc           #12                 // String AUTUMN
+        32: iconst_2
+        33: invokespecial #8                  // Method &quot;&lt;init&gt;&quot;:(Ljava/lang/String;I)V
+        36: putstatic     #13                 // Field AUTUMN:Lio/github/yehongzhi/user/redisLock/Season;
+        39: new           #4                  // class io/github/yehongzhi/user/redisLock/Season
+        42: dup
+        43: ldc           #14                 // String WINTER
+        45: iconst_3
+        46: invokespecial #8                  // Method &quot;&lt;init&gt;&quot;:(Ljava/lang/String;I)V
+        49: putstatic     #15                 // Field WINTER:Lio/github/yehongzhi/user/redisLock/Season;
+        52: iconst_4
+        53: anewarray     #4                  // class io/github/yehongzhi/user/redisLock/Season
+        56: dup
+        57: iconst_0
+        58: getstatic     #9                  // Field SPRING:Lio/github/yehongzhi/user/redisLock/Season;
+        61: aastore
+        62: dup
+        63: iconst_1
+        64: getstatic     #11                 // Field SUMMER:Lio/github/yehongzhi/user/redisLock/Season;
+        67: aastore
+        68: dup
+        69: iconst_2
+        70: getstatic     #13                 // Field AUTUMN:Lio/github/yehongzhi/user/redisLock/Season;
+        73: aastore
+        74: dup
+        75: iconst_3
+        76: getstatic     #15                 // Field WINTER:Lio/github/yehongzhi/user/redisLock/Season;
+        79: aastore
+        80: putstatic     #1                  // Field $VALUES:[Lio/github/yehongzhi/user/redisLock/Season;
+        83: return</code></pre>
+<p>这段静态代码块的作用就是生成四个静态常量字段的值，还生成了$VALUES字段，用于保存枚举类定义的枚举常量。相当于执行了以下代码：</p>
+<pre><code class="java">Season SPRING = new Season1();
+Season SUMMER = new Season2();
+Season AUTUMN = new Season3();
+Season WINTER = new Season4();
+Season[] $VALUES = new Season[4];
+$VALUES[0] = SPRING;
+$VALUES[1] = SUMMER;
+$VALUES[2] = AUTUMN;
+$VALUES[3] = WINTER;</code></pre>
+<p>第三个，关于values()方法，这是一个静态方法，作用是返回该枚举类的数组，底层实现原理，其实是这样的。</p>
+<pre><code class="java">public static io.github.yehongzhi.user.redisLock.Season[] values();
+    Code:
+       0: getstatic     #1                  // Field $VALUES:[Lio/github/yehongzhi/user/redisLock/Season;
+       3: invokevirtual #2                  // Method &quot;[Lio/github/yehongzhi/user/redisLock/Season;&quot;.clone:()Ljava/lang/Object;
+       6: checkcast     #3                  // class &quot;[Lio/github/yehongzhi/user/redisLock/Season;&quot;
+       9: areturn</code></pre>
+<p>其实是将静态代码块初始化的$VALUES数组克隆一份，然后强转成Season[]返回。相当于这样：</p>
+<pre><code class="java">public static Season[] values(){
+    return (Season[])$VALUES.clone();
+}</code></pre>
+<p>所以表面上，只是加了一个enum关键字定义枚举，但是底层一旦确认是枚举类，则会由编译器对枚举类进行特殊处理，通过静态代码块初始化枚举，只要是枚举就一定会提供values()方法。</p>
+<p>通过反编译我们也知道所有的枚举父类都是抽象类Enum，所以Enum有的成员变量，实现的接口，子类也会有。</p>
+<p>所以只要是枚举都会有name，ordinal这两个字段，并且我们看Enum的构造器。</p>
+<pre><code class="java">/**
+* Sole constructor.  Programmers cannot invoke this constructor.
+* It is for use by code emitted by the compiler in response to
+* enum type declarations.
+*/
+protected Enum(String name, int ordinal) {
+    this.name = name;
+    this.ordinal = ordinal;
+}</code></pre>
+<p>翻译一下上面那段英文，意思大概是：唯一的构造器，程序员没法调用此构造器，它是供编译器响应枚举类型声明而使用的。得出结论，枚举实例的创建也是由编译器完成的。</p>
+<h1 id="枚举实现单例"><a href="#枚举实现单例" class="headerlink" title="枚举实现单例"></a>枚举实现单例</h1><p>很多人都说，枚举类是最好的实现单例的一种方式，因为枚举类的单例是线程安全，并且是唯一一种不会被破坏的单例模式实现。也就是不能通过反射的方式创建实例，保证了整个应用中只有一个实例，非常硬核的单例。</p>
+<pre><code class="java">public class SingletonObj {
+    //内部类使用枚举
+    private enum SingletonEnum {
+        INSTANCE;
+
+        private SingletonObj singletonObj;
+        //在枚举类的构造器里初始化singletonObj
+        SingletonEnum() {
+            singletonObj = new SingletonObj();
+        }
+
+        private SingletonObj getSingletonObj() {
+            return singletonObj;
+        }
+    }
+
+    //对外部提供的获取单例的方法
+    public static SingletonObj getInstance() {
+        //获取单例对象，返回
+        return SingletonEnum.INSTANCE.getSingletonObj();
+    }
+
+    //测试
+    public static void main(String[] args) {
+        SingletonObj a = SingletonObj.getInstance();
+        SingletonObj b = SingletonObj.getInstance();
+        System.out.println(a == b);//true
+    }
+}</code></pre>
+<p>假如有人想通过反射创建枚举类呢，我们以Season枚举为例。</p>
+<pre><code class="java">public static void main(String[] args) throws Exception {
+    Constructor&lt;Season&gt; constructor = Season.class.getDeclaredConstructor(String.class, int.class);
+    constructor.setAccessible(true);
+    //通过反射调用构造器，创建枚举
+    Season season = constructor.newInstance(&quot;NEW_SPRING&quot;, 4);
+    System.out.println(season);
+}</code></pre>
+<p>然后就会报错，因为不允许对枚举的构造器使用反射调用。</p>
+<p><img src="https://static.lovebilibili.com/enum_3.png" srcset="/img/loading.gif" alt=""></p>
+<p>查看源码，就可以看到，有个专门针对枚举的<code>if</code>判断。</p>
+<pre><code class="java">public T newInstance(Object ... initargs) throws InstantiationException, IllegalAccessException,IllegalArgumentException, InvocationTargetException {
+    if (!override) {
+        if (!Reflection.quickCheckMemberAccess(clazz, modifiers)) {
+            Class&lt;?&gt; caller = Reflection.getCallerClass();
+            checkAccess(caller, clazz, null, modifiers);
+        }
+    }
+    //判断是否是枚举，如果是枚举的话，报、抛出异常
+    if ((clazz.getModifiers() &amp; Modifier.ENUM) != 0)
+        //抛出异常，不能通过反射创建枚举
+        throw new IllegalArgumentException(&quot;Cannot reflectively create enum objects&quot;);
+    ConstructorAccessor ca = constructorAccessor;   // read volatile
+    if (ca == null) {
+        ca = acquireConstructorAccessor();
+    }
+    @SuppressWarnings(&quot;unchecked&quot;)
+    T inst = (T) ca.newInstance(initargs);
+    return inst;
+}</code></pre>
+<h1 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h1><p>枚举看起来好像是很小一部分的知识，其实深入挖掘的话，我们会发现还是有很多地方值得学习的。第一点使用枚举定义常量更容易扩展，而且代码可读性更强，维护性更好。接着第二点是需要了解枚举自带的方法。第三点通过反编译，探索编译器在编译阶段为枚举做了什么事情。最后再讲一下枚举实现单例模式的例子。</p>
+<p>这篇文章讲到这里了，感谢大家的阅读，希望看完这篇文章能有所收获！</p>
+<p><strong>觉得有用就点个赞吧，你的点赞是我创作的最大动力</strong>~</p>
+<p><strong>我是一个努力让大家记住的程序员。我们下期再见！！！</strong></p>
+<p><img src="https://static.lovebilibili.com/dashacha.png" srcset="/img/loading.gif" alt=""></p>
+<blockquote>
+<p>能力有限，如果有什么错误或者不当之处，请大家批评指正，一起学习交流！</p>
+</blockquote>
+
+            <hr>
+          </div>
+          <br>
+          <div>
+            <p>
+            
+            
+              <span>
+                <i class="iconfont icon-tag"></i>
+                
+                  <a class="hover-with-bg" href="/tags/Java%E5%9F%BA%E7%A1%80">Java基础</a>
+                
+              </span>
+            
+            </p>
+            
+              <p class="note note-warning">本博客所有文章除特别声明外，均采用 <a href="https://zh.wikipedia.org/wiki/Wikipedia:CC_BY-SA_3.0%E5%8D%8F%E8%AE%AE%E6%96%87%E6%9C%AC" target="_blank" rel="nofollow noopener noopener">CC BY-SA 3.0协议</a> 。转载请注明出处！</p>
+            
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="d-none d-lg-block col-lg-2 toc-container">
+      
+  <div id="toc">
+    <p class="h4"><i class="far fa-list-alt"></i>&nbsp;目录</p>
+    <div id="tocbot"></div>
+  </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- custom -->
+
+
+<!-- Comments -->
+<div class="col-lg-7 mx-auto nopadding-md">
+  <div class="container comments mx-auto" id="comments">
+    
+  </div>
+</div>
+
+    
+  </main>
+
+  
+    <a class="z-depth-1" id="scroll-top-button" href="#" role="button">
+      <i class="fa fa-chevron-up scroll-top-arrow" aria-hidden="true"></i>
+    </a>
+  
+
+  
+    <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v"
+                 for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+  
+
+  <footer class="mt-5">
+  <div class="text-center py-3">
+    <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><b>Hexo</b></a>
+    <i class="iconfont icon-love"></i>
+    <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"> <b>Fluid</b></a>
+    <br>
+
+    
+  
+    <!-- 不蒜子统计PV -->
+    
+    &nbsp;<span id="busuanzi_container_site_pv"></span>总访问量 
+          <span id="busuanzi_value_site_pv"></span> 次&nbsp;
+  
+  
+    <!-- 不蒜子统计UV -->
+    
+    &nbsp;<span id="busuanzi_container_site_uv"></span>总访客数 
+            <span id="busuanzi_value_site_uv"></span> 人&nbsp;
+  
+  <br>
+
+
+
+    
+
+
+    <!-- cnzz Analytics icon -->
+    
+
+  </div>
+</footer>
+
+<!-- SCRIPTS -->
+<script src="/lib/jquery/jquery.min.js" ></script>
+<script src="/lib/popper/popper.min.js" ></script>
+<script src="/lib/bootstrap/js/bootstrap.min.js" ></script>
+<script src="/lib/mdbootstrap/js/mdb.min.js" ></script>
+<script src="/js/main.js" ></script>
+
+
+  <script src="/js/lazyload.js" ></script>
+
+
+
+  
+    <script src="/lib/tocbot/tocbot.min.js" ></script>
+  
+  <script src="/js/post.js" ></script>
+
+
+
+  <script src="/lib/smooth-scroll/smooth-scroll.min.js" ></script>
+
+
+
+  <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" ></script>
+
+
+<!-- Plugins -->
+
+
+  
+
+  
+
+  
+
+  
+
+  <!-- cnzz Analytics -->
+  
+
+
+
+  <script src="/lib/prettify/prettify.min.js" ></script>
+  <script>
+    $(document).ready(function () {
+      $('pre').addClass('prettyprint  linenums');
+      prettyPrint();
+    })
+  </script>
+
+
+
+  <script src="/lib/typed/typed.min.js" ></script>
+  <script>
+    var typed = new Typed('#subtitle', {
+      strings: [
+        '  ',
+        "Java基础不简单，讲一讲枚举&nbsp;",
+      ],
+      cursorChar: "_",
+      typeSpeed: 70,
+      loop: false,
+    });
+    typed.stop();
+    $(document).ready(function () {
+      $(".typed-cursor").addClass("h2");
+      typed.start();
+    });
+  </script>
+
+
+
+  <script src="/lib/anchor/anchor.min.js" ></script>
+  <script>
+    anchors.options = {
+      placement: "right",
+      visible: "false",
+      
+    };
+    var el = "h1,h2,h3,h4,h5,h6".split(",");
+    var res = [];
+    for (item of el) {
+      res.push(".markdown-body > " + item)
+    }
+    anchors.add(res.join(", "))
+  </script>
+
+
+
+  <script src="/js/local-search.js" ></script>
+  <script>
+    var path = "/local-search.xml";
+    var inputArea = document.querySelector("#local-search-input");
+    inputArea.onclick = function () {
+      getSearchFile(path);
+      this.onclick = null
+    }
+  </script>
+
+
+
+  <script src="/lib/fancybox/jquery.fancybox.min.js" ></script>
+  <script>
+    $("#post img:not(.no-zoom img, img[no-zoom])").each(
+      function () {
+        var element = document.createElement("a");
+        $(element).attr("data-fancybox", "images");
+        $(element).attr("href", $(this).attr("src"));
+        $(this).wrap(element);
+      }
+    );
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+</body>
+</html>
