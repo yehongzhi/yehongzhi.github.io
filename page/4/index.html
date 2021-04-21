@@ -136,6 +136,58 @@
     
     
       <div class="col-12 col-md-4 m-auto">
+        <a href="/2020/08/30/MySQL%E4%B8%BB%E4%BB%8E%E5%A4%8D%E5%88%B6%E8%AF%BB%E5%86%99%E5%88%86%E7%A6%BB%EF%BC%8C%E8%83%BD%E8%AE%B2%E4%B8%80%E4%B8%8B%E5%90%97/" target="_blank">
+          <img src="https://static.lovebilibili.com/mysql_zcfz_index.jpg" srcset="/img/loading.gif" alt="MySQL主从复制读写分离，能讲一下吗" class="index-img img-fluid rounded index-thumbnails">
+        </a>
+      </div>
+    
+    <div class="col-12 col-md-8 mx-auto index-info">
+      <a href="/2020/08/30/MySQL%E4%B8%BB%E4%BB%8E%E5%A4%8D%E5%88%B6%E8%AF%BB%E5%86%99%E5%88%86%E7%A6%BB%EF%BC%8C%E8%83%BD%E8%AE%B2%E4%B8%80%E4%B8%8B%E5%90%97/">
+        <p class="h4 index-header">MySQL主从复制读写分离，能讲一下吗</p>
+      </a>
+
+      <a href="/2020/08/30/MySQL%E4%B8%BB%E4%BB%8E%E5%A4%8D%E5%88%B6%E8%AF%BB%E5%86%99%E5%88%86%E7%A6%BB%EF%BC%8C%E8%83%BD%E8%AE%B2%E4%B8%80%E4%B8%8B%E5%90%97/">
+        
+        
+          
+        
+        <div class="index-excerpt" >
+          <div class="index-text mb-1">思维导图
+
+微信公众号已开启：【java技术爱好者】，还没关注的记得关注哦~
+文章已收录到我的Github精选，欢迎Star：https://github.com/yehongzhi/learningSummary
+
+前言在很多项目，特别是互联网项目，在使用MySQL时都会采用主从复制、读写分离的架构。
+为什么要采用主从复制读写分离的架构？如何实现？有什么缺点？让我们带着这些问题开始这段学习之旅吧！
+为什么使用主从复制、读写分离主从复制、读写分离一般是一起使用的。目的很简单，就是为了提高数据库的并发性能。你想，假设是单机，读写都在一台MySQL上面完成，性能肯定不高。如果有三台MySQL，一台mater只负责写操作，两台salve只负责读操作，性能不就能大大提高了吗？
+所以主从复制、读写分离就是为了数据库能支持更大的并发。
+随着业务量的扩展、如果是单机部署的MySQL，会导致I/O频率过高。采用主从复制、读写分离可以提高数据库的可用性。
+主从复制的原理①当Master节点进行insert、update、delete操作时，会按顺序写入到binlog中。
+②salve从库连接master</div>
+        </div>
+      </a>
+
+      <div class="index-btm">
+        
+          <i class="iconfont icon-riqi2"></i>&nbsp;2020-08-30&nbsp;&nbsp;
+        
+        
+        
+          <i class="iconfont icon-tag"></i>
+          
+            <a href="/tags/java">java</a>&nbsp;
+          
+            <a href="/tags/mysql">mysql</a>&nbsp;
+          
+        
+      </div>
+    </div>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+      <div class="col-12 col-md-4 m-auto">
         <a href="/2020/08/16/Canal-Kafka%E5%AE%9E%E7%8E%B0MySQL%E4%B8%8ERedis%E6%95%B0%E6%8D%AE%E5%90%8C%E6%AD%A5/" target="_blank">
           <img src="https://static.lovebilibili.com/canal_jinjie_index.jpg" srcset="/img/loading.gif" alt="Canal+Kafka实现MySQL与Redis数据同步" class="index-img img-fluid rounded index-thumbnails">
         </a>
@@ -557,52 +609,6 @@ CREATE TABLE `tb_commodity_info` (
       <div class="index-btm">
         
           <i class="iconfont icon-riqi2"></i>&nbsp;2020-07-01&nbsp;&nbsp;
-        
-        
-        
-          <i class="iconfont icon-tag"></i>
-          
-            <a href="/tags/java">java</a>&nbsp;
-          
-            <a href="/tags/NIO">NIO</a>&nbsp;
-          
-        
-      </div>
-    </div>
-  </div>
-
-  <div class="row mx-auto index-card">
-    
-    
-      <div class="col-12 col-md-4 m-auto">
-        <a href="/2020/06/25/NIO%E5%85%A5%E9%97%A8/" target="_blank">
-          <img src="https://static.lovebilibili.com/NIO_index.jpg" srcset="/img/loading.gif" alt="NIO入门" class="index-img img-fluid rounded index-thumbnails">
-        </a>
-      </div>
-    
-    <div class="col-12 col-md-8 mx-auto index-info">
-      <a href="/2020/06/25/NIO%E5%85%A5%E9%97%A8/">
-        <p class="h4 index-header">NIO入门</p>
-      </a>
-
-      <a href="/2020/06/25/NIO%E5%85%A5%E9%97%A8/">
-        
-        
-          
-          
-        
-        <div class="index-excerpt" style="max-height: none;">
-          <div class="index-text mb-1">思维导图
-
-学如逆水行舟，不进则退
-
-1 NIO概述1.1 定义java.nio全称java non-blocking IO，是指JDK1.4 及以上版本里提供的新api（New IO） ，为所有的原始类型（boolean类型除外）提供缓存支持的数据容器，使用它可以提供非阻塞式的高伸缩性网络(来源于百度百科)。...</div>
-        </div>
-      </a>
-
-      <div class="index-btm">
-        
-          <i class="iconfont icon-riqi2"></i>&nbsp;2020-06-25&nbsp;&nbsp;
         
         
         

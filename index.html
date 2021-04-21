@@ -136,6 +136,59 @@
     
     
       <div class="col-12 col-md-4 m-auto">
+        <a href="/2021/04/21/%E4%BB%80%E4%B9%88%E6%98%AF%E8%84%8F%E8%AF%BB%E3%80%81%E4%B8%8D%E5%8F%AF%E9%87%8D%E5%A4%8D%E8%AF%BB%E3%80%81%E5%B9%BB%E8%AF%BB/" target="_blank">
+          <img src="https://static.lovebilibili.com/mysql_sw_index.jpg" srcset="/img/loading.gif" alt="什么是脏读、不可重复读、幻读" class="index-img img-fluid rounded index-thumbnails">
+        </a>
+      </div>
+    
+    <div class="col-12 col-md-8 mx-auto index-info">
+      <a href="/2021/04/21/%E4%BB%80%E4%B9%88%E6%98%AF%E8%84%8F%E8%AF%BB%E3%80%81%E4%B8%8D%E5%8F%AF%E9%87%8D%E5%A4%8D%E8%AF%BB%E3%80%81%E5%B9%BB%E8%AF%BB/">
+        <p class="h4 index-header">什么是脏读、不可重复读、幻读</p>
+      </a>
+
+      <a href="/2021/04/21/%E4%BB%80%E4%B9%88%E6%98%AF%E8%84%8F%E8%AF%BB%E3%80%81%E4%B8%8D%E5%8F%AF%E9%87%8D%E5%A4%8D%E8%AF%BB%E3%80%81%E5%B9%BB%E8%AF%BB/">
+        
+        
+          
+        
+        <div class="index-excerpt" >
+          <div class="index-text mb-1">
+文章已收录Github精选，欢迎Star：https://github.com/yehongzhi/learningSummary
+
+脏读、不可重复读、幻读在现代关系型数据库中，事务机制是非常重要的，假如在多个事务并发操作数据库时，如果没有有效的机制进行避免就会导致出现脏读，不可重复读，幻读。
+脏读1、在事务A执行过程中，事务A对数据资源进行了修改，事务B读取了事务A修改后的数据。
+2、由于某些原因，事务A并没有完成提交，发生了RollBack操作，则事务B读取的数据就是脏数据。
+这种读取到另一个事务未提交的数据的现象就是脏读(Dirty Read)。
+
+不可重复读事务B读取了两次数据资源，在这两次读取的过程中事务A修改了数据，导致事务B在这两次读取出来的数据不一致。
+这种在同一个事务中，前后两次读取的数据不一致的现象就是不可重复读(Nonrepeatable Read)。
+
+幻读事务B前后两次读取同一个范围的数据，在事务B两次读取的过程中事务A新增了数据，导致事务B后一次读取到前一次查询没有看到的行。
+幻读和不可重复读有些类似，但是幻读强调的是集合的增减，而不是单条数据的更新。
+
+</div>
+        </div>
+      </a>
+
+      <div class="index-btm">
+        
+          <i class="iconfont icon-riqi2"></i>&nbsp;2021-04-21&nbsp;&nbsp;
+        
+        
+        
+          <i class="iconfont icon-tag"></i>
+          
+            <a href="/tags/MySQL">MySQL</a>&nbsp;
+          
+        
+      </div>
+    </div>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+      <div class="col-12 col-md-4 m-auto">
         <a href="/2021/04/06/%E8%B6%85%E8%AF%A6%E7%BB%86%E7%9A%84Sentinel%E5%85%A5%E9%97%A8/" target="_blank">
           <img src="https://static.lovebilibili.com/Sentinel_index.jpg" srcset="/img/loading.gif" alt="超详细的Sentinel入门" class="index-img img-fluid rounded index-thumbnails">
         </a>
@@ -624,54 +677,6 @@ public class PayTypeUtil {
           <i class="iconfont icon-tag"></i>
           
             <a href="/tags/java">java</a>&nbsp;
-          
-            <a href="/tags/Redis">Redis</a>&nbsp;
-          
-        
-      </div>
-    </div>
-  </div>
-
-  <div class="row mx-auto index-card">
-    
-    
-      <div class="col-12 col-md-4 m-auto">
-        <a href="/2021/01/18/%E6%B7%B1%E5%85%A5%E6%8E%A2%E7%B4%A2Redis%E7%9A%84%E4%BA%94%E7%A7%8D%E5%9F%BA%E7%A1%80%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B/" target="_blank">
-          <img src="https://static.lovebilibili.com/redis_kv_index.jpg" srcset="/img/loading.gif" alt="深入探索Redis的五种基础数据类型" class="index-img img-fluid rounded index-thumbnails">
-        </a>
-      </div>
-    
-    <div class="col-12 col-md-8 mx-auto index-info">
-      <a href="/2021/01/18/%E6%B7%B1%E5%85%A5%E6%8E%A2%E7%B4%A2Redis%E7%9A%84%E4%BA%94%E7%A7%8D%E5%9F%BA%E7%A1%80%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B/">
-        <p class="h4 index-header">深入探索Redis的五种基础数据类型</p>
-      </a>
-
-      <a href="/2021/01/18/%E6%B7%B1%E5%85%A5%E6%8E%A2%E7%B4%A2Redis%E7%9A%84%E4%BA%94%E7%A7%8D%E5%9F%BA%E7%A1%80%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B/">
-        
-        
-          
-        
-        <div class="index-excerpt" >
-          <div class="index-text mb-1">
-文章已收录Github精选，欢迎Star：https://github.com/yehongzhi
-
-前言Redis是一个开源的使用C语言编写、支持网络、可基于内存亦可持久化的日志型、Key-Value的NoSQL数据库。
-一般来说，我们都是使用关系型数据库MySQL来存储数据，但是面对着流量高峰，会对MySQL造成巨大的压力，导致数据库性能很差，这时就要使用缓存中间件来降低数据库的压力，这是Redis最常见的使用场景。除了作为缓存使用之外，Redis还有很多使用场景，比如分布式锁，计数，队列等等。
-所以Redis对于程序员来说可以算得上是必修课。
-安装Redis安装Redis很简单，因为网上教程很多，这里就不再详细讲解，推荐看菜鸟教程：https://www.runoob.com/redis/redis-install.html
-Redis的特点要用好Redis，首先要明白它的特点：
-
-读写速度快。redis官网测试读写能到10万左右每秒。速度快的原因这里简单说一下，第一是因为数据存储在内存中，我们知道机器访问内存的速度是远远大于访问磁盘的，其次是Redis采用单线程的架构，避免了</div>
-        </div>
-      </a>
-
-      <div class="index-btm">
-        
-          <i class="iconfont icon-riqi2"></i>&nbsp;2021-01-18&nbsp;&nbsp;
-        
-        
-        
-          <i class="iconfont icon-tag"></i>
           
             <a href="/tags/Redis">Redis</a>&nbsp;
           
