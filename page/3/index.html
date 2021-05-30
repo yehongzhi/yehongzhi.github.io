@@ -136,6 +136,221 @@
     
     
       <div class="col-12 col-md-4 m-auto">
+        <a href="/2020/12/06/5%E5%8D%83%E5%AD%97%E8%AF%A6%E7%BB%86%E8%AE%B2%E8%A7%A3JUC%E4%B8%AD%E9%87%8D%E8%A6%81%E7%9A%84AQS/" target="_blank">
+          <img src="https://static.lovebilibili.com/aqs_index.jpg" srcset="/img/loading.gif" alt="5千字详细讲解JUC中重要的AQS" class="index-img img-fluid rounded index-thumbnails">
+        </a>
+      </div>
+    
+    <div class="col-12 col-md-8 mx-auto index-info">
+      <a href="/2020/12/06/5%E5%8D%83%E5%AD%97%E8%AF%A6%E7%BB%86%E8%AE%B2%E8%A7%A3JUC%E4%B8%AD%E9%87%8D%E8%A6%81%E7%9A%84AQS/">
+        <p class="h4 index-header">5千字详细讲解JUC中重要的AQS</p>
+      </a>
+
+      <a href="/2020/12/06/5%E5%8D%83%E5%AD%97%E8%AF%A6%E7%BB%86%E8%AE%B2%E8%A7%A3JUC%E4%B8%AD%E9%87%8D%E8%A6%81%E7%9A%84AQS/">
+        
+        
+          
+        
+        <div class="index-excerpt" >
+          <div class="index-text mb-1">思维导图
+
+文章已收录Github精选，欢迎Star：https://github.com/yehongzhi/learningSummary
+
+一、什么是AQS谈到并发编程，不得不说AQS(AbstractQueuedSynchronizer)，这可谓是Doug Lea老爷子的大作之一。AQS即是抽象队列同步器，是用来构建Lock锁和同步组件的基础框架，很多我们熟知的锁和同步组件都是基于AQS构建，比如ReentrantLock、ReentrantReadWriteLock、CountDownLatch、Semaphore。
+实际上AQS是一个抽象类，我们不妨先看一下源码：
+public abstract class AbstractQueuedSynchronizer extends AbstractOwnableSynchronizer implements java.io.Serializable {
+    //头结点
+    private transient volatile Node head;
+    //尾节点
+    private transient volat</div>
+        </div>
+      </a>
+
+      <div class="index-btm">
+        
+          <i class="iconfont icon-riqi2"></i>&nbsp;2020-12-06&nbsp;&nbsp;
+        
+        
+        
+          <i class="iconfont icon-tag"></i>
+          
+            <a href="/tags/java">java</a>&nbsp;
+          
+            <a href="/tags/%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B">并发编程</a>&nbsp;
+          
+        
+      </div>
+    </div>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+      <div class="col-12 col-md-4 m-auto">
+        <a href="/2020/11/29/%E8%AE%B2%E8%AE%B2%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B%E7%9A%84%E6%82%B2%E8%A7%82%E9%94%81%E5%92%8C%E4%B9%90%E8%A7%82%E9%94%81/" target="_blank">
+          <img src="https://static.lovebilibili.com/bllock_index.jpg" srcset="/img/loading.gif" alt="讲讲并发编程的悲观锁和乐观锁" class="index-img img-fluid rounded index-thumbnails">
+        </a>
+      </div>
+    
+    <div class="col-12 col-md-8 mx-auto index-info">
+      <a href="/2020/11/29/%E8%AE%B2%E8%AE%B2%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B%E7%9A%84%E6%82%B2%E8%A7%82%E9%94%81%E5%92%8C%E4%B9%90%E8%A7%82%E9%94%81/">
+        <p class="h4 index-header">讲讲并发编程的悲观锁和乐观锁</p>
+      </a>
+
+      <a href="/2020/11/29/%E8%AE%B2%E8%AE%B2%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B%E7%9A%84%E6%82%B2%E8%A7%82%E9%94%81%E5%92%8C%E4%B9%90%E8%A7%82%E9%94%81/">
+        
+        
+          
+        
+        <div class="index-excerpt" >
+          <div class="index-text mb-1">思维导图
+
+文章已收录Github精选，欢迎Star：https://github.com/yehongzhi/learningSummary
+
+悲观锁悲观锁是平时开发中经常用到的一种锁，比如ReentrantLock和synchronized等就是这种思想的体现，它总是假设别的线程在拿线程的时候都会修改数据，所以每次拿到数据的时候都会上锁，这样别的线程想拿这个数据就会被阻塞。如图所示：
+
+synchronized是悲观锁的一种实现，一般我们都会有这样使用：
+private static Object monitor = new Object();
+
+public static void main(String[] args) throws Exception {
+    //锁一段代码块
+    synchronized (monitor){
+
+    }
+}
+//锁实例方法，锁对象是this，即该类实例本身
+public synchronized void doSome(){
+
+}
+//锁静态方法，锁对象是该类，即XXX.class
+public synchronized stat</div>
+        </div>
+      </a>
+
+      <div class="index-btm">
+        
+          <i class="iconfont icon-riqi2"></i>&nbsp;2020-11-29&nbsp;&nbsp;
+        
+        
+        
+          <i class="iconfont icon-tag"></i>
+          
+            <a href="/tags/java">java</a>&nbsp;
+          
+            <a href="/tags/%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B">并发编程</a>&nbsp;
+          
+        
+      </div>
+    </div>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+      <div class="col-12 col-md-4 m-auto">
+        <a href="/2020/11/29/%E4%B8%89%E5%8D%83%E5%AD%97%E7%BB%99%E5%A4%A7%E4%BC%99%E8%AE%B2%E8%AE%B2%E7%BA%BF%E7%A8%8B%E6%B1%A0/" target="_blank">
+          <img src="https://static.lovebilibili.com/ThreadPool_index.jpg" srcset="/img/loading.gif" alt="三千字给大伙讲讲线程池" class="index-img img-fluid rounded index-thumbnails">
+        </a>
+      </div>
+    
+    <div class="col-12 col-md-8 mx-auto index-info">
+      <a href="/2020/11/29/%E4%B8%89%E5%8D%83%E5%AD%97%E7%BB%99%E5%A4%A7%E4%BC%99%E8%AE%B2%E8%AE%B2%E7%BA%BF%E7%A8%8B%E6%B1%A0/">
+        <p class="h4 index-header">三千字给大伙讲讲线程池</p>
+      </a>
+
+      <a href="/2020/11/29/%E4%B8%89%E5%8D%83%E5%AD%97%E7%BB%99%E5%A4%A7%E4%BC%99%E8%AE%B2%E8%AE%B2%E7%BA%BF%E7%A8%8B%E6%B1%A0/">
+        
+        
+          
+        
+        <div class="index-excerpt" >
+          <div class="index-text mb-1">思维导图
+
+文章已收录Github精选，欢迎Star：https://github.com/yehongzhi/learningSummary
+
+前言在实际开发场景中，我们经常要使用多线程开发应用，比如实现异步操作，或者为了提高程序的效率等等。但是以前我见过有实习生在使用的时候是直接new Runable()，然后start()。没有使用线程池，可能很多初学者对线程池在多线程开发中没有足够的认识，所以我写一篇文章讲讲线程池，希望对大家有所启发。
+一、什么是线程池线程池借鉴了”池化”技术的思想，线程池能够对线程的生命周期进行管理，对线程重复利用，并且能够以一种简单的方式将任务的提交与执行相解耦。
+举个例子来说，线程就像是某个公司的客服小姐姐，每天都要接很多客户的电话，如果同时有1000个客户打电话进来咨询，按正常的逻辑，那就需要1000个客服小姐姐，但是在现实中往往需要考虑成本问题，招这么多人费用太多了，于是就可以这样优化，可以招100个人成立一个客服中心，如果同时超过100个人则提示让客户等待，等有空闲的客服小姐姐时就去响应客户。实现效益最大化。这就是一个池化技术在现实生活中类似的例子</div>
+        </div>
+      </a>
+
+      <div class="index-btm">
+        
+          <i class="iconfont icon-riqi2"></i>&nbsp;2020-11-29&nbsp;&nbsp;
+        
+        
+        
+          <i class="iconfont icon-tag"></i>
+          
+            <a href="/tags/java">java</a>&nbsp;
+          
+            <a href="/tags/%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B">并发编程</a>&nbsp;
+          
+            <a href="/tags/%E5%A4%9A%E7%BA%BF%E7%A8%8B">多线程</a>&nbsp;
+          
+        
+      </div>
+    </div>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+      <div class="col-12 col-md-4 m-auto">
+        <a href="/2020/11/15/SpringBoot%E5%90%AF%E5%8A%A8%E6%B5%81%E7%A8%8B%E6%98%AF%E6%80%8E%E6%A0%B7%E7%9A%84%EF%BC%9F/" target="_blank">
+          <img src="https://static.lovebilibili.com/SpringBoot_index.jpg" srcset="/img/loading.gif" alt="SpringBoot启动流程是怎样的？" class="index-img img-fluid rounded index-thumbnails">
+        </a>
+      </div>
+    
+    <div class="col-12 col-md-8 mx-auto index-info">
+      <a href="/2020/11/15/SpringBoot%E5%90%AF%E5%8A%A8%E6%B5%81%E7%A8%8B%E6%98%AF%E6%80%8E%E6%A0%B7%E7%9A%84%EF%BC%9F/">
+        <p class="h4 index-header">SpringBoot启动流程是怎样的？</p>
+      </a>
+
+      <a href="/2020/11/15/SpringBoot%E5%90%AF%E5%8A%A8%E6%B5%81%E7%A8%8B%E6%98%AF%E6%80%8E%E6%A0%B7%E7%9A%84%EF%BC%9F/">
+        
+        
+          
+        
+        <div class="index-excerpt" >
+          <div class="index-text mb-1">思维导图
+
+文章已收录Github精选，欢迎Star：https://github.com/yehongzhi/learningSummary
+
+前言SpringBoot一开始最让我印象深刻的就是通过一个启动类就能启动应用。在SpringBoot以前，启动应用虽然也不麻烦，但是还是有点繁琐，要打包成war包，又要配置tomcat，tomcat又有一个server.xml文件去配置。
+然而SpringBoot则内置了tomcat，通过启动类启动，配置也集中在一个application.yml中，简直不要太舒服。好奇心驱动，于是我很想搞清楚启动类的启动过程，那么开始吧。
+一、启动类首先我们看最常见的启动类写法。
+@SpringBootApplication
+public class SpringmvcApplication {
+    public static void main(String[] args) {
+        SpringApplication.run(SpringmvcApplication.class, args);
+    }
+}
+把启动类分解一下，实际上就是两</div>
+        </div>
+      </a>
+
+      <div class="index-btm">
+        
+          <i class="iconfont icon-riqi2"></i>&nbsp;2020-11-15&nbsp;&nbsp;
+        
+        
+        
+          <i class="iconfont icon-tag"></i>
+          
+            <a href="/tags/java">java</a>&nbsp;
+          
+            <a href="/tags/SpringBoot">SpringBoot</a>&nbsp;
+          
+        
+      </div>
+    </div>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+      <div class="col-12 col-md-4 m-auto">
         <a href="/2020/11/13/%E6%89%8B%E6%8A%8A%E6%89%8B%E6%95%99%E4%BD%A0%E6%90%AD%E5%BB%BAELK%E6%97%A5%E5%BF%97%E9%9B%86%E4%B8%AD%E5%88%86%E6%9E%90%E5%B9%B3%E5%8F%B0/" target="_blank">
           <img src="https://static.lovebilibili.com/elk_index.jpg" srcset="/img/loading.gif" alt="手把手教你搭建ELK日志集中分析平台" class="index-img img-fluid rounded index-thumbnails">
         </a>
@@ -457,202 +672,11 @@ OpenTracing通过提供平台无关、厂商无关的API，使得开发人员能
     </div>
   </div>
 
-  <div class="row mx-auto index-card">
-    
-    
-      <div class="col-12 col-md-4 m-auto">
-        <a href="/2020/09/26/%E5%BE%AE%E6%9C%8D%E5%8A%A1%E4%B9%8B%E6%B3%A8%E5%86%8C%E4%B8%AD%E5%BF%83/" target="_blank">
-          <img src="https://static.lovebilibili.com/nacos_index.jpg" srcset="/img/loading.gif" alt="微服务之注册中心" class="index-img img-fluid rounded index-thumbnails">
-        </a>
-      </div>
-    
-    <div class="col-12 col-md-8 mx-auto index-info">
-      <a href="/2020/09/26/%E5%BE%AE%E6%9C%8D%E5%8A%A1%E4%B9%8B%E6%B3%A8%E5%86%8C%E4%B8%AD%E5%BF%83/">
-        <p class="h4 index-header">微服务之注册中心</p>
-      </a>
-
-      <a href="/2020/09/26/%E5%BE%AE%E6%9C%8D%E5%8A%A1%E4%B9%8B%E6%B3%A8%E5%86%8C%E4%B8%AD%E5%BF%83/">
-        
-        
-          
-          
-        
-        <div class="index-excerpt" style="max-height: none;">
-          <div class="index-text mb-1">思维导图
-一、前言伴随着Eurka2.0版本已停止维护，开始要考虑使用微服务新一代的开源的注册中心替代Eureka。
-
-目前据我了解，Consul和Nacos是比较流行的两种替代方案。这篇文章就介绍一下这两种注册中心在微服务中的简单使用，希望对读者有所帮助。...</div>
-        </div>
-      </a>
-
-      <div class="index-btm">
-        
-          <i class="iconfont icon-riqi2"></i>&nbsp;2020-09-26&nbsp;&nbsp;
-        
-        
-        
-          <i class="iconfont icon-tag"></i>
-          
-            <a href="/tags/java">java</a>&nbsp;
-          
-            <a href="/tags/%E5%BE%AE%E6%9C%8D%E5%8A%A1">微服务</a>&nbsp;
-          
-            <a href="/tags/%E6%B3%A8%E5%86%8C%E4%B8%AD%E5%BF%83">注册中心</a>&nbsp;
-          
-        
-      </div>
-    </div>
-  </div>
-
-  <div class="row mx-auto index-card">
-    
-    
-      <div class="col-12 col-md-4 m-auto">
-        <a href="/2020/09/20/%E9%9D%A2%E8%AF%95%E5%AE%98%E9%97%AE%E6%88%91%E4%BB%80%E4%B9%88%E6%98%AFJMM/" target="_blank">
-          <img src="https://static.lovebilibili.com/JMM_index.jpg" srcset="/img/loading.gif" alt="面试官问我什么是JMM" class="index-img img-fluid rounded index-thumbnails">
-        </a>
-      </div>
-    
-    <div class="col-12 col-md-8 mx-auto index-info">
-      <a href="/2020/09/20/%E9%9D%A2%E8%AF%95%E5%AE%98%E9%97%AE%E6%88%91%E4%BB%80%E4%B9%88%E6%98%AFJMM/">
-        <p class="h4 index-header">面试官问我什么是JMM</p>
-      </a>
-
-      <a href="/2020/09/20/%E9%9D%A2%E8%AF%95%E5%AE%98%E9%97%AE%E6%88%91%E4%BB%80%E4%B9%88%E6%98%AFJMM/">
-        
-        
-          
-        
-        <div class="index-excerpt" >
-          <div class="index-text mb-1">思维导图
-
-文章已收录Github精选，欢迎Star：https://github.com/yehongzhi/learningSummary
-
-面试官：讲讲什么是JMM你要是整这个我可就不困了。
-
-JMM就是Java内存模型(java memory model)。因为在不同的硬件生产商和不同的操作系统下，内存的访问有一定的差异，所以会造成相同的代码运行在不同的系统上会出现各种问题。所以java内存模型(JMM)屏蔽掉各种硬件和操作系统的内存访问差异，以实现让java程序在各种平台下都能达到一致的并发效果。
-Java内存模型规定所有的变量都存储在主内存中，包括实例变量，静态变量，但是不包括局部变量和方法参数。每个线程都有自己的工作内存，线程的工作内存保存了该线程用到的变量和主内存的副本拷贝，线程对变量的操作都在工作内存中进行。线程不能直接读写主内存中的变量。
-不同的线程之间也无法访问对方工作内存中的变量。线程之间变量值的传递均需要通过主内存来完成。
-如果听起来抽象的话，我可以画张图给你看看，会直观一点：
-
-每个线程的工作内存都是独立的，线程操作数据只能在工作内存中进行，然后刷回到主存。</div>
-        </div>
-      </a>
-
-      <div class="index-btm">
-        
-          <i class="iconfont icon-riqi2"></i>&nbsp;2020-09-20&nbsp;&nbsp;
-        
-        
-        
-          <i class="iconfont icon-tag"></i>
-          
-            <a href="/tags/java">java</a>&nbsp;
-          
-            <a href="/tags/%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B">并发编程</a>&nbsp;
-          
-        
-      </div>
-    </div>
-  </div>
-
-  <div class="row mx-auto index-card">
-    
-    
-      <div class="col-12 col-md-4 m-auto">
-        <a href="/2020/09/11/%E5%85%AB%E7%A7%8D%E7%BB%8F%E5%85%B8%E6%8E%92%E5%BA%8F%E7%AE%97%E6%B3%95%E6%80%BB%E7%BB%93/" target="_blank">
-          <img src="https://static.lovebilibili.com/sort_index.jpg" srcset="/img/loading.gif" alt="八种经典排序算法总结" class="index-img img-fluid rounded index-thumbnails">
-        </a>
-      </div>
-    
-    <div class="col-12 col-md-8 mx-auto index-info">
-      <a href="/2020/09/11/%E5%85%AB%E7%A7%8D%E7%BB%8F%E5%85%B8%E6%8E%92%E5%BA%8F%E7%AE%97%E6%B3%95%E6%80%BB%E7%BB%93/">
-        <p class="h4 index-header">八种经典排序算法总结</p>
-      </a>
-
-      <a href="/2020/09/11/%E5%85%AB%E7%A7%8D%E7%BB%8F%E5%85%B8%E6%8E%92%E5%BA%8F%E7%AE%97%E6%B3%95%E6%80%BB%E7%BB%93/">
-        
-        
-          
-          
-        
-        <div class="index-excerpt" style="max-height: none;">
-          <div class="index-text mb-1">思维导图
-前言算法和数据结构是一个程序员的内功，所以经常在一些笔试中都会要求手写一些简单的排序算法，以此考验面试者的编程水平。下面我就简单介绍八种常见的排序算法，一起学习一下。...</div>
-        </div>
-      </a>
-
-      <div class="index-btm">
-        
-          <i class="iconfont icon-riqi2"></i>&nbsp;2020-09-11&nbsp;&nbsp;
-        
-        
-        
-          <i class="iconfont icon-tag"></i>
-          
-            <a href="/tags/java">java</a>&nbsp;
-          
-            <a href="/tags/%E7%AE%97%E6%B3%95">算法</a>&nbsp;
-          
-        
-      </div>
-    </div>
-  </div>
-
-  <div class="row mx-auto index-card">
-    
-    
-      <div class="col-12 col-md-4 m-auto">
-        <a href="/2020/09/04/%E4%BB%8EJVM%E8%AE%B2%E5%88%B0%E7%B1%BB%E5%8A%A0%E8%BD%BD%E6%9C%BA%E5%88%B6%EF%BC%8C%E5%BE%88%E7%AE%80%E5%8D%95%E7%9A%84/" target="_blank">
-          <img src="https://static.lovebilibili.com/jvm_index.jpg" srcset="/img/loading.gif" alt="从JVM讲到类加载机制，很简单的" class="index-img img-fluid rounded index-thumbnails">
-        </a>
-      </div>
-    
-    <div class="col-12 col-md-8 mx-auto index-info">
-      <a href="/2020/09/04/%E4%BB%8EJVM%E8%AE%B2%E5%88%B0%E7%B1%BB%E5%8A%A0%E8%BD%BD%E6%9C%BA%E5%88%B6%EF%BC%8C%E5%BE%88%E7%AE%80%E5%8D%95%E7%9A%84/">
-        <p class="h4 index-header">从JVM讲到类加载机制，很简单的</p>
-      </a>
-
-      <a href="/2020/09/04/%E4%BB%8EJVM%E8%AE%B2%E5%88%B0%E7%B1%BB%E5%8A%A0%E8%BD%BD%E6%9C%BA%E5%88%B6%EF%BC%8C%E5%BE%88%E7%AE%80%E5%8D%95%E7%9A%84/">
-        
-        
-          
-          
-        
-        <div class="index-excerpt" style="max-height: none;">
-          <div class="index-text mb-1">思维导图
-
-文章已收录到Github精选，欢迎Star：https://github.com/yehongzhi/learningSummary
-
-一、JVM介绍在介绍JVM之前，先看一下.java文件从编码到执行的过程：
-
-整个过程是，x.java文件需要编译成x.class文件，通过类加载器加载到内存中，然后通过解释器或者即时编译器进行解释和编译，最后交给执行引擎执行，执行引擎操作OS硬件。
-从类加载器到执行引擎这块内容就是JVM。...</div>
-        </div>
-      </a>
-
-      <div class="index-btm">
-        
-          <i class="iconfont icon-riqi2"></i>&nbsp;2020-09-04&nbsp;&nbsp;
-        
-        
-        
-          <i class="iconfont icon-tag"></i>
-          
-            <a href="/tags/java">java</a>&nbsp;
-          
-            <a href="/tags/JVM">JVM</a>&nbsp;
-          
-        
-      </div>
-    </div>
-  </div>
-
 
 
   <nav aria-label="index posts navigation">
     <span class="pagination pg-blue justify-content-center mt-5" id="pagination">
-      <a class="extend prev" rel="prev" href="/page/2/"><i class="fas fa-angle-double-left"></i></a><a class="page-number" href="/">1</a><a class="page-number" href="/page/2/">2</a><span class="page-number current">3</span><a class="page-number" href="/page/4/">4</a><a class="page-number" href="/page/5/">5</a><a class="page-number" href="/page/6/">6</a><a class="extend next" rel="next" href="/page/4/"><i class="fas fa-angle-double-right"></i></a>
+      <a class="extend prev" rel="prev" href="/page/2/"><i class="fas fa-angle-double-left"></i></a><a class="page-number" href="/">1</a><a class="page-number" href="/page/2/">2</a><span class="page-number current">3</span><a class="page-number" href="/page/4/">4</a><a class="page-number" href="/page/5/">5</a><span class="space">&hellip;</span><a class="page-number" href="/page/7/">7</a><a class="extend next" rel="next" href="/page/4/"><i class="fas fa-angle-double-right"></i></a>
     </span>
   </nav>
   

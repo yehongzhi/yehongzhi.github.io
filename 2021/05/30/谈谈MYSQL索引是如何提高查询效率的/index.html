@@ -1,0 +1,523 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/apple-touch-icon.png">
+  <link rel="icon" type="image/png" href="/img/favicon.png">
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="description" content="">
+  <meta name="author" content="Ye hongzhi">
+  <meta name="keywords" content="">
+  <title>谈谈MYSQL索引是如何提高查询效率的 - 叶洪智的技术分享</title>
+
+  <link rel="stylesheet" href="/lib/font-awesome/css/all.min.css"  >
+<link rel="stylesheet" href="/lib/bootstrap/css/bootstrap.min.css"  >
+<link rel="stylesheet" href="/lib/mdbootstrap/css/mdb.min.css"  >
+<link rel="stylesheet" href="/lib/github-markdown/github-markdown.min.css"  >
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1067060_qzomjdt8bmp.css">
+
+
+
+  <link rel="stylesheet" href="/lib/prettify/tomorrow-night-eighties.min.css"  >
+
+<link rel="stylesheet" href="/css/main.css"  >
+
+
+  <link rel="stylesheet" href="/lib/fancybox/jquery.fancybox.min.css"  >
+
+
+<meta name="generator" content="Hexo 4.2.0"></head>
+
+
+<body>
+  <header style="height: 70vh;">
+    <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand"
+       href="/">&nbsp;<strong>YeHongzhi's Blog</strong>&nbsp;</a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+          <li class="nav-item">
+            <a class="nav-link" href="/">首页</a>
+          </li>
+        
+          
+          
+          
+          
+          <li class="nav-item">
+            <a class="nav-link" href="/archives/">归档</a>
+          </li>
+        
+          
+          
+          
+          
+          <li class="nav-item">
+            <a class="nav-link" href="/tags/">标签</a>
+          </li>
+        
+          
+          
+          
+          
+          <li class="nav-item">
+            <a class="nav-link" href="/about/">关于</a>
+          </li>
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" data-toggle="modal" data-target="#modalSearch">&nbsp;&nbsp;<i
+                class="iconfont icon-search"></i>&nbsp;&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+    <div class="view intro-2" id="background" false
+         style="background: url('/img/post.png')no-repeat center center;
+           background-size: cover;">
+      <div class="full-bg-img">
+        <div class="mask rgba-black-light flex-center">
+          <div class="container text-center white-text fadeInUp">
+            <span class="h2" id="subtitle">
+              
+            </span>
+
+            
+              <br>
+              
+                <p class="mt-3">
+                  <i class="fas fa-calendar-alt" aria-hidden="true"></i>&nbsp;
+                  星期日, 五月 30日 2021, 9:43 晚上
+                </p>
+              
+
+              <p>
+                
+                  
+                  &nbsp;<i class="far fa-chart-bar"></i>
+                  <span class="post-count">
+                    2.3k 字
+                  </span>&nbsp;
+                
+
+                
+                  
+                  &nbsp;<i class="far fa-clock"></i>
+                  <span class="post-count">
+                      8 分钟
+                  </span>&nbsp;
+                
+
+                
+                  <!-- 不蒜子统计文章PV -->
+                  
+                  &nbsp;<i class="far fa-eye" aria-hidden="true"></i>&nbsp;
+                  <span id="busuanzi_container_page_pv">
+                    <span id="busuanzi_value_page_pv"></span> 次
+                  </span>&nbsp;
+                
+              </p>
+            
+          </div>
+
+          
+            <div class="scroll-down-bar">
+              <i class="fas fa-angle-down scroll-down-arrow"></i>
+            </div>
+          
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid">
+  <div class="row">
+    <div class="d-none d-lg-block col-lg-2"></div>
+    <div class="col-lg-8 nopadding-md">
+      <div class="py-5 z-depth-3" id="board">
+        <div class="post-content mx-auto" id="post">
+          <div class="markdown-body">
+            <blockquote>
+<p><strong>文章已收录Github精选，欢迎Star</strong>：<a href="https://github.com/yehongzhi/learningSummary" target="_blank" rel="noopener">https://github.com/yehongzhi/learningSummary</a></p>
+</blockquote>
+<h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>我们都知道当查询数据库变慢时，需要建索引去优化。但是只知道索引能优化显然是不够的，我们更应该知道索引的原理，因为不是加了索引就一定会提升性能。那么接下来就一起探索MYSQL索引的原理吧。</p>
+<h1 id="什么是索引"><a href="#什么是索引" class="headerlink" title="什么是索引"></a>什么是索引</h1><p>索引其实是一种能高效帮助MYSQL获取数据的数据结构，通常保存在磁盘文件中，好比一本书的目录，能加快数据库的查询速度。除此之外，索引是有序的，所以也能提高数据的排序效率。</p>
+<p>通常MYSQL的索引包括聚簇索引，覆盖索引，复合索引，唯一索引，普通索引，通常底层是B+树的数据结构。</p>
+<p>总结一下，索引的优势在于：</p>
+<ul>
+<li>提高查询效率。</li>
+<li>降低数据排序的成本。</li>
+</ul>
+<p>缺点在于：</p>
+<ul>
+<li>索引会占用磁盘空间。</li>
+<li>索引会降低更新表的效率。因为在更新数据时，要额外维护索引文件。</li>
+</ul>
+<h1 id="索引的类型"><a href="#索引的类型" class="headerlink" title="索引的类型"></a>索引的类型</h1><ul>
+<li>聚簇索引</li>
+</ul>
+<p>索引列的值必须是唯一的，并且不能为空，一个表只能有一个聚簇索引。</p>
+<ul>
+<li>唯一索引</li>
+</ul>
+<p>索引列的值是唯一的，值可以为空。</p>
+<ul>
+<li>普通索引</li>
+</ul>
+<p>没有什么限制，允许在定义索引的列中插入重复值和空值。</p>
+<ul>
+<li>复合索引</li>
+</ul>
+<p>也叫组合索引，用户可以在多个列上组合建立索引，遵循“最左匹配原则”，在条件允许的情况下使用复合索引可以替代多个单列索引的使用。</p>
+<h1 id="索引的数据结构"><a href="#索引的数据结构" class="headerlink" title="索引的数据结构"></a>索引的数据结构</h1><p>我们都知道索引的底层数据结构采用的是B+树，但是在讲B+树之前，要先知道B树，因为B+树是在B树上面进行改进优化的。</p>
+<p>首先讲一下B树的特点：</p>
+<ul>
+<li>B树的每个节点都存储了多个元素，每个内节点都有多个分支。</li>
+<li>节点中元素包含键值和数据，节点中的键值从小到大排序。</li>
+<li>父节点的数据不会出现在子节点中。</li>
+<li>所有的叶子节点都在同一层，叶节点具有相同的深度。</li>
+</ul>
+<p><img src="https://static.lovebilibili.com/mysql_suoyin_1.png" srcset="/img/loading.gif" alt=""></p>
+<p>在上面的B树中，假如我们要找值等于18的数据，查找路径就是磁盘块1-&gt;磁盘块3-&gt;磁盘块8。</p>
+<p>过程如下：</p>
+<p>第一次磁盘IO：首先加载磁盘块1到内存中，在内存中遍历比较，因为17&lt;18&lt;50，所以走中间P2，定位到磁盘块3。</p>
+<p>第二次磁盘IO：加载磁盘块3到内存，依然是遍历比较，18&lt;25，所以走左边P1，定位到磁盘块8。</p>
+<p>第三次磁盘IO：加载磁盘块8到内存，在内存中遍历，18=18，找到18，取出data。</p>
+<p>如图所示：</p>
+<p><img src="https://static.lovebilibili.com/mysql_suoyin_2.png" srcset="/img/loading.gif" alt=""></p>
+<p>如果data存储的是行数据，直接返回，如果存的是磁盘地址则根据磁盘地址到磁盘中取出数据。可以看出B树的查询效率是很高的。</p>
+<blockquote>
+<p>B树存在着什么问题，需要改进优化呢？</p>
+</blockquote>
+<p>第一个问题：B树在范围查询时，性能并不理想。假如要查询13到30之间的数据，查询到13后又要回到根节点再去查询后面的数据，就会产生多次的查询遍历。</p>
+<p>第二个问题：因为非叶子节点和叶子节点都会存储数据，所以占用的空间大，一个页可存储的数据量就会变少，树的高度就会变高，磁盘的IO次数就会变多。</p>
+<p>基于以上两个问题，就出现了B树的升级版，B+树。</p>
+<p>B+树与B树最大的区别在于两点：</p>
+<ul>
+<li>B+树只有叶子节点存储数据，非叶子节点只存储键值。而B树的非叶子节点和叶子节点都会存储数据。</li>
+<li>B+树的最底层的叶子节点会形成一个双向有序链表，而B树不会。</li>
+</ul>
+<p>如图所示：</p>
+<p><img src="https://static.lovebilibili.com/mysql_suoyin_3.png" srcset="/img/loading.gif" alt=""></p>
+<blockquote>
+<p>B+树的等值查询过程是怎么样的？</p>
+</blockquote>
+<p>如果在B+树中进行等值查询，比如查询等于13的数据。</p>
+<p>查询路径为：磁盘块1-&gt;磁盘块2-&gt;磁盘块6。</p>
+<p>第一次IO：加载磁盘块1，在内存中遍历比较，13&lt;17，走左边，找到磁盘块2。</p>
+<p>第二次IO：加载磁盘块2，在内存中遍历比较，10&lt;13&lt;15，走中间，找到磁盘块6。</p>
+<p>第三次IO：加载磁盘块6，依次遍历，找到13=13，取出data。</p>
+<p>所以B+树在等值查询的效率是很高的。</p>
+<blockquote>
+<p>B+树的范围查询过程又是怎么样呢？</p>
+</blockquote>
+<p>比如我们要进行范围查询，查询大于5并且小于15的数据。</p>
+<p>查询路径为：磁盘块1-&gt;磁盘块2-&gt;磁盘块5-&gt;磁盘块6。</p>
+<p>第一次IO：加载磁盘块1，比较得出5&lt;17，然后走左边，找到磁盘块2。</p>
+<p>第二次IO：加载磁盘块2，比较5&lt;10，然后还是走左边，找到磁盘块5。</p>
+<p>第三次IO：加载磁盘块5，然后找大于5的数据。</p>
+<p>第四次IO：由于最底层是有序的双向链表，所以继续往右遍历即可，直到不符合小于15的数据为止。</p>
+<p>过程如图所示：</p>
+<p><img src="https://static.lovebilibili.com/mysql_suoyin_4.png" srcset="/img/loading.gif" alt=""></p>
+<p>所以在范围查询的时候，是不需要像B树一样，再回到根节点，这就是底层采用双向链表的好处。</p>
+<p>所以B+树的优势在于，能<strong>保证等值查询和范围查询的快速查找</strong>。</p>
+<h1 id="InnoDB索引"><a href="#InnoDB索引" class="headerlink" title="InnoDB索引"></a>InnoDB索引</h1><p>我们常用的MySQL存储引擎一般是InnoDB，所以接下来讲讲几种不同的索引的底层数据结构，以及查找过程。</p>
+<h2 id="聚簇索引"><a href="#聚簇索引" class="headerlink" title="聚簇索引"></a>聚簇索引</h2><p>前面讲过，每个InnoDB表有且仅有一个聚簇索引。除此之外，聚簇索引在表的创建有以下几点规则：</p>
+<ul>
+<li>在表中，如果定义了主键，InnoDB会将主键索引作为聚簇索引。</li>
+<li>如果没有定义主键，则会选择第一个不为NULL的唯一索引列作为聚簇索引。</li>
+<li>如果以上两个都没有。InnoDB 会使用一个6 字节长整型的隐式字段 ROWID字段构建聚簇索引。该ROWID字段会在插入新行时自动递增。</li>
+</ul>
+<p>除了聚簇索引之外的索引都称为非聚簇索引，区别在于，聚簇索引的叶子节点存储的数据是整行数据，而非聚簇索引存储的是该行的主键值。</p>
+<p>比如有一张user表，如图所示：</p>
+<p><img src="https://static.lovebilibili.com/mysql_suoyin_5.png" srcset="/img/loading.gif" alt=""></p>
+<p>底层的数据结构就像这样：</p>
+<p><img src="https://static.lovebilibili.com/mysql_suoyin_6.png" srcset="/img/loading.gif" alt=""></p>
+<p>当我们用主键值去查询的时候，查询效率是很快的，因为可以直接返回数据。</p>
+<p><img src="https://static.lovebilibili.com/mysql_suoyin_7.png" srcset="/img/loading.gif" alt=""></p>
+<h2 id="普通索引"><a href="#普通索引" class="headerlink" title="普通索引"></a>普通索引</h2><p>也就是用得最多的一种索引，比如我要为user表的age列创建索引，SQL语句可以这样写：</p>
+<pre><code class="sql">CREATE INDEX INDEX_USER_AGE ON `user`(age);</code></pre>
+<p>普通索引属于非聚簇索引，所以叶子节点存储的是主键值，底层的数据结构大概长这个样子：</p>
+<p><img src="https://static.lovebilibili.com/mysql_suoyin_8.png" srcset="/img/loading.gif" alt=""></p>
+<p>比如要查询age=33的数据，那么首先查到磁盘块7的age=33的数据，获取到主键值，主键值为4。</p>
+<p>接着再通过主键值等于4，查询到该行的数据。所以总得来说，底层会进行两次查询。</p>
+<p>这种先通过查询主键值，再通过主键值查询到数据的过程就叫做回表查询。</p>
+<h2 id="覆盖索引"><a href="#覆盖索引" class="headerlink" title="覆盖索引"></a>覆盖索引</h2><p>既然上面提到了回表查询，那么自然而然会想到，有没有什么办法能避免回表查询呢？答案肯定是有的，那就是使用覆盖索引。</p>
+<p>覆盖索引不是一种索引的类型，而是一种使用索引的方式。假设你需要查询的列是建立了索引，查询的结果在索引列上就能获取，那就可以用覆盖索引。</p>
+<p>比如上面的例子，我们通过age=33查询，我需要查询的结果就只要age这一列，那就可以用到覆盖索引，如图所示：</p>
+<p><img src="https://static.lovebilibili.com/mysql_suoyin_9.png" srcset="/img/loading.gif" alt=""></p>
+<p>使用到覆盖索引的话，就能避免回表查询，所以在写SQL语句时尽量不要写<code>SELECT *</code>。</p>
+<h1 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h1><p>这篇文章主要讲的是索引的类型，索引的数据结构，以及InnoDB表中常用的几种索引。当然，除了上述讲的这些之外，还有很多关于索引的知识，比如索引失效的场景，索引创建的原则等等，由于篇幅过长，留着以后再讲。</p>
+<p>那么这篇文章就写到这里了，感谢大家的阅读。</p>
+<p><strong>觉得有用就点个赞吧，你的点赞是我创作的最大动力</strong>~</p>
+<p><strong>我是一个努力让大家记住的程序员。我们下期再见！！！</strong></p>
+<p><img src="https://static.lovebilibili.com/dashacha.png" srcset="/img/loading.gif" alt=""></p>
+<blockquote>
+<p>能力有限，如果有什么错误或者不当之处，请大家批评指正，一起学习交流！</p>
+</blockquote>
+
+            <hr>
+          </div>
+          <br>
+          <div>
+            <p>
+            
+            
+              <span>
+                <i class="iconfont icon-tag"></i>
+                
+                  <a class="hover-with-bg" href="/tags/MySQL">MySQL</a>
+                
+              </span>
+            
+            </p>
+            
+              <p class="note note-warning">本博客所有文章除特别声明外，均采用 <a href="https://zh.wikipedia.org/wiki/Wikipedia:CC_BY-SA_3.0%E5%8D%8F%E8%AE%AE%E6%96%87%E6%9C%AC" target="_blank" rel="nofollow noopener noopener">CC BY-SA 3.0协议</a> 。转载请注明出处！</p>
+            
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="d-none d-lg-block col-lg-2 toc-container">
+      
+  <div id="toc">
+    <p class="h4"><i class="far fa-list-alt"></i>&nbsp;目录</p>
+    <div id="tocbot"></div>
+  </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- custom -->
+
+
+<!-- Comments -->
+<div class="col-lg-7 mx-auto nopadding-md">
+  <div class="container comments mx-auto" id="comments">
+    
+  </div>
+</div>
+
+    
+  </main>
+
+  
+    <a class="z-depth-1" id="scroll-top-button" href="#" role="button">
+      <i class="fa fa-chevron-up scroll-top-arrow" aria-hidden="true"></i>
+    </a>
+  
+
+  
+    <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v"
+                 for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+  
+
+  <footer class="mt-5">
+  <div class="text-center py-3">
+    <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><b>Hexo</b></a>
+    <i class="iconfont icon-love"></i>
+    <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"> <b>Fluid</b></a>
+    <br>
+
+    
+  
+    <!-- 不蒜子统计PV -->
+    
+    &nbsp;<span id="busuanzi_container_site_pv"></span>总访问量 
+          <span id="busuanzi_value_site_pv"></span> 次&nbsp;
+  
+  
+    <!-- 不蒜子统计UV -->
+    
+    &nbsp;<span id="busuanzi_container_site_uv"></span>总访客数 
+            <span id="busuanzi_value_site_uv"></span> 人&nbsp;
+  
+  <br>
+
+
+
+    
+
+
+    <!-- cnzz Analytics icon -->
+    
+
+  </div>
+</footer>
+
+<!-- SCRIPTS -->
+<script src="/lib/jquery/jquery.min.js" ></script>
+<script src="/lib/popper/popper.min.js" ></script>
+<script src="/lib/bootstrap/js/bootstrap.min.js" ></script>
+<script src="/lib/mdbootstrap/js/mdb.min.js" ></script>
+<script src="/js/main.js" ></script>
+
+
+  <script src="/js/lazyload.js" ></script>
+
+
+
+  
+    <script src="/lib/tocbot/tocbot.min.js" ></script>
+  
+  <script src="/js/post.js" ></script>
+
+
+
+  <script src="/lib/smooth-scroll/smooth-scroll.min.js" ></script>
+
+
+
+  <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" ></script>
+
+
+<!-- Plugins -->
+
+
+  
+
+  
+
+  
+
+  
+
+  <!-- cnzz Analytics -->
+  
+
+
+
+  <script src="/lib/prettify/prettify.min.js" ></script>
+  <script>
+    $(document).ready(function () {
+      $('pre').addClass('prettyprint  linenums');
+      prettyPrint();
+    })
+  </script>
+
+
+
+  <script src="/lib/typed/typed.min.js" ></script>
+  <script>
+    var typed = new Typed('#subtitle', {
+      strings: [
+        '  ',
+        "谈谈MYSQL索引是如何提高查询效率的&nbsp;",
+      ],
+      cursorChar: "_",
+      typeSpeed: 70,
+      loop: false,
+    });
+    typed.stop();
+    $(document).ready(function () {
+      $(".typed-cursor").addClass("h2");
+      typed.start();
+    });
+  </script>
+
+
+
+  <script src="/lib/anchor/anchor.min.js" ></script>
+  <script>
+    anchors.options = {
+      placement: "right",
+      visible: "false",
+      
+    };
+    var el = "h1,h2,h3,h4,h5,h6".split(",");
+    var res = [];
+    for (item of el) {
+      res.push(".markdown-body > " + item)
+    }
+    anchors.add(res.join(", "))
+  </script>
+
+
+
+  <script src="/js/local-search.js" ></script>
+  <script>
+    var path = "/local-search.xml";
+    var inputArea = document.querySelector("#local-search-input");
+    inputArea.onclick = function () {
+      getSearchFile(path);
+      this.onclick = null
+    }
+  </script>
+
+
+
+  <script src="/lib/fancybox/jquery.fancybox.min.js" ></script>
+  <script>
+    $("#post img:not(.no-zoom img, img[no-zoom])").each(
+      function () {
+        var element = document.createElement("a");
+        $(element).attr("data-fancybox", "images");
+        $(element).attr("href", $(this).attr("src"));
+        $(this).wrap(element);
+      }
+    );
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+</body>
+</html>

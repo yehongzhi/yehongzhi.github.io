@@ -136,6 +136,201 @@
     
     
       <div class="col-12 col-md-4 m-auto">
+        <a href="/2020/07/26/ZooKeeper%E5%85%A5%E9%97%A8/" target="_blank">
+          <img src="https://static.lovebilibili.com/ZooKeeper_index.jpg" srcset="/img/loading.gif" alt="ZooKeeper入门" class="index-img img-fluid rounded index-thumbnails">
+        </a>
+      </div>
+    
+    <div class="col-12 col-md-8 mx-auto index-info">
+      <a href="/2020/07/26/ZooKeeper%E5%85%A5%E9%97%A8/">
+        <p class="h4 index-header">ZooKeeper入门</p>
+      </a>
+
+      <a href="/2020/07/26/ZooKeeper%E5%85%A5%E9%97%A8/">
+        
+        
+          
+        
+        <div class="index-excerpt" >
+          <div class="index-text mb-1">思维导图
+前言在很多时候，我们都可以在各种框架应用中看到ZooKeeper的身影，比如Kafka中间件，Dubbo框架，Hadoop等等。为什么到处都看到ZooKeeper？
+一、什么是ZooKeeperZooKeeper是一个分布式服务协调框架，提供了分布式数据一致性的解决方案，基于ZooKeeper的数据结构，Watcher，选举机制等特点，可以实现数据的发布/订阅，软负载均衡，命名服务，统一配置管理，分布式锁，集群管理等等。
+二、为什么使用ZooKeeperZooKeeper能保证：
+
+更新请求顺序进行。来自同一个client的更新请求按其发送顺序依次执行
+数据更新原子性。一次数据更新要么成功，要么失败
+全局唯一数据视图。client无论连接到哪个server，数据视图都是一致的
+实时性。在一定时间范围内，client读到的数据是最新的
+
+三、数据结构ZooKeeper的数据结构和Unix文件系统很类似，总体上可以看做是一棵树，每一个节点称之为一个ZNode，每一个ZNode默认能存储1M的数据。每一个ZNode可通过唯一的路径标识。如下图所示：
+
+创建ZNode时，可以指定以下</div>
+        </div>
+      </a>
+
+      <div class="index-btm">
+        
+          <i class="iconfont icon-riqi2"></i>&nbsp;2020-07-26&nbsp;&nbsp;
+        
+        
+        
+          <i class="iconfont icon-tag"></i>
+          
+            <a href="/tags/java">java</a>&nbsp;
+          
+            <a href="/tags/zookeeper">zookeeper</a>&nbsp;
+          
+        
+      </div>
+    </div>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+      <div class="col-12 col-md-4 m-auto">
+        <a href="/2020/07/26/%E4%BB%8E%E7%A7%92%E6%9D%80%E8%81%8A%E5%88%B0ZooKeeper%E5%88%86%E5%B8%83%E5%BC%8F%E9%94%81/" target="_blank">
+          <img src="https://static.lovebilibili.com/zookeeper_lock_index.jpg" srcset="/img/loading.gif" alt="从秒杀聊到ZooKeeper分布式锁" class="index-img img-fluid rounded index-thumbnails">
+        </a>
+      </div>
+    
+    <div class="col-12 col-md-8 mx-auto index-info">
+      <a href="/2020/07/26/%E4%BB%8E%E7%A7%92%E6%9D%80%E8%81%8A%E5%88%B0ZooKeeper%E5%88%86%E5%B8%83%E5%BC%8F%E9%94%81/">
+        <p class="h4 index-header">从秒杀聊到ZooKeeper分布式锁</p>
+      </a>
+
+      <a href="/2020/07/26/%E4%BB%8E%E7%A7%92%E6%9D%80%E8%81%8A%E5%88%B0ZooKeeper%E5%88%86%E5%B8%83%E5%BC%8F%E9%94%81/">
+        
+        
+          
+        
+        <div class="index-excerpt" >
+          <div class="index-text mb-1">思维导图
+前言经过《ZooKeeper入门》后，我们学会了ZooKeeper的基本用法。
+实际上ZooKeeper的应用是非常广泛的，实现分布式锁只是其中一种。接下来我们就ZooKeeper实现分布式锁解决秒杀超卖问题进行展开。
+一、什么是秒杀超卖问题秒杀活动应该都不陌生，不用过多解释。
+不难想象，在这种”秒杀”的场景中，实际上会出现多个用户争抢”资源”的情况，也就是多个线程同时并发，这种情况是很容易出现数据不准确，也就是超卖问题。
+1.1 项目演示下面使用程序演示，我使用了SpringBoot2.0、Mybatis、Mybatis-Plus、SpringMVC搭建了一个简单的项目，github地址：
+
+https://github.com/yehongzhi/mall
+
+创建一个商品信息表：
+CREATE TABLE `tb_commodity_info` (
+  `id` varchar(32) NOT NULL,
+  `commodity_name` varchar(512) DEFAULT NULL COMMENT &#39;商品名称&#39;,
+  `commodity_pr</div>
+        </div>
+      </a>
+
+      <div class="index-btm">
+        
+          <i class="iconfont icon-riqi2"></i>&nbsp;2020-07-26&nbsp;&nbsp;
+        
+        
+        
+          <i class="iconfont icon-tag"></i>
+          
+            <a href="/tags/zookeeper">zookeeper</a>&nbsp;
+          
+            <a href="/tags/%E5%88%86%E5%B8%83%E5%BC%8F%E9%94%81">分布式锁</a>&nbsp;
+          
+        
+      </div>
+    </div>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+      <div class="col-12 col-md-4 m-auto">
+        <a href="/2020/07/08/Netty%E8%BF%9B%E9%98%B6%E4%B9%8B%E7%B2%98%E5%8C%85%E5%92%8C%E6%8B%86%E5%8C%85/" target="_blank">
+          <img src="https://static.lovebilibili.com/nianbao_index.jpg" srcset="/img/loading.gif" alt="Netty进阶之粘包和拆包" class="index-img img-fluid rounded index-thumbnails">
+        </a>
+      </div>
+    
+    <div class="col-12 col-md-8 mx-auto index-info">
+      <a href="/2020/07/08/Netty%E8%BF%9B%E9%98%B6%E4%B9%8B%E7%B2%98%E5%8C%85%E5%92%8C%E6%8B%86%E5%8C%85/">
+        <p class="h4 index-header">Netty进阶之粘包和拆包</p>
+      </a>
+
+      <a href="/2020/07/08/Netty%E8%BF%9B%E9%98%B6%E4%B9%8B%E7%B2%98%E5%8C%85%E5%92%8C%E6%8B%86%E5%8C%85/">
+        
+        
+          
+          
+        
+        <div class="index-excerpt" style="max-height: none;">
+          <div class="index-text mb-1">思维导图
+一、什么是粘包和拆包TCP是一种面向连接的、可靠的、基于字节流的传输层通信协议。(来自百度百科)
+发送端为了将多个发给接收端的数据包，更有效地发送到接收端，会使用Nagle算法。Nagle算法会将多次时间间隔较小且数据量小的数据合并成一个大的数据块进行发送。虽然这样的确提高了效率，但是因为面向流通信，数据是无消息保护边界的，就会导致接收端难以分辨出完整的数据包了。
+所谓的粘包和拆包问题，就是因为TCP消息无保护边界导致的。...</div>
+        </div>
+      </a>
+
+      <div class="index-btm">
+        
+          <i class="iconfont icon-riqi2"></i>&nbsp;2020-07-08&nbsp;&nbsp;
+        
+        
+        
+          <i class="iconfont icon-tag"></i>
+          
+            <a href="/tags/java">java</a>&nbsp;
+          
+            <a href="/tags/Netty">Netty</a>&nbsp;
+          
+        
+      </div>
+    </div>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+      <div class="col-12 col-md-4 m-auto">
+        <a href="/2020/07/04/Netty%E5%85%A5%E9%97%A8/" target="_blank">
+          <img src="https://static.lovebilibili.com/Netty_index.jpg" srcset="/img/loading.gif" alt="Netty入门" class="index-img img-fluid rounded index-thumbnails">
+        </a>
+      </div>
+    
+    <div class="col-12 col-md-8 mx-auto index-info">
+      <a href="/2020/07/04/Netty%E5%85%A5%E9%97%A8/">
+        <p class="h4 index-header">Netty入门</p>
+      </a>
+
+      <a href="/2020/07/04/Netty%E5%85%A5%E9%97%A8/">
+        
+        
+          
+          
+        
+        <div class="index-excerpt" style="max-height: none;">
+          <div class="index-text mb-1">思维导图
+前言本文主要讲述Netty框架的一些特性以及重要组件，希望看完之后能对Netty框架有一个比较直观的感受，希望能帮助读者快速入门Netty，减少一些弯路。...</div>
+        </div>
+      </a>
+
+      <div class="index-btm">
+        
+          <i class="iconfont icon-riqi2"></i>&nbsp;2020-07-04&nbsp;&nbsp;
+        
+        
+        
+          <i class="iconfont icon-tag"></i>
+          
+            <a href="/tags/java">java</a>&nbsp;
+          
+            <a href="/tags/Netty">Netty</a>&nbsp;
+          
+        
+      </div>
+    </div>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+      <div class="col-12 col-md-4 m-auto">
         <a href="/2020/07/01/Reactor%E6%A8%A1%E5%BC%8F/" target="_blank">
           <img src="https://static.lovebilibili.com/reactor_index.jpg" srcset="/img/loading.gif" alt="Reactor模式" class="index-img img-fluid rounded index-thumbnails">
         </a>
@@ -414,179 +609,11 @@ S</div>
     </div>
   </div>
 
-  <div class="row mx-auto index-card">
-    
-    
-      <div class="col-12 col-md-4 m-auto">
-        <a href="/2020/05/31/%E9%80%82%E9%85%8D%E5%99%A8%E6%A8%A1%E5%BC%8F%E4%B8%8ESpringMVC/" target="_blank">
-          <img src="https://static.lovebilibili.com/adaptera_index.jpg" srcset="/img/loading.gif" alt="适配器模式与SpringMVC" class="index-img img-fluid rounded index-thumbnails">
-        </a>
-      </div>
-    
-    <div class="col-12 col-md-8 mx-auto index-info">
-      <a href="/2020/05/31/%E9%80%82%E9%85%8D%E5%99%A8%E6%A8%A1%E5%BC%8F%E4%B8%8ESpringMVC/">
-        <p class="h4 index-header">适配器模式与SpringMVC</p>
-      </a>
-
-      <a href="/2020/05/31/%E9%80%82%E9%85%8D%E5%99%A8%E6%A8%A1%E5%BC%8F%E4%B8%8ESpringMVC/">
-        
-        
-          
-          
-        
-        <div class="index-excerpt" style="max-height: none;">
-          <div class="index-text mb-1">适配器模式定义适配器模式是将一个接口转换成客户希望的另一个接口，使接口不兼容的那些类可以一起工作，其别名为包装器(Wrapper)。适配器模式既可以作为类结构型模式，也可以作为对象结构型模式。...</div>
-        </div>
-      </a>
-
-      <div class="index-btm">
-        
-          <i class="iconfont icon-riqi2"></i>&nbsp;2020-05-31&nbsp;&nbsp;
-        
-        
-        
-          <i class="iconfont icon-tag"></i>
-          
-            <a href="/tags/java">java</a>&nbsp;
-          
-            <a href="/tags/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F">设计模式</a>&nbsp;
-          
-        
-      </div>
-    </div>
-  </div>
-
-  <div class="row mx-auto index-card">
-    
-    
-      <div class="col-12 col-md-4 m-auto">
-        <a href="/2020/05/24/%E8%AE%B0%E4%B8%80%E6%AC%A1%E9%AB%98%E7%BA%A7java%E9%9D%A2%E8%AF%95/" target="_blank">
-          <img src="https://static.lovebilibili.com/interview_summary_1.jpg" srcset="/img/loading.gif" alt="记一次高级java面试" class="index-img img-fluid rounded index-thumbnails">
-        </a>
-      </div>
-    
-    <div class="col-12 col-md-8 mx-auto index-info">
-      <a href="/2020/05/24/%E8%AE%B0%E4%B8%80%E6%AC%A1%E9%AB%98%E7%BA%A7java%E9%9D%A2%E8%AF%95/">
-        <p class="h4 index-header">记一次高级java面试</p>
-      </a>
-
-      <a href="/2020/05/24/%E8%AE%B0%E4%B8%80%E6%AC%A1%E9%AB%98%E7%BA%A7java%E9%9D%A2%E8%AF%95/">
-        
-        
-          
-          
-        
-        <div class="index-excerpt" style="max-height: none;">
-          <div class="index-text mb-1">记录一次高级JAVA开发面试题目面试时间大概40多分钟，问了有十几个问题，回忆一下记录下来，总结经验，以供参考。...</div>
-        </div>
-      </a>
-
-      <div class="index-btm">
-        
-          <i class="iconfont icon-riqi2"></i>&nbsp;2020-05-24&nbsp;&nbsp;
-        
-        
-        
-          <i class="iconfont icon-tag"></i>
-          
-            <a href="/tags/java">java</a>&nbsp;
-          
-            <a href="/tags/%E9%9D%A2%E8%AF%95">面试</a>&nbsp;
-          
-        
-      </div>
-    </div>
-  </div>
-
-  <div class="row mx-auto index-card">
-    
-    
-      <div class="col-12 col-md-4 m-auto">
-        <a href="/2020/05/17/%E5%8E%9F%E5%9E%8B%E6%A8%A1%E5%BC%8F%E5%9C%A8%E5%AE%9E%E6%88%98%E4%B8%AD%E7%9A%84%E5%BA%94%E7%94%A8/" target="_blank">
-          <img src="https://static.lovebilibili.com/prototype_index.jpg" srcset="/img/loading.gif" alt="原型模式在实战中的应用" class="index-img img-fluid rounded index-thumbnails">
-        </a>
-      </div>
-    
-    <div class="col-12 col-md-8 mx-auto index-info">
-      <a href="/2020/05/17/%E5%8E%9F%E5%9E%8B%E6%A8%A1%E5%BC%8F%E5%9C%A8%E5%AE%9E%E6%88%98%E4%B8%AD%E7%9A%84%E5%BA%94%E7%94%A8/">
-        <p class="h4 index-header">原型模式在实战中的应用</p>
-      </a>
-
-      <a href="/2020/05/17/%E5%8E%9F%E5%9E%8B%E6%A8%A1%E5%BC%8F%E5%9C%A8%E5%AE%9E%E6%88%98%E4%B8%AD%E7%9A%84%E5%BA%94%E7%94%A8/">
-        
-        
-          
-          
-        
-        <div class="index-excerpt" style="max-height: none;">
-          <div class="index-text mb-1">原型模式定义原型模式是一种创建型设计模式，Prototype模式允许一个对象再创建另外一个可定制的对象，根本无需知道任何如何创建的细节,工作原理是：通过将一个原型对象传给那个要发动创建的对象，这个要发动创建的对象通过请求原型对象拷贝它们自己来实施创建。...</div>
-        </div>
-      </a>
-
-      <div class="index-btm">
-        
-          <i class="iconfont icon-riqi2"></i>&nbsp;2020-05-17&nbsp;&nbsp;
-        
-        
-        
-          <i class="iconfont icon-tag"></i>
-          
-            <a href="/tags/java">java</a>&nbsp;
-          
-            <a href="/tags/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F">设计模式</a>&nbsp;
-          
-        
-      </div>
-    </div>
-  </div>
-
-  <div class="row mx-auto index-card">
-    
-    
-      <div class="col-12 col-md-4 m-auto">
-        <a href="/2020/05/04/%E8%A3%85%E9%A5%B0%E8%80%85%E6%A8%A1%E5%BC%8F%E4%B8%8EIO%E6%B5%81/" target="_blank">
-          <img src="https://static.lovebilibili.com/decorator_index.jpg" srcset="/img/loading.gif" alt="装饰者模式与IO流" class="index-img img-fluid rounded index-thumbnails">
-        </a>
-      </div>
-    
-    <div class="col-12 col-md-8 mx-auto index-info">
-      <a href="/2020/05/04/%E8%A3%85%E9%A5%B0%E8%80%85%E6%A8%A1%E5%BC%8F%E4%B8%8EIO%E6%B5%81/">
-        <p class="h4 index-header">装饰者模式与IO流</p>
-      </a>
-
-      <a href="/2020/05/04/%E8%A3%85%E9%A5%B0%E8%80%85%E6%A8%A1%E5%BC%8F%E4%B8%8EIO%E6%B5%81/">
-        
-        
-          
-          
-        
-        <div class="index-excerpt" style="max-height: none;">
-          <div class="index-text mb-1">装饰者模式定义装饰者模式是一种对象结构型模式。动态地给一个对象添加一些额外的职责，就增加功能来说，装饰者模式比生成子类更为灵活。...</div>
-        </div>
-      </a>
-
-      <div class="index-btm">
-        
-          <i class="iconfont icon-riqi2"></i>&nbsp;2020-05-04&nbsp;&nbsp;
-        
-        
-        
-          <i class="iconfont icon-tag"></i>
-          
-            <a href="/tags/java">java</a>&nbsp;
-          
-            <a href="/tags/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F">设计模式</a>&nbsp;
-          
-        
-      </div>
-    </div>
-  </div>
-
 
 
   <nav aria-label="index posts navigation">
     <span class="pagination pg-blue justify-content-center mt-5" id="pagination">
-      <a class="extend prev" rel="prev" href="/page/4/"><i class="fas fa-angle-double-left"></i></a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/3/">3</a><a class="page-number" href="/page/4/">4</a><span class="page-number current">5</span><a class="page-number" href="/page/6/">6</a><a class="extend next" rel="next" href="/page/6/"><i class="fas fa-angle-double-right"></i></a>
+      <a class="extend prev" rel="prev" href="/page/4/"><i class="fas fa-angle-double-left"></i></a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/3/">3</a><a class="page-number" href="/page/4/">4</a><span class="page-number current">5</span><a class="page-number" href="/page/6/">6</a><a class="page-number" href="/page/7/">7</a><a class="extend next" rel="next" href="/page/6/"><i class="fas fa-angle-double-right"></i></a>
     </span>
   </nav>
   

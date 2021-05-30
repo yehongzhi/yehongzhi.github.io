@@ -136,6 +136,219 @@
     
     
       <div class="col-12 col-md-4 m-auto">
+        <a href="/2021/03/08/Java%E5%9F%BA%E7%A1%80%E4%B8%8D%E7%AE%80%E5%8D%95%EF%BC%8C%E8%AE%B2%E4%B8%80%E8%AE%B2%E6%9E%9A%E4%B8%BE/" target="_blank">
+          <img src="https://static.lovebilibili.com/meiju_index.jpg" srcset="/img/loading.gif" alt="Java基础不简单，讲一讲枚举" class="index-img img-fluid rounded index-thumbnails">
+        </a>
+      </div>
+    
+    <div class="col-12 col-md-8 mx-auto index-info">
+      <a href="/2021/03/08/Java%E5%9F%BA%E7%A1%80%E4%B8%8D%E7%AE%80%E5%8D%95%EF%BC%8C%E8%AE%B2%E4%B8%80%E8%AE%B2%E6%9E%9A%E4%B8%BE/">
+        <p class="h4 index-header">Java基础不简单，讲一讲枚举</p>
+      </a>
+
+      <a href="/2021/03/08/Java%E5%9F%BA%E7%A1%80%E4%B8%8D%E7%AE%80%E5%8D%95%EF%BC%8C%E8%AE%B2%E4%B8%80%E8%AE%B2%E6%9E%9A%E4%B8%BE/">
+        
+        
+          
+        
+        <div class="index-excerpt" >
+          <div class="index-text mb-1">
+文章已收录Github精选，欢迎Star：https://github.com/yehongzhi/learningSummary
+
+什么是枚举枚举是JDK1.5新增的一种数据类型，是一种特殊的类，常用于表示一组常量，比如一年四季，12个月份，星期一到星期天，服务返回的错误码，结算支付的方式等等。枚举是使用enum关键字来定义。
+枚举的使用在使用枚举之前我们先探讨一个问题，为什么要使用枚举。
+现在有个业务场景是结算支付，有支付宝和微信支付两种方式，1表示支付宝，2表示微信支付，还需要根据编码(1或2)获取相应的英文名，如果不用枚举，我们就要这样写。
+public class PayTypeUtil {
+    //支付宝
+    private static final int ALI_PAY = 1;
+    //微信支付
+    private static final int WECHAT_PAY = 2;
+
+    //根据编码获取支付方式的名称
+    public String getPayName(int code) {
+        if (ALI_PAY == c</div>
+        </div>
+      </a>
+
+      <div class="index-btm">
+        
+          <i class="iconfont icon-riqi2"></i>&nbsp;2021-03-08&nbsp;&nbsp;
+        
+        
+        
+          <i class="iconfont icon-tag"></i>
+          
+            <a href="/tags/Java%E5%9F%BA%E7%A1%80">Java基础</a>&nbsp;
+          
+        
+      </div>
+    </div>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+      <div class="col-12 col-md-4 m-auto">
+        <a href="/2021/02/22/Redis%E5%A6%82%E4%BD%95%E5%AE%9E%E7%8E%B0%E5%88%86%E5%B8%83%E5%BC%8F%E9%94%81/" target="_blank">
+          <img src="https://static.lovebilibili.com/redis_lock_index.jpg" srcset="/img/loading.gif" alt="Redis如何实现分布式锁" class="index-img img-fluid rounded index-thumbnails">
+        </a>
+      </div>
+    
+    <div class="col-12 col-md-8 mx-auto index-info">
+      <a href="/2021/02/22/Redis%E5%A6%82%E4%BD%95%E5%AE%9E%E7%8E%B0%E5%88%86%E5%B8%83%E5%BC%8F%E9%94%81/">
+        <p class="h4 index-header">Redis如何实现分布式锁</p>
+      </a>
+
+      <a href="/2021/02/22/Redis%E5%A6%82%E4%BD%95%E5%AE%9E%E7%8E%B0%E5%88%86%E5%B8%83%E5%BC%8F%E9%94%81/">
+        
+        
+          
+        
+        <div class="index-excerpt" >
+          <div class="index-text mb-1">
+文章已收录Github精选，欢迎Star：https://github.com/yehongzhi
+
+前言如果在一个分布式系统中，我们从数据库中读取一个数据，然后修改保存，这种情况很容易遇到并发问题。因为读取和更新保存不是一个原子操作，在并发时就会导致数据的不正确。这种场景其实并不少见，比如电商秒杀活动，库存数量的更新就会遇到。如果是单机应用，直接使用本地锁就可以避免。如果是分布式应用，本地锁派不上用场，这时就需要引入分布式锁来解决。
+由此可见分布式锁的目的其实很简单，就是为了保证多台服务器在执行某一段代码时保证只有一台服务器执行。
+为了保证分布式锁的可用性，至少要确保锁的实现要同时满足以下几点：
+
+互斥性。在任何时刻，保证只有一个客户端持有锁。
+不能出现死锁。如果在一个客户端持有锁的期间，这个客户端崩溃了，也要保证后续的其他客户端可以上锁。
+保证上锁和解锁都是同一个客户端。
+
+一般来说，实现分布式锁的方式有以下几种：
+
+使用MySQL，基于唯一索引。
+使用ZooKeeper，基于临时有序节点。
+使用Redis，基于setnx命令。
+
+本篇文章主要讲解Redis的实现方式。
+实现思路</div>
+        </div>
+      </a>
+
+      <div class="index-btm">
+        
+          <i class="iconfont icon-riqi2"></i>&nbsp;2021-02-22&nbsp;&nbsp;
+        
+        
+        
+          <i class="iconfont icon-tag"></i>
+          
+            <a href="/tags/Redis">Redis</a>&nbsp;
+          
+        
+      </div>
+    </div>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+      <div class="col-12 col-md-4 m-auto">
+        <a href="/2021/02/13/%E7%BB%8F%E5%85%B8leetcode%E7%AE%97%E6%B3%95%E9%A2%98%E5%88%86%E4%BA%AB-%E5%AD%97%E7%AC%A6%E4%B8%B2/" target="_blank">
+          <img src="https://static.lovebilibili.com/string_sf_index.jpg" srcset="/img/loading.gif" alt="经典leetcode算法题分享(字符串)" class="index-img img-fluid rounded index-thumbnails">
+        </a>
+      </div>
+    
+    <div class="col-12 col-md-8 mx-auto index-info">
+      <a href="/2021/02/13/%E7%BB%8F%E5%85%B8leetcode%E7%AE%97%E6%B3%95%E9%A2%98%E5%88%86%E4%BA%AB-%E5%AD%97%E7%AC%A6%E4%B8%B2/">
+        <p class="h4 index-header">经典leetcode算法题分享(字符串)</p>
+      </a>
+
+      <a href="/2021/02/13/%E7%BB%8F%E5%85%B8leetcode%E7%AE%97%E6%B3%95%E9%A2%98%E5%88%86%E4%BA%AB-%E5%AD%97%E7%AC%A6%E4%B8%B2/">
+        
+        
+          
+        
+        <div class="index-excerpt" >
+          <div class="index-text mb-1">
+文章已收录Github精选，欢迎Star：https://github.com/yehongzhi
+
+前言很多人做leetcode题目找不到方向，或者说很难持之以恒，我这里推荐一种方法，从简单难度开始刷，刷完这个标签的简单难度，再换一个标签，这样循序渐进，把做题的量慢慢提高，还有难度逐渐加大。对于初学者，最重要是趁热打铁，而不是东打一枪西放一炮，趁热打铁才能形成做题的思路。
+还有一个问题是，一开始做题往往我们没有思路，只会想到暴力解法，效率只有惨淡的5%，遇到这种情况是很正常的，因为还没开始形成解题的思维。我们可以先看看题解，看完思路再自己写，千万不要照抄，要自己想出来才能锻炼编程能力。
+所谓talking is cheap, show me code，那么我们就从字符串开始吧！
+20. 有效的括号题目：
+给定一个只包括 ‘(‘，’)’，’{‘，’}’，’[‘，’]’ 的字符串 s ，判断字符串是否有效。
+有效字符串需满足：
+1.左括号必须用相同类型的右括号闭合。2.左括号必须以正确的顺序闭合。
+解题思路：
+这道题可以应用于校验JSON格式的括号是否正确。从题目上可以知道有效的括号是</div>
+        </div>
+      </a>
+
+      <div class="index-btm">
+        
+          <i class="iconfont icon-riqi2"></i>&nbsp;2021-02-13&nbsp;&nbsp;
+        
+        
+        
+          <i class="iconfont icon-tag"></i>
+          
+            <a href="/tags/%E7%AE%97%E6%B3%95">算法</a>&nbsp;
+          
+        
+      </div>
+    </div>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+      <div class="col-12 col-md-4 m-auto">
+        <a href="/2021/01/31/%E7%8E%A9%E8%BD%AC%E5%B8%83%E9%9A%86%E8%BF%87%E6%BB%A4%E5%99%A8%EF%BC%8C%E5%85%B6%E5%AE%9E%E5%BE%88%E7%AE%80%E5%8D%95/" target="_blank">
+          <img src="https://static.lovebilibili.com/redis_bl_shouye.jpg" srcset="/img/loading.gif" alt="玩转布隆过滤器，其实很简单" class="index-img img-fluid rounded index-thumbnails">
+        </a>
+      </div>
+    
+    <div class="col-12 col-md-8 mx-auto index-info">
+      <a href="/2021/01/31/%E7%8E%A9%E8%BD%AC%E5%B8%83%E9%9A%86%E8%BF%87%E6%BB%A4%E5%99%A8%EF%BC%8C%E5%85%B6%E5%AE%9E%E5%BE%88%E7%AE%80%E5%8D%95/">
+        <p class="h4 index-header">玩转布隆过滤器，其实很简单</p>
+      </a>
+
+      <a href="/2021/01/31/%E7%8E%A9%E8%BD%AC%E5%B8%83%E9%9A%86%E8%BF%87%E6%BB%A4%E5%99%A8%EF%BC%8C%E5%85%B6%E5%AE%9E%E5%BE%88%E7%AE%80%E5%8D%95/">
+        
+        
+          
+        
+        <div class="index-excerpt" >
+          <div class="index-text mb-1">
+文章已收录Github精选，欢迎Star：https://github.com/yehongzhi
+
+概念布隆过滤器(BloomFilter)是由一个叫“布隆”的小伙子在1970年提出的，它是一个很长的二进制向量，主要用于判断一个元素是否在一个集合中。
+原理在介绍原理之前，要先讲一下Hash函数的概念。
+我们在Java中的HashMap，HashSet其实也接触过hashcode()这个函数，哈希函数是可以将任意大小的输入数据转换成特定大小的输出数据的函数，转换后的数据称为哈希值。
+哈希函数有以下特点：
+
+如果根据同一个哈希函数得到的哈希值不同，那么这两个哈希值的原始输入值肯定不同。
+如果根据同一个哈希函数得到的两个哈希值相等，两个哈希值的原始输入值有可能相等，有可能不相等。
+
+布隆过滤器是由一个很长的二进制向量和一系列的哈希函数组成。那么布隆过滤器是怎么判断一个元素是否在一个集合中的呢？
+假设布隆过滤器的底层存储结构是一个长度为16的位数组，初始状态时，它的所有位置都设置为0。
+
+当有变量添加到布隆过滤器中，通过K个映射函数将变量映射到位数组的K个点，并把这K个点的值设置为1(假设</div>
+        </div>
+      </a>
+
+      <div class="index-btm">
+        
+          <i class="iconfont icon-riqi2"></i>&nbsp;2021-01-31&nbsp;&nbsp;
+        
+        
+        
+          <i class="iconfont icon-tag"></i>
+          
+            <a href="/tags/Redis">Redis</a>&nbsp;
+          
+        
+      </div>
+    </div>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+      <div class="col-12 col-md-4 m-auto">
         <a href="/2021/01/24/%E4%BB%80%E4%B9%88%E6%98%AF%E7%BC%93%E5%AD%98%E9%9B%AA%E5%B4%A9%EF%BC%8C%E7%BC%93%E5%AD%98%E5%87%BB%E7%A9%BF%EF%BC%8C%E7%BC%93%E5%AD%98%E7%A9%BF%E9%80%8F/" target="_blank">
           <img src="https://static.lovebilibili.com/redis_kv_index.jpg" srcset="/img/loading.gif" alt="什么是缓存雪崩，缓存击穿，缓存穿透" class="index-img img-fluid rounded index-thumbnails">
         </a>
@@ -434,226 +647,11 @@ public interface BeanFactory {
     </div>
   </div>
 
-  <div class="row mx-auto index-card">
-    
-    
-      <div class="col-12 col-md-4 m-auto">
-        <a href="/2020/12/06/5%E5%8D%83%E5%AD%97%E8%AF%A6%E7%BB%86%E8%AE%B2%E8%A7%A3JUC%E4%B8%AD%E9%87%8D%E8%A6%81%E7%9A%84AQS/" target="_blank">
-          <img src="https://static.lovebilibili.com/aqs_index.jpg" srcset="/img/loading.gif" alt="5千字详细讲解JUC中重要的AQS" class="index-img img-fluid rounded index-thumbnails">
-        </a>
-      </div>
-    
-    <div class="col-12 col-md-8 mx-auto index-info">
-      <a href="/2020/12/06/5%E5%8D%83%E5%AD%97%E8%AF%A6%E7%BB%86%E8%AE%B2%E8%A7%A3JUC%E4%B8%AD%E9%87%8D%E8%A6%81%E7%9A%84AQS/">
-        <p class="h4 index-header">5千字详细讲解JUC中重要的AQS</p>
-      </a>
-
-      <a href="/2020/12/06/5%E5%8D%83%E5%AD%97%E8%AF%A6%E7%BB%86%E8%AE%B2%E8%A7%A3JUC%E4%B8%AD%E9%87%8D%E8%A6%81%E7%9A%84AQS/">
-        
-        
-          
-        
-        <div class="index-excerpt" >
-          <div class="index-text mb-1">思维导图
-
-文章已收录Github精选，欢迎Star：https://github.com/yehongzhi/learningSummary
-
-一、什么是AQS谈到并发编程，不得不说AQS(AbstractQueuedSynchronizer)，这可谓是Doug Lea老爷子的大作之一。AQS即是抽象队列同步器，是用来构建Lock锁和同步组件的基础框架，很多我们熟知的锁和同步组件都是基于AQS构建，比如ReentrantLock、ReentrantReadWriteLock、CountDownLatch、Semaphore。
-实际上AQS是一个抽象类，我们不妨先看一下源码：
-public abstract class AbstractQueuedSynchronizer extends AbstractOwnableSynchronizer implements java.io.Serializable {
-    //头结点
-    private transient volatile Node head;
-    //尾节点
-    private transient volat</div>
-        </div>
-      </a>
-
-      <div class="index-btm">
-        
-          <i class="iconfont icon-riqi2"></i>&nbsp;2020-12-06&nbsp;&nbsp;
-        
-        
-        
-          <i class="iconfont icon-tag"></i>
-          
-            <a href="/tags/java">java</a>&nbsp;
-          
-            <a href="/tags/%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B">并发编程</a>&nbsp;
-          
-        
-      </div>
-    </div>
-  </div>
-
-  <div class="row mx-auto index-card">
-    
-    
-      <div class="col-12 col-md-4 m-auto">
-        <a href="/2020/11/29/%E8%AE%B2%E8%AE%B2%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B%E7%9A%84%E6%82%B2%E8%A7%82%E9%94%81%E5%92%8C%E4%B9%90%E8%A7%82%E9%94%81/" target="_blank">
-          <img src="https://static.lovebilibili.com/bllock_index.jpg" srcset="/img/loading.gif" alt="讲讲并发编程的悲观锁和乐观锁" class="index-img img-fluid rounded index-thumbnails">
-        </a>
-      </div>
-    
-    <div class="col-12 col-md-8 mx-auto index-info">
-      <a href="/2020/11/29/%E8%AE%B2%E8%AE%B2%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B%E7%9A%84%E6%82%B2%E8%A7%82%E9%94%81%E5%92%8C%E4%B9%90%E8%A7%82%E9%94%81/">
-        <p class="h4 index-header">讲讲并发编程的悲观锁和乐观锁</p>
-      </a>
-
-      <a href="/2020/11/29/%E8%AE%B2%E8%AE%B2%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B%E7%9A%84%E6%82%B2%E8%A7%82%E9%94%81%E5%92%8C%E4%B9%90%E8%A7%82%E9%94%81/">
-        
-        
-          
-        
-        <div class="index-excerpt" >
-          <div class="index-text mb-1">思维导图
-
-文章已收录Github精选，欢迎Star：https://github.com/yehongzhi/learningSummary
-
-悲观锁悲观锁是平时开发中经常用到的一种锁，比如ReentrantLock和synchronized等就是这种思想的体现，它总是假设别的线程在拿线程的时候都会修改数据，所以每次拿到数据的时候都会上锁，这样别的线程想拿这个数据就会被阻塞。如图所示：
-
-synchronized是悲观锁的一种实现，一般我们都会有这样使用：
-private static Object monitor = new Object();
-
-public static void main(String[] args) throws Exception {
-    //锁一段代码块
-    synchronized (monitor){
-
-    }
-}
-//锁实例方法，锁对象是this，即该类实例本身
-public synchronized void doSome(){
-
-}
-//锁静态方法，锁对象是该类，即XXX.class
-public synchronized stat</div>
-        </div>
-      </a>
-
-      <div class="index-btm">
-        
-          <i class="iconfont icon-riqi2"></i>&nbsp;2020-11-29&nbsp;&nbsp;
-        
-        
-        
-          <i class="iconfont icon-tag"></i>
-          
-            <a href="/tags/java">java</a>&nbsp;
-          
-            <a href="/tags/%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B">并发编程</a>&nbsp;
-          
-        
-      </div>
-    </div>
-  </div>
-
-  <div class="row mx-auto index-card">
-    
-    
-      <div class="col-12 col-md-4 m-auto">
-        <a href="/2020/11/29/%E4%B8%89%E5%8D%83%E5%AD%97%E7%BB%99%E5%A4%A7%E4%BC%99%E8%AE%B2%E8%AE%B2%E7%BA%BF%E7%A8%8B%E6%B1%A0/" target="_blank">
-          <img src="https://static.lovebilibili.com/ThreadPool_index.jpg" srcset="/img/loading.gif" alt="三千字给大伙讲讲线程池" class="index-img img-fluid rounded index-thumbnails">
-        </a>
-      </div>
-    
-    <div class="col-12 col-md-8 mx-auto index-info">
-      <a href="/2020/11/29/%E4%B8%89%E5%8D%83%E5%AD%97%E7%BB%99%E5%A4%A7%E4%BC%99%E8%AE%B2%E8%AE%B2%E7%BA%BF%E7%A8%8B%E6%B1%A0/">
-        <p class="h4 index-header">三千字给大伙讲讲线程池</p>
-      </a>
-
-      <a href="/2020/11/29/%E4%B8%89%E5%8D%83%E5%AD%97%E7%BB%99%E5%A4%A7%E4%BC%99%E8%AE%B2%E8%AE%B2%E7%BA%BF%E7%A8%8B%E6%B1%A0/">
-        
-        
-          
-        
-        <div class="index-excerpt" >
-          <div class="index-text mb-1">思维导图
-
-文章已收录Github精选，欢迎Star：https://github.com/yehongzhi/learningSummary
-
-前言在实际开发场景中，我们经常要使用多线程开发应用，比如实现异步操作，或者为了提高程序的效率等等。但是以前我见过有实习生在使用的时候是直接new Runable()，然后start()。没有使用线程池，可能很多初学者对线程池在多线程开发中没有足够的认识，所以我写一篇文章讲讲线程池，希望对大家有所启发。
-一、什么是线程池线程池借鉴了”池化”技术的思想，线程池能够对线程的生命周期进行管理，对线程重复利用，并且能够以一种简单的方式将任务的提交与执行相解耦。
-举个例子来说，线程就像是某个公司的客服小姐姐，每天都要接很多客户的电话，如果同时有1000个客户打电话进来咨询，按正常的逻辑，那就需要1000个客服小姐姐，但是在现实中往往需要考虑成本问题，招这么多人费用太多了，于是就可以这样优化，可以招100个人成立一个客服中心，如果同时超过100个人则提示让客户等待，等有空闲的客服小姐姐时就去响应客户。实现效益最大化。这就是一个池化技术在现实生活中类似的例子</div>
-        </div>
-      </a>
-
-      <div class="index-btm">
-        
-          <i class="iconfont icon-riqi2"></i>&nbsp;2020-11-29&nbsp;&nbsp;
-        
-        
-        
-          <i class="iconfont icon-tag"></i>
-          
-            <a href="/tags/java">java</a>&nbsp;
-          
-            <a href="/tags/%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B">并发编程</a>&nbsp;
-          
-            <a href="/tags/%E5%A4%9A%E7%BA%BF%E7%A8%8B">多线程</a>&nbsp;
-          
-        
-      </div>
-    </div>
-  </div>
-
-  <div class="row mx-auto index-card">
-    
-    
-      <div class="col-12 col-md-4 m-auto">
-        <a href="/2020/11/15/SpringBoot%E5%90%AF%E5%8A%A8%E6%B5%81%E7%A8%8B%E6%98%AF%E6%80%8E%E6%A0%B7%E7%9A%84%EF%BC%9F/" target="_blank">
-          <img src="https://static.lovebilibili.com/SpringBoot_index.jpg" srcset="/img/loading.gif" alt="SpringBoot启动流程是怎样的？" class="index-img img-fluid rounded index-thumbnails">
-        </a>
-      </div>
-    
-    <div class="col-12 col-md-8 mx-auto index-info">
-      <a href="/2020/11/15/SpringBoot%E5%90%AF%E5%8A%A8%E6%B5%81%E7%A8%8B%E6%98%AF%E6%80%8E%E6%A0%B7%E7%9A%84%EF%BC%9F/">
-        <p class="h4 index-header">SpringBoot启动流程是怎样的？</p>
-      </a>
-
-      <a href="/2020/11/15/SpringBoot%E5%90%AF%E5%8A%A8%E6%B5%81%E7%A8%8B%E6%98%AF%E6%80%8E%E6%A0%B7%E7%9A%84%EF%BC%9F/">
-        
-        
-          
-        
-        <div class="index-excerpt" >
-          <div class="index-text mb-1">思维导图
-
-文章已收录Github精选，欢迎Star：https://github.com/yehongzhi/learningSummary
-
-前言SpringBoot一开始最让我印象深刻的就是通过一个启动类就能启动应用。在SpringBoot以前，启动应用虽然也不麻烦，但是还是有点繁琐，要打包成war包，又要配置tomcat，tomcat又有一个server.xml文件去配置。
-然而SpringBoot则内置了tomcat，通过启动类启动，配置也集中在一个application.yml中，简直不要太舒服。好奇心驱动，于是我很想搞清楚启动类的启动过程，那么开始吧。
-一、启动类首先我们看最常见的启动类写法。
-@SpringBootApplication
-public class SpringmvcApplication {
-    public static void main(String[] args) {
-        SpringApplication.run(SpringmvcApplication.class, args);
-    }
-}
-把启动类分解一下，实际上就是两</div>
-        </div>
-      </a>
-
-      <div class="index-btm">
-        
-          <i class="iconfont icon-riqi2"></i>&nbsp;2020-11-15&nbsp;&nbsp;
-        
-        
-        
-          <i class="iconfont icon-tag"></i>
-          
-            <a href="/tags/java">java</a>&nbsp;
-          
-            <a href="/tags/SpringBoot">SpringBoot</a>&nbsp;
-          
-        
-      </div>
-    </div>
-  </div>
-
 
 
   <nav aria-label="index posts navigation">
     <span class="pagination pg-blue justify-content-center mt-5" id="pagination">
-      <a class="extend prev" rel="prev" href="/"><i class="fas fa-angle-double-left"></i></a><a class="page-number" href="/">1</a><span class="page-number current">2</span><a class="page-number" href="/page/3/">3</a><a class="page-number" href="/page/4/">4</a><span class="space">&hellip;</span><a class="page-number" href="/page/6/">6</a><a class="extend next" rel="next" href="/page/3/"><i class="fas fa-angle-double-right"></i></a>
+      <a class="extend prev" rel="prev" href="/"><i class="fas fa-angle-double-left"></i></a><a class="page-number" href="/">1</a><span class="page-number current">2</span><a class="page-number" href="/page/3/">3</a><a class="page-number" href="/page/4/">4</a><span class="space">&hellip;</span><a class="page-number" href="/page/7/">7</a><a class="extend next" rel="next" href="/page/3/"><i class="fas fa-angle-double-right"></i></a>
     </span>
   </nav>
   

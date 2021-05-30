@@ -136,6 +136,229 @@
     
     
       <div class="col-12 col-md-4 m-auto">
+        <a href="/2021/05/30/%E8%B0%88%E8%B0%88MYSQL%E7%B4%A2%E5%BC%95%E6%98%AF%E5%A6%82%E4%BD%95%E6%8F%90%E9%AB%98%E6%9F%A5%E8%AF%A2%E6%95%88%E7%8E%87%E7%9A%84/" target="_blank">
+          <img src="https://static.lovebilibili.com/mysql_suoyin_index.jpg" srcset="/img/loading.gif" alt="谈谈MYSQL索引是如何提高查询效率的" class="index-img img-fluid rounded index-thumbnails">
+        </a>
+      </div>
+    
+    <div class="col-12 col-md-8 mx-auto index-info">
+      <a href="/2021/05/30/%E8%B0%88%E8%B0%88MYSQL%E7%B4%A2%E5%BC%95%E6%98%AF%E5%A6%82%E4%BD%95%E6%8F%90%E9%AB%98%E6%9F%A5%E8%AF%A2%E6%95%88%E7%8E%87%E7%9A%84/">
+        <p class="h4 index-header">谈谈MYSQL索引是如何提高查询效率的</p>
+      </a>
+
+      <a href="/2021/05/30/%E8%B0%88%E8%B0%88MYSQL%E7%B4%A2%E5%BC%95%E6%98%AF%E5%A6%82%E4%BD%95%E6%8F%90%E9%AB%98%E6%9F%A5%E8%AF%A2%E6%95%88%E7%8E%87%E7%9A%84/">
+        
+        
+          
+        
+        <div class="index-excerpt" >
+          <div class="index-text mb-1">
+文章已收录Github精选，欢迎Star：https://github.com/yehongzhi/learningSummary
+
+前言我们都知道当查询数据库变慢时，需要建索引去优化。但是只知道索引能优化显然是不够的，我们更应该知道索引的原理，因为不是加了索引就一定会提升性能。那么接下来就一起探索MYSQL索引的原理吧。
+什么是索引索引其实是一种能高效帮助MYSQL获取数据的数据结构，通常保存在磁盘文件中，好比一本书的目录，能加快数据库的查询速度。除此之外，索引是有序的，所以也能提高数据的排序效率。
+通常MYSQL的索引包括聚簇索引，覆盖索引，复合索引，唯一索引，普通索引，通常底层是B+树的数据结构。
+总结一下，索引的优势在于：
+
+提高查询效率。
+降低数据排序的成本。
+
+缺点在于：
+
+索引会占用磁盘空间。
+索引会降低更新表的效率。因为在更新数据时，要额外维护索引文件。
+
+索引的类型
+聚簇索引
+
+索引列的值必须是唯一的，并且不能为空，一个表只能有一个聚簇索引。
+
+唯一索引
+
+索引列的值是唯一的，值可以为空。
+
+普通索引
+
+没有什么限制，允许在定义索引的列中插入重复值和空值。
+
+复合索</div>
+        </div>
+      </a>
+
+      <div class="index-btm">
+        
+          <i class="iconfont icon-riqi2"></i>&nbsp;2021-05-30&nbsp;&nbsp;
+        
+        
+        
+          <i class="iconfont icon-tag"></i>
+          
+            <a href="/tags/MySQL">MySQL</a>&nbsp;
+          
+        
+      </div>
+    </div>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+      <div class="col-12 col-md-4 m-auto">
+        <a href="/2021/05/30/%E4%BB%80%E4%B9%88%E6%98%AF%E9%9B%AA%E8%8A%B1ID%EF%BC%9F/" target="_blank">
+          <img src="https://static.lovebilibili.com/snowflake_index.png" srcset="/img/loading.gif" alt="什么是雪花ID？" class="index-img img-fluid rounded index-thumbnails">
+        </a>
+      </div>
+    
+    <div class="col-12 col-md-8 mx-auto index-info">
+      <a href="/2021/05/30/%E4%BB%80%E4%B9%88%E6%98%AF%E9%9B%AA%E8%8A%B1ID%EF%BC%9F/">
+        <p class="h4 index-header">什么是雪花ID？</p>
+      </a>
+
+      <a href="/2021/05/30/%E4%BB%80%E4%B9%88%E6%98%AF%E9%9B%AA%E8%8A%B1ID%EF%BC%9F/">
+        
+        
+          
+        
+        <div class="index-excerpt" >
+          <div class="index-text mb-1">
+文章已收录Github精选，欢迎Star：https://github.com/yehongzhi/learningSummary
+
+为什么使用雪花ID在以前的项目中，最常见的两种主键类型是自增Id和UUID，在比较这两种ID之前首先要搞明白一个问题，就是为什么主键有序比无序查询效率要快，因为自增Id和UUID之间最大的不同点就在于有序性。
+我们都知道，当我们定义了主键时，数据库会选择表的主键作为聚集索引(B+Tree)，mysql 在底层是以数据页为单位来存储数据的。
+也就是说如果主键为自增 id的话，mysql 在写满一个数据页的时候，直接申请另一个新数据页接着写就可以了。如果一个数据页存满了，mysql 就会去申请一个新的数据页来存储数据。如果主键是UUID，为了确保索引有序，mysql 就需要将每次插入的数据都放到合适的位置上。这就造成了页分裂，这个大量移动数据的过程是会严重影响插入效率的。
+一句话总结就是，InnoDB表的数据写入顺序能和B+树索引的叶子节点顺序一致的话，这时候存取效率是最高的。
+但是为什么很多情况又不用自增id作为主键呢？
+
+容易导致主键重复。比如导入旧数</div>
+        </div>
+      </a>
+
+      <div class="index-btm">
+        
+          <i class="iconfont icon-riqi2"></i>&nbsp;2021-05-30&nbsp;&nbsp;
+        
+        
+        
+          <i class="iconfont icon-tag"></i>
+          
+            <a href="/tags/MySQL">MySQL</a>&nbsp;
+          
+        
+      </div>
+    </div>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+      <div class="col-12 col-md-4 m-auto">
+        <a href="/2021/05/30/OOM%E6%80%8E%E4%B9%88%E5%8A%9E%EF%BC%8C%E6%95%99%E4%BD%A0%E7%94%9F%E6%88%90dump%E6%96%87%E4%BB%B6%E4%BB%A5%E5%8F%8A%E6%9F%A5%E7%9C%8B/" target="_blank">
+          <img src="https://static.lovebilibili.com/dump_index.jpg" srcset="/img/loading.gif" alt="OOM怎么办，教你生成dump文件以及查看" class="index-img img-fluid rounded index-thumbnails">
+        </a>
+      </div>
+    
+    <div class="col-12 col-md-8 mx-auto index-info">
+      <a href="/2021/05/30/OOM%E6%80%8E%E4%B9%88%E5%8A%9E%EF%BC%8C%E6%95%99%E4%BD%A0%E7%94%9F%E6%88%90dump%E6%96%87%E4%BB%B6%E4%BB%A5%E5%8F%8A%E6%9F%A5%E7%9C%8B/">
+        <p class="h4 index-header">OOM怎么办，教你生成dump文件以及查看</p>
+      </a>
+
+      <a href="/2021/05/30/OOM%E6%80%8E%E4%B9%88%E5%8A%9E%EF%BC%8C%E6%95%99%E4%BD%A0%E7%94%9F%E6%88%90dump%E6%96%87%E4%BB%B6%E4%BB%A5%E5%8F%8A%E6%9F%A5%E7%9C%8B/">
+        
+        
+          
+        
+        <div class="index-excerpt" >
+          <div class="index-text mb-1">
+文章已收录Github精选，欢迎Star：https://github.com/yehongzhi/learningSummary
+
+前言在日常开发中，即使代码写得有多谨慎，免不了还是会发生各种意外的事件，比如服务器内存突然飙高，又或者发生内存溢出(OOM)。当发生这种情况时，我们怎么去排查，怎么去分析原因呢？
+这时就引出这篇文章要讲的dump文件，各位看官且往下看。
+什么是dump文件dump文件是一个进程或者系统在某一个给定的时间的快照。
+dump文件是用来给驱动程序编写人员调试驱动程序用的，这种文件必须用专用工具软件打开。
+dump文件中包含了程序运行的模块信息、线程信息、堆栈调用信息、异常信息等数据。
+在服务器运行我们的Java程序时，是无法跟踪代码的，所以当发生线上事故时，dump文件就成了一个很关键的分析点。
+如何生成dump文件这里介绍两种方式，一种是主动的，一种是被动的。
+方式一主动生成dump文件。首先要查找运行的Java程序的pid。
+使用top命令：
+
+然后使用jmap命令生成dump文件。file后面是保存的文件名称，1246则是java程序的PID。
+jma</div>
+        </div>
+      </a>
+
+      <div class="index-btm">
+        
+          <i class="iconfont icon-riqi2"></i>&nbsp;2021-05-30&nbsp;&nbsp;
+        
+        
+        
+          <i class="iconfont icon-tag"></i>
+          
+            <a href="/tags/JVM">JVM</a>&nbsp;
+          
+        
+      </div>
+    </div>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+      <div class="col-12 col-md-4 m-auto">
+        <a href="/2021/05/16/%E6%B7%B1%E5%85%A5%E7%90%86%E8%A7%A3String%E7%B1%BB/" target="_blank">
+          <img src="https://static.lovebilibili.com/string_final_index.jpg" srcset="/img/loading.gif" alt="深入理解String类" class="index-img img-fluid rounded index-thumbnails">
+        </a>
+      </div>
+    
+    <div class="col-12 col-md-8 mx-auto index-info">
+      <a href="/2021/05/16/%E6%B7%B1%E5%85%A5%E7%90%86%E8%A7%A3String%E7%B1%BB/">
+        <p class="h4 index-header">深入理解String类</p>
+      </a>
+
+      <a href="/2021/05/16/%E6%B7%B1%E5%85%A5%E7%90%86%E8%A7%A3String%E7%B1%BB/">
+        
+        
+          
+        
+        <div class="index-excerpt" >
+          <div class="index-text mb-1">
+文章已收录Github精选，欢迎Star：https://github.com/yehongzhi/learningSummary
+
+String类在Java中String类的使用的频率可谓相当高。它是Java语言中的核心类，在java.lang包下，主要用于字符串的比较、查找、拼接等等操作。如果要深入理解一个类，最好的方法就是看看源码：
+public final class String implements java.io.Serializable, Comparable&lt;String&gt;, CharSequence {
+    /** The value is used for character storage. */
+    private final char value[];
+
+    /** Cache the hash code for the string */
+    private int hash; // Default to 0
+
+    //...
+}
+从源码中，可以看出以下几点：
+
+String类被final关键字修饰，表示String类不能</div>
+        </div>
+      </a>
+
+      <div class="index-btm">
+        
+          <i class="iconfont icon-riqi2"></i>&nbsp;2021-05-16&nbsp;&nbsp;
+        
+        
+        
+          <i class="iconfont icon-tag"></i>
+          
+            <a href="/tags/Java">Java</a>&nbsp;
+          
+        
+      </div>
+    </div>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+      <div class="col-12 col-md-4 m-auto">
         <a href="/2021/04/25/%E8%B0%88%E8%B0%88MySQL%E7%9A%84MVCC%E6%9C%BA%E5%88%B6/" target="_blank">
           <img src="https://static.lovebilibili.com/mysql_mvcc_index.jpg" srcset="/img/loading.gif" alt="谈谈MySQL的MVCC机制" class="index-img img-fluid rounded index-thumbnails">
         </a>
@@ -472,224 +695,11 @@ LOCAL_VARIABLE：用</div>
     </div>
   </div>
 
-  <div class="row mx-auto index-card">
-    
-    
-      <div class="col-12 col-md-4 m-auto">
-        <a href="/2021/03/08/Java%E5%9F%BA%E7%A1%80%E4%B8%8D%E7%AE%80%E5%8D%95%EF%BC%8C%E8%AE%B2%E4%B8%80%E8%AE%B2%E6%9E%9A%E4%B8%BE/" target="_blank">
-          <img src="https://static.lovebilibili.com/meiju_index.jpg" srcset="/img/loading.gif" alt="Java基础不简单，讲一讲枚举" class="index-img img-fluid rounded index-thumbnails">
-        </a>
-      </div>
-    
-    <div class="col-12 col-md-8 mx-auto index-info">
-      <a href="/2021/03/08/Java%E5%9F%BA%E7%A1%80%E4%B8%8D%E7%AE%80%E5%8D%95%EF%BC%8C%E8%AE%B2%E4%B8%80%E8%AE%B2%E6%9E%9A%E4%B8%BE/">
-        <p class="h4 index-header">Java基础不简单，讲一讲枚举</p>
-      </a>
-
-      <a href="/2021/03/08/Java%E5%9F%BA%E7%A1%80%E4%B8%8D%E7%AE%80%E5%8D%95%EF%BC%8C%E8%AE%B2%E4%B8%80%E8%AE%B2%E6%9E%9A%E4%B8%BE/">
-        
-        
-          
-        
-        <div class="index-excerpt" >
-          <div class="index-text mb-1">
-文章已收录Github精选，欢迎Star：https://github.com/yehongzhi/learningSummary
-
-什么是枚举枚举是JDK1.5新增的一种数据类型，是一种特殊的类，常用于表示一组常量，比如一年四季，12个月份，星期一到星期天，服务返回的错误码，结算支付的方式等等。枚举是使用enum关键字来定义。
-枚举的使用在使用枚举之前我们先探讨一个问题，为什么要使用枚举。
-现在有个业务场景是结算支付，有支付宝和微信支付两种方式，1表示支付宝，2表示微信支付，还需要根据编码(1或2)获取相应的英文名，如果不用枚举，我们就要这样写。
-public class PayTypeUtil {
-    //支付宝
-    private static final int ALI_PAY = 1;
-    //微信支付
-    private static final int WECHAT_PAY = 2;
-
-    //根据编码获取支付方式的名称
-    public String getPayName(int code) {
-        if (ALI_PAY == c</div>
-        </div>
-      </a>
-
-      <div class="index-btm">
-        
-          <i class="iconfont icon-riqi2"></i>&nbsp;2021-03-08&nbsp;&nbsp;
-        
-        
-        
-          <i class="iconfont icon-tag"></i>
-          
-            <a href="/tags/Java%E5%9F%BA%E7%A1%80">Java基础</a>&nbsp;
-          
-        
-      </div>
-    </div>
-  </div>
-
-  <div class="row mx-auto index-card">
-    
-    
-      <div class="col-12 col-md-4 m-auto">
-        <a href="/2021/02/22/Redis%E5%A6%82%E4%BD%95%E5%AE%9E%E7%8E%B0%E5%88%86%E5%B8%83%E5%BC%8F%E9%94%81/" target="_blank">
-          <img src="https://static.lovebilibili.com/redis_lock_index.jpg" srcset="/img/loading.gif" alt="Redis如何实现分布式锁" class="index-img img-fluid rounded index-thumbnails">
-        </a>
-      </div>
-    
-    <div class="col-12 col-md-8 mx-auto index-info">
-      <a href="/2021/02/22/Redis%E5%A6%82%E4%BD%95%E5%AE%9E%E7%8E%B0%E5%88%86%E5%B8%83%E5%BC%8F%E9%94%81/">
-        <p class="h4 index-header">Redis如何实现分布式锁</p>
-      </a>
-
-      <a href="/2021/02/22/Redis%E5%A6%82%E4%BD%95%E5%AE%9E%E7%8E%B0%E5%88%86%E5%B8%83%E5%BC%8F%E9%94%81/">
-        
-        
-          
-        
-        <div class="index-excerpt" >
-          <div class="index-text mb-1">
-文章已收录Github精选，欢迎Star：https://github.com/yehongzhi
-
-前言如果在一个分布式系统中，我们从数据库中读取一个数据，然后修改保存，这种情况很容易遇到并发问题。因为读取和更新保存不是一个原子操作，在并发时就会导致数据的不正确。这种场景其实并不少见，比如电商秒杀活动，库存数量的更新就会遇到。如果是单机应用，直接使用本地锁就可以避免。如果是分布式应用，本地锁派不上用场，这时就需要引入分布式锁来解决。
-由此可见分布式锁的目的其实很简单，就是为了保证多台服务器在执行某一段代码时保证只有一台服务器执行。
-为了保证分布式锁的可用性，至少要确保锁的实现要同时满足以下几点：
-
-互斥性。在任何时刻，保证只有一个客户端持有锁。
-不能出现死锁。如果在一个客户端持有锁的期间，这个客户端崩溃了，也要保证后续的其他客户端可以上锁。
-保证上锁和解锁都是同一个客户端。
-
-一般来说，实现分布式锁的方式有以下几种：
-
-使用MySQL，基于唯一索引。
-使用ZooKeeper，基于临时有序节点。
-使用Redis，基于setnx命令。
-
-本篇文章主要讲解Redis的实现方式。
-实现思路</div>
-        </div>
-      </a>
-
-      <div class="index-btm">
-        
-          <i class="iconfont icon-riqi2"></i>&nbsp;2021-02-22&nbsp;&nbsp;
-        
-        
-        
-          <i class="iconfont icon-tag"></i>
-          
-            <a href="/tags/Redis">Redis</a>&nbsp;
-          
-        
-      </div>
-    </div>
-  </div>
-
-  <div class="row mx-auto index-card">
-    
-    
-      <div class="col-12 col-md-4 m-auto">
-        <a href="/2021/02/13/%E7%BB%8F%E5%85%B8leetcode%E7%AE%97%E6%B3%95%E9%A2%98%E5%88%86%E4%BA%AB-%E5%AD%97%E7%AC%A6%E4%B8%B2/" target="_blank">
-          <img src="https://static.lovebilibili.com/string_sf_index.jpg" srcset="/img/loading.gif" alt="经典leetcode算法题分享(字符串)" class="index-img img-fluid rounded index-thumbnails">
-        </a>
-      </div>
-    
-    <div class="col-12 col-md-8 mx-auto index-info">
-      <a href="/2021/02/13/%E7%BB%8F%E5%85%B8leetcode%E7%AE%97%E6%B3%95%E9%A2%98%E5%88%86%E4%BA%AB-%E5%AD%97%E7%AC%A6%E4%B8%B2/">
-        <p class="h4 index-header">经典leetcode算法题分享(字符串)</p>
-      </a>
-
-      <a href="/2021/02/13/%E7%BB%8F%E5%85%B8leetcode%E7%AE%97%E6%B3%95%E9%A2%98%E5%88%86%E4%BA%AB-%E5%AD%97%E7%AC%A6%E4%B8%B2/">
-        
-        
-          
-        
-        <div class="index-excerpt" >
-          <div class="index-text mb-1">
-文章已收录Github精选，欢迎Star：https://github.com/yehongzhi
-
-前言很多人做leetcode题目找不到方向，或者说很难持之以恒，我这里推荐一种方法，从简单难度开始刷，刷完这个标签的简单难度，再换一个标签，这样循序渐进，把做题的量慢慢提高，还有难度逐渐加大。对于初学者，最重要是趁热打铁，而不是东打一枪西放一炮，趁热打铁才能形成做题的思路。
-还有一个问题是，一开始做题往往我们没有思路，只会想到暴力解法，效率只有惨淡的5%，遇到这种情况是很正常的，因为还没开始形成解题的思维。我们可以先看看题解，看完思路再自己写，千万不要照抄，要自己想出来才能锻炼编程能力。
-所谓talking is cheap, show me code，那么我们就从字符串开始吧！
-20. 有效的括号题目：
-给定一个只包括 ‘(‘，’)’，’{‘，’}’，’[‘，’]’ 的字符串 s ，判断字符串是否有效。
-有效字符串需满足：
-1.左括号必须用相同类型的右括号闭合。2.左括号必须以正确的顺序闭合。
-解题思路：
-这道题可以应用于校验JSON格式的括号是否正确。从题目上可以知道有效的括号是</div>
-        </div>
-      </a>
-
-      <div class="index-btm">
-        
-          <i class="iconfont icon-riqi2"></i>&nbsp;2021-02-13&nbsp;&nbsp;
-        
-        
-        
-          <i class="iconfont icon-tag"></i>
-          
-            <a href="/tags/%E7%AE%97%E6%B3%95">算法</a>&nbsp;
-          
-        
-      </div>
-    </div>
-  </div>
-
-  <div class="row mx-auto index-card">
-    
-    
-      <div class="col-12 col-md-4 m-auto">
-        <a href="/2021/01/31/%E7%8E%A9%E8%BD%AC%E5%B8%83%E9%9A%86%E8%BF%87%E6%BB%A4%E5%99%A8%EF%BC%8C%E5%85%B6%E5%AE%9E%E5%BE%88%E7%AE%80%E5%8D%95/" target="_blank">
-          <img src="https://static.lovebilibili.com/redis_bl_shouye.jpg" srcset="/img/loading.gif" alt="玩转布隆过滤器，其实很简单" class="index-img img-fluid rounded index-thumbnails">
-        </a>
-      </div>
-    
-    <div class="col-12 col-md-8 mx-auto index-info">
-      <a href="/2021/01/31/%E7%8E%A9%E8%BD%AC%E5%B8%83%E9%9A%86%E8%BF%87%E6%BB%A4%E5%99%A8%EF%BC%8C%E5%85%B6%E5%AE%9E%E5%BE%88%E7%AE%80%E5%8D%95/">
-        <p class="h4 index-header">玩转布隆过滤器，其实很简单</p>
-      </a>
-
-      <a href="/2021/01/31/%E7%8E%A9%E8%BD%AC%E5%B8%83%E9%9A%86%E8%BF%87%E6%BB%A4%E5%99%A8%EF%BC%8C%E5%85%B6%E5%AE%9E%E5%BE%88%E7%AE%80%E5%8D%95/">
-        
-        
-          
-        
-        <div class="index-excerpt" >
-          <div class="index-text mb-1">
-文章已收录Github精选，欢迎Star：https://github.com/yehongzhi
-
-概念布隆过滤器(BloomFilter)是由一个叫“布隆”的小伙子在1970年提出的，它是一个很长的二进制向量，主要用于判断一个元素是否在一个集合中。
-原理在介绍原理之前，要先讲一下Hash函数的概念。
-我们在Java中的HashMap，HashSet其实也接触过hashcode()这个函数，哈希函数是可以将任意大小的输入数据转换成特定大小的输出数据的函数，转换后的数据称为哈希值。
-哈希函数有以下特点：
-
-如果根据同一个哈希函数得到的哈希值不同，那么这两个哈希值的原始输入值肯定不同。
-如果根据同一个哈希函数得到的两个哈希值相等，两个哈希值的原始输入值有可能相等，有可能不相等。
-
-布隆过滤器是由一个很长的二进制向量和一系列的哈希函数组成。那么布隆过滤器是怎么判断一个元素是否在一个集合中的呢？
-假设布隆过滤器的底层存储结构是一个长度为16的位数组，初始状态时，它的所有位置都设置为0。
-
-当有变量添加到布隆过滤器中，通过K个映射函数将变量映射到位数组的K个点，并把这K个点的值设置为1(假设</div>
-        </div>
-      </a>
-
-      <div class="index-btm">
-        
-          <i class="iconfont icon-riqi2"></i>&nbsp;2021-01-31&nbsp;&nbsp;
-        
-        
-        
-          <i class="iconfont icon-tag"></i>
-          
-            <a href="/tags/Redis">Redis</a>&nbsp;
-          
-        
-      </div>
-    </div>
-  </div>
-
 
 
   <nav aria-label="index posts navigation">
     <span class="pagination pg-blue justify-content-center mt-5" id="pagination">
-      <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><a class="page-number" href="/page/3/">3</a><span class="space">&hellip;</span><a class="page-number" href="/page/6/">6</a><a class="extend next" rel="next" href="/page/2/"><i class="fas fa-angle-double-right"></i></a>
+      <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><a class="page-number" href="/page/3/">3</a><span class="space">&hellip;</span><a class="page-number" href="/page/7/">7</a><a class="extend next" rel="next" href="/page/2/"><i class="fas fa-angle-double-right"></i></a>
     </span>
   </nav>
   

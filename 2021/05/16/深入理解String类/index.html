@@ -1,0 +1,513 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/apple-touch-icon.png">
+  <link rel="icon" type="image/png" href="/img/favicon.png">
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="description" content="">
+  <meta name="author" content="Ye hongzhi">
+  <meta name="keywords" content="">
+  <title>深入理解String类 - 叶洪智的技术分享</title>
+
+  <link rel="stylesheet" href="/lib/font-awesome/css/all.min.css"  >
+<link rel="stylesheet" href="/lib/bootstrap/css/bootstrap.min.css"  >
+<link rel="stylesheet" href="/lib/mdbootstrap/css/mdb.min.css"  >
+<link rel="stylesheet" href="/lib/github-markdown/github-markdown.min.css"  >
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1067060_qzomjdt8bmp.css">
+
+
+
+  <link rel="stylesheet" href="/lib/prettify/tomorrow-night-eighties.min.css"  >
+
+<link rel="stylesheet" href="/css/main.css"  >
+
+
+  <link rel="stylesheet" href="/lib/fancybox/jquery.fancybox.min.css"  >
+
+
+<meta name="generator" content="Hexo 4.2.0"></head>
+
+
+<body>
+  <header style="height: 70vh;">
+    <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand"
+       href="/">&nbsp;<strong>YeHongzhi's Blog</strong>&nbsp;</a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+          <li class="nav-item">
+            <a class="nav-link" href="/">首页</a>
+          </li>
+        
+          
+          
+          
+          
+          <li class="nav-item">
+            <a class="nav-link" href="/archives/">归档</a>
+          </li>
+        
+          
+          
+          
+          
+          <li class="nav-item">
+            <a class="nav-link" href="/tags/">标签</a>
+          </li>
+        
+          
+          
+          
+          
+          <li class="nav-item">
+            <a class="nav-link" href="/about/">关于</a>
+          </li>
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" data-toggle="modal" data-target="#modalSearch">&nbsp;&nbsp;<i
+                class="iconfont icon-search"></i>&nbsp;&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+    <div class="view intro-2" id="background" false
+         style="background: url('/img/post.png')no-repeat center center;
+           background-size: cover;">
+      <div class="full-bg-img">
+        <div class="mask rgba-black-light flex-center">
+          <div class="container text-center white-text fadeInUp">
+            <span class="h2" id="subtitle">
+              
+            </span>
+
+            
+              <br>
+              
+                <p class="mt-3">
+                  <i class="fas fa-calendar-alt" aria-hidden="true"></i>&nbsp;
+                  星期日, 五月 16日 2021, 1:48 下午
+                </p>
+              
+
+              <p>
+                
+                  
+                  &nbsp;<i class="far fa-chart-bar"></i>
+                  <span class="post-count">
+                    1.8k 字
+                  </span>&nbsp;
+                
+
+                
+                  
+                  &nbsp;<i class="far fa-clock"></i>
+                  <span class="post-count">
+                      6 分钟
+                  </span>&nbsp;
+                
+
+                
+                  <!-- 不蒜子统计文章PV -->
+                  
+                  &nbsp;<i class="far fa-eye" aria-hidden="true"></i>&nbsp;
+                  <span id="busuanzi_container_page_pv">
+                    <span id="busuanzi_value_page_pv"></span> 次
+                  </span>&nbsp;
+                
+              </p>
+            
+          </div>
+
+          
+            <div class="scroll-down-bar">
+              <i class="fas fa-angle-down scroll-down-arrow"></i>
+            </div>
+          
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid">
+  <div class="row">
+    <div class="d-none d-lg-block col-lg-2"></div>
+    <div class="col-lg-8 nopadding-md">
+      <div class="py-5 z-depth-3" id="board">
+        <div class="post-content mx-auto" id="post">
+          <div class="markdown-body">
+            <blockquote>
+<p><strong>文章已收录Github精选，欢迎Star</strong>：<a href="https://github.com/yehongzhi/learningSummary" target="_blank" rel="noopener">https://github.com/yehongzhi/learningSummary</a></p>
+</blockquote>
+<h1 id="String类"><a href="#String类" class="headerlink" title="String类"></a>String类</h1><p>在Java中String类的使用的频率可谓相当高。它是Java语言中的核心类，在java.lang包下，主要用于字符串的比较、查找、拼接等等操作。如果要深入理解一个类，最好的方法就是看看源码：</p>
+<pre><code class="java">public final class String implements java.io.Serializable, Comparable&lt;String&gt;, CharSequence {
+    /** The value is used for character storage. */
+    private final char value[];
+
+    /** Cache the hash code for the string */
+    private int hash; // Default to 0
+
+    //...
+}</code></pre>
+<p>从源码中，可以看出以下几点：</p>
+<ul>
+<li>String类被final关键字修饰，表示String类不能被继承，并且它的成员方法都默认为final方法。</li>
+<li>String类实现了Serializable、CharSequence、 Comparable接口。</li>
+<li>String类的值是通过char数组存储的，并且char数组被private和final修饰，字符串一旦创建就不能再修改。</li>
+</ul>
+<p>下面通过几个问题不断加深对String类的理解。</p>
+<h2 id="问题一"><a href="#问题一" class="headerlink" title="问题一"></a>问题一</h2><p>上面说字符串一旦创建就不能再修改，String类提供的replace()方法不就可以替换修改字符串的内容吗？</p>
+<p>实际上replace()方法并没有对原字符串进行修改，而是创建了一个新的字符串返回，看看源码就知道了。</p>
+<pre><code class="java">public String replace(char oldChar, char newChar) {
+    if (oldChar != newChar) {
+        int len = value.length;
+        int i = -1;
+        char[] val = value; /* avoid getfield opcode */
+        while (++i &lt; len) {
+            if (val[i] == oldChar) {
+                break;
+            }
+        }
+        if (i &lt; len) {
+            char buf[] = new char[len];
+            for (int j = 0; j &lt; i; j++) {
+                buf[j] = val[j];
+            }
+            while (i &lt; len) {
+                char c = val[i];
+                buf[i] = (c == oldChar) ? newChar : c;
+                i++;
+            }
+            //创建一个新的字符串返回
+            return new String(buf, true);
+        }
+    }
+    return this;
+}</code></pre>
+<p>其他方法也是一样，无论是sub、concat还是replace操作都不是在原有的字符串上进行的，而是重新生成了一个新的字符串对象。</p>
+<h2 id="问题二"><a href="#问题二" class="headerlink" title="问题二"></a>问题二</h2><p><strong>为什么要使用final关键字修饰String类？</strong></p>
+<p>首先要讲final修饰类的作用，<strong>被final修饰的类不能被继承</strong>，类中的所有成员方法都会被隐式地指定为final方法。也就是不能拥有子类，成员方法也不能被重写。</p>
+<p>回到问题，String类被final修饰主要基于安全性和效率两点考虑。</p>
+<ul>
+<li>安全性</li>
+</ul>
+<p>因为字符串是不可变的，所以<strong>是多线程安全的</strong>，同一个字符串实例可以被多个线程共享。这样便不用因为线程安全问题而使用同步。字符串自己便是线程安全的。</p>
+<p>String被许多的Java类(库)用来当做参数，比如网络连接地址URL，文件路径path，还有反射机制所需要的String参数等，假若String不是固定不变的，将会引起各种安全隐患。</p>
+<ul>
+<li>效率</li>
+</ul>
+<p><strong>字符串不变性保证了hash码的唯一性</strong>，因此可以放心的进行缓存，这也是一种性能优化手段，意味着不必每次都取计算新的哈希码。</p>
+<p><strong>只有当字符串是不可变的，字符串池才有可能实现</strong>，字符串常量池是java堆内存中一个特殊的存储区域，当创建一个String对象，假如此字符串值已经存在于常量池中，则不会创建一个新的对象，而是引用已经存在的对象。</p>
+<h1 id="字符串常量池"><a href="#字符串常量池" class="headerlink" title="字符串常量池"></a>字符串常量池</h1><p>字符串的分配和其他对象分配一样，是需要消耗高昂的时间和空间的，而且字符串我们使用的非常多。JVM为了提高性能和减少内存的开销，所以在实例化字符串的时候使用字符串常量池进行优化。</p>
+<p>池化思想其实在Java中并不少见，字符串常量池也是类似的思想，当创建字符串时，JVM会首先检查字符串常量池，如果该字符串已经存在常量池中，那么就直接返回常量池中的实例引用。如果字符串不存在常量池中，就会实例化该字符串并且将其放到常量池中。</p>
+<p>我们可以写个简单的例子证明：</p>
+<pre><code class="java">public static void main(String[] args) throws Exception {
+    String s1 = &quot;abc&quot;;
+    String s2 = &quot;abc&quot;;
+    System.out.println(s1 == s2);//true
+}</code></pre>
+<p><img src="https://static.lovebilibili.com/string_final_01.png" srcset="/img/loading.gif" alt=""></p>
+<p>还有一个面试中经常问的，new String(“abc”)创建了几个对象？</p>
+<p>这可能就是想考你对字符串常量池的理解，我一般回答是一个或者两个对象。</p>
+<p>如果之前”abc”字符串没有使用过，毫无疑问是创建两个对象，堆中创建了一个String对象，字符串常量池创建了一个，一共两个。</p>
+<p>如果之前已经使用过了”abc”字符串，则不会再在字符串常量池创建对象，而是从字符串常量缓冲区中获取，只会在堆中创建一个String对象。</p>
+<pre><code class="java">String s1 = &quot;abc&quot;;
+String s2 = new String(&quot;abc&quot;);
+//s2这行代码，只会创建一个对象</code></pre>
+<h1 id="字符串拼接"><a href="#字符串拼接" class="headerlink" title="字符串拼接"></a>字符串拼接</h1><p>字符串的拼接在Java中是很常见的操作，但是拼接字符串并不是简简单单地使用”+”号即可，还有一些要注意的点，否则会造成效率低下。</p>
+<p>比如下面这段代码：</p>
+<pre><code class="java">public static void main(String[] args) throws Exception {
+    String s = &quot;&quot;;
+    for (int i = 0; i &lt; 10; i++) {
+        s+=i;
+    }
+    System.out.println(s);//0123456789
+}</code></pre>
+<p>在循环内使用+=拼接字符串会有什么问题呢？我们反编译一下看看就知道了。</p>
+<p><img src="https://static.lovebilibili.com/string_final_02.png" srcset="/img/loading.gif" alt=""></p>
+<p>其实反编译后，我们可以看到String类使用”+=”拼接的底层其实是使用StringBuilder，先初始化一个StringBuilder对象，然后使用append()方法拼接，最后使用toString()方法得到结果。</p>
+<p>问题在于如果在循环体内使用+=拼接，会创建很多临时的StringBuilder对象，拼接后再调用toString()赋给原String对象。这会生成大量临时对象，严重影响性能。</p>
+<p>所以在循环体内进行字符串拼接时，建议使用StringBuilder或者StringBuffer类，例子如下：</p>
+<pre><code class="java">public static void main(String[] args) throws Exception {
+    StringBuilder s = new StringBuilder();
+    for (int i = 0; i &lt; 10; i++) {
+        s.append(i);
+    }
+    System.out.println(s.toString());//0123456789
+}</code></pre>
+<p>StringBuilder和StringBuffer的区别在于，StringBuffer的方法都被sync关键字修饰，所以是线程安全的，而StringBuilder则是线程不安全的(效率高)。</p>
+<h1 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h1><p>回顾一下，本文介绍了String类的不可变的特点，还有字符串常量池的作用，最后简单地从JVM编译的层面对字符串拼接提出一点建议。所谓温故而知新，即使是一些很基础很常见的类，如果深入去探索的话，也会有一番收获。</p>
+<p>这篇文章就讲到这里了，感谢大家的阅读，希望看完大家能有所收获！</p>
+<p><strong>觉得有用就点个赞吧，你的点赞是我创作的最大动力</strong>~</p>
+<p><strong>我是一个努力让大家记住的程序员。我们下期再见！！！</strong></p>
+<p><img src="https://static.lovebilibili.com/dashacha.png" srcset="/img/loading.gif" alt=""></p>
+<blockquote>
+<p>能力有限，如果有什么错误或者不当之处，请大家批评指正，一起学习交流！</p>
+</blockquote>
+
+            <hr>
+          </div>
+          <br>
+          <div>
+            <p>
+            
+            
+              <span>
+                <i class="iconfont icon-tag"></i>
+                
+                  <a class="hover-with-bg" href="/tags/Java">Java</a>
+                
+              </span>
+            
+            </p>
+            
+              <p class="note note-warning">本博客所有文章除特别声明外，均采用 <a href="https://zh.wikipedia.org/wiki/Wikipedia:CC_BY-SA_3.0%E5%8D%8F%E8%AE%AE%E6%96%87%E6%9C%AC" target="_blank" rel="nofollow noopener noopener">CC BY-SA 3.0协议</a> 。转载请注明出处！</p>
+            
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="d-none d-lg-block col-lg-2 toc-container">
+      
+  <div id="toc">
+    <p class="h4"><i class="far fa-list-alt"></i>&nbsp;目录</p>
+    <div id="tocbot"></div>
+  </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- custom -->
+
+
+<!-- Comments -->
+<div class="col-lg-7 mx-auto nopadding-md">
+  <div class="container comments mx-auto" id="comments">
+    
+  </div>
+</div>
+
+    
+  </main>
+
+  
+    <a class="z-depth-1" id="scroll-top-button" href="#" role="button">
+      <i class="fa fa-chevron-up scroll-top-arrow" aria-hidden="true"></i>
+    </a>
+  
+
+  
+    <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v"
+                 for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+  
+
+  <footer class="mt-5">
+  <div class="text-center py-3">
+    <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><b>Hexo</b></a>
+    <i class="iconfont icon-love"></i>
+    <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"> <b>Fluid</b></a>
+    <br>
+
+    
+  
+    <!-- 不蒜子统计PV -->
+    
+    &nbsp;<span id="busuanzi_container_site_pv"></span>总访问量 
+          <span id="busuanzi_value_site_pv"></span> 次&nbsp;
+  
+  
+    <!-- 不蒜子统计UV -->
+    
+    &nbsp;<span id="busuanzi_container_site_uv"></span>总访客数 
+            <span id="busuanzi_value_site_uv"></span> 人&nbsp;
+  
+  <br>
+
+
+
+    
+
+
+    <!-- cnzz Analytics icon -->
+    
+
+  </div>
+</footer>
+
+<!-- SCRIPTS -->
+<script src="/lib/jquery/jquery.min.js" ></script>
+<script src="/lib/popper/popper.min.js" ></script>
+<script src="/lib/bootstrap/js/bootstrap.min.js" ></script>
+<script src="/lib/mdbootstrap/js/mdb.min.js" ></script>
+<script src="/js/main.js" ></script>
+
+
+  <script src="/js/lazyload.js" ></script>
+
+
+
+  
+    <script src="/lib/tocbot/tocbot.min.js" ></script>
+  
+  <script src="/js/post.js" ></script>
+
+
+
+  <script src="/lib/smooth-scroll/smooth-scroll.min.js" ></script>
+
+
+
+  <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" ></script>
+
+
+<!-- Plugins -->
+
+
+  
+
+  
+
+  
+
+  
+
+  <!-- cnzz Analytics -->
+  
+
+
+
+  <script src="/lib/prettify/prettify.min.js" ></script>
+  <script>
+    $(document).ready(function () {
+      $('pre').addClass('prettyprint  linenums');
+      prettyPrint();
+    })
+  </script>
+
+
+
+  <script src="/lib/typed/typed.min.js" ></script>
+  <script>
+    var typed = new Typed('#subtitle', {
+      strings: [
+        '  ',
+        "深入理解String类&nbsp;",
+      ],
+      cursorChar: "_",
+      typeSpeed: 70,
+      loop: false,
+    });
+    typed.stop();
+    $(document).ready(function () {
+      $(".typed-cursor").addClass("h2");
+      typed.start();
+    });
+  </script>
+
+
+
+  <script src="/lib/anchor/anchor.min.js" ></script>
+  <script>
+    anchors.options = {
+      placement: "right",
+      visible: "false",
+      
+    };
+    var el = "h1,h2,h3,h4,h5,h6".split(",");
+    var res = [];
+    for (item of el) {
+      res.push(".markdown-body > " + item)
+    }
+    anchors.add(res.join(", "))
+  </script>
+
+
+
+  <script src="/js/local-search.js" ></script>
+  <script>
+    var path = "/local-search.xml";
+    var inputArea = document.querySelector("#local-search-input");
+    inputArea.onclick = function () {
+      getSearchFile(path);
+      this.onclick = null
+    }
+  </script>
+
+
+
+  <script src="/lib/fancybox/jquery.fancybox.min.js" ></script>
+  <script>
+    $("#post img:not(.no-zoom img, img[no-zoom])").each(
+      function () {
+        var element = document.createElement("a");
+        $(element).attr("data-fancybox", "images");
+        $(element).attr("href", $(this).attr("src"));
+        $(this).wrap(element);
+      }
+    );
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+</body>
+</html>
