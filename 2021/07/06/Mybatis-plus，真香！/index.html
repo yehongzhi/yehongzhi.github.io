@@ -1,0 +1,777 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/apple-touch-icon.png">
+  <link rel="icon" type="image/png" href="/img/favicon.png">
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="description" content="">
+  <meta name="author" content="Ye hongzhi">
+  <meta name="keywords" content="">
+  <title>Mybatis-plus，真香！ - 叶洪智的技术分享</title>
+
+  <link rel="stylesheet" href="/lib/font-awesome/css/all.min.css"  >
+<link rel="stylesheet" href="/lib/bootstrap/css/bootstrap.min.css"  >
+<link rel="stylesheet" href="/lib/mdbootstrap/css/mdb.min.css"  >
+<link rel="stylesheet" href="/lib/github-markdown/github-markdown.min.css"  >
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1067060_qzomjdt8bmp.css">
+
+
+
+  <link rel="stylesheet" href="/lib/prettify/tomorrow-night-eighties.min.css"  >
+
+<link rel="stylesheet" href="/css/main.css"  >
+
+
+  <link rel="stylesheet" href="/lib/fancybox/jquery.fancybox.min.css"  >
+
+
+<meta name="generator" content="Hexo 4.2.0"></head>
+
+
+<body>
+  <header style="height: 70vh;">
+    <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand"
+       href="/">&nbsp;<strong>YeHongzhi's Blog</strong>&nbsp;</a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+          <li class="nav-item">
+            <a class="nav-link" href="/">首页</a>
+          </li>
+        
+          
+          
+          
+          
+          <li class="nav-item">
+            <a class="nav-link" href="/archives/">归档</a>
+          </li>
+        
+          
+          
+          
+          
+          <li class="nav-item">
+            <a class="nav-link" href="/tags/">标签</a>
+          </li>
+        
+          
+          
+          
+          
+          <li class="nav-item">
+            <a class="nav-link" href="/about/">关于</a>
+          </li>
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" data-toggle="modal" data-target="#modalSearch">&nbsp;&nbsp;<i
+                class="iconfont icon-search"></i>&nbsp;&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+    <div class="view intro-2" id="background" false
+         style="background: url('/img/post.png')no-repeat center center;
+           background-size: cover;">
+      <div class="full-bg-img">
+        <div class="mask rgba-black-light flex-center">
+          <div class="container text-center white-text fadeInUp">
+            <span class="h2" id="subtitle">
+              
+            </span>
+
+            
+              <br>
+              
+                <p class="mt-3">
+                  <i class="fas fa-calendar-alt" aria-hidden="true"></i>&nbsp;
+                  星期二, 七月 6日 2021, 12:20 凌晨
+                </p>
+              
+
+              <p>
+                
+                  
+                  &nbsp;<i class="far fa-chart-bar"></i>
+                  <span class="post-count">
+                    3.1k 字
+                  </span>&nbsp;
+                
+
+                
+                  
+                  &nbsp;<i class="far fa-clock"></i>
+                  <span class="post-count">
+                      14 分钟
+                  </span>&nbsp;
+                
+
+                
+                  <!-- 不蒜子统计文章PV -->
+                  
+                  &nbsp;<i class="far fa-eye" aria-hidden="true"></i>&nbsp;
+                  <span id="busuanzi_container_page_pv">
+                    <span id="busuanzi_value_page_pv"></span> 次
+                  </span>&nbsp;
+                
+              </p>
+            
+          </div>
+
+          
+            <div class="scroll-down-bar">
+              <i class="fas fa-angle-down scroll-down-arrow"></i>
+            </div>
+          
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid">
+  <div class="row">
+    <div class="d-none d-lg-block col-lg-2"></div>
+    <div class="col-lg-8 nopadding-md">
+      <div class="py-5 z-depth-3" id="board">
+        <div class="post-content mx-auto" id="post">
+          <div class="markdown-body">
+            <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>mybatis相信都不陌生，目前互联网公司大部分都使用mybatis作为持久层框架，无他，因为可以直接在xml文件中编写SQL语句操作数据库，灵活。但是我们在使用的时候，也会发现有很多增删改查的SQL是每个表都会有的基本操作，如果每个表都写一套增删改查的SQL显然是非常耗时耗力的。</p>
+<p>于是乎，就有了mybatis-plus这个框架。正如官网所说，mybatis-plus是<code>为简化开发而生</code>。</p>
+<p>mybatis-plus有以下特点：</p>
+<ul>
+<li>只做增强不做改变，引入它不会对现有工程产生影响，如丝般顺滑。</li>
+<li>只需简单配置，即可快速进行单表CRUD操作，节省大量时间。</li>
+<li>代码生成，物理分页，性能分析等功能一应俱全。</li>
+</ul>
+<h1 id="一、整合mybatis-plus"><a href="#一、整合mybatis-plus" class="headerlink" title="一、整合mybatis-plus"></a>一、整合mybatis-plus</h1><p>这里用的是SpringBoot2.5.2做演示。首先导入依赖：</p>
+<pre><code class="xml">&lt;dependency&gt;
+    &lt;groupId&gt;org.mybatis.spring.boot&lt;/groupId&gt;
+    &lt;artifactId&gt;mybatis-spring-boot-starter&lt;/artifactId&gt;
+    &lt;version&gt;2.2.0&lt;/version&gt;
+&lt;/dependency&gt;
+&lt;dependency&gt;
+    &lt;groupId&gt;mysql&lt;/groupId&gt;
+    &lt;artifactId&gt;mysql-connector-java&lt;/artifactId&gt;
+    &lt;scope&gt;runtime&lt;/scope&gt;
+&lt;/dependency&gt;
+&lt;!-- 引入 mybatis-plus --&gt;
+&lt;dependency&gt;
+    &lt;groupId&gt;com.baomidou&lt;/groupId&gt;
+    &lt;artifactId&gt;mybatis-plus-boot-starter&lt;/artifactId&gt;
+    &lt;version&gt;3.3.0&lt;/version&gt;
+&lt;/dependency&gt;</code></pre>
+<p>然后在application.properties文件配置数据库信息：</p>
+<pre><code class="properties">spring.datasource.driver-class-name=com.mysql.cj.jdbc.Driver
+spring.datasource.url=jdbc:mysql://localhost:3306/user?createDatabaseIfNotExist=true
+spring.datasource.username=root
+spring.datasource.password=root123456
+#mapper.xml文件路径地址
+mybatis-plus.mapper-locations=classpath:mapper/*Mapper.xml</code></pre>
+<p>在启动类加上扫描注解：</p>
+<pre><code class="java">@SpringBootApplication
+@MapperScan(basePackages = &quot;com.yehongzhi.mydemo.mapper&quot;)
+public class MydemoApplication {
+    public static void main(String[] args) {
+        SpringApplication.run(MydemoApplication.class, args);
+    }
+}</code></pre>
+<p>其实这样就完成了，但是我们要建个表进行测试。</p>
+<pre><code class="sql">CREATE TABLE `user` (
+  `id` char(36) NOT NULL DEFAULT &#39;&#39; COMMENT &#39;ID&#39;,
+  `name` varchar(255) DEFAULT &#39;&#39; COMMENT &#39;姓名&#39;,
+  `age` int(3) DEFAULT NULL COMMENT &#39;年龄&#39;,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+-- 初始化4条数据
+INSERT INTO `user`.`user` (`id`, `name`, `age`) VALUES (&#39;1345fc0985b111eba0e488d7f66fdab8&#39;, &#39;观辰&#39;, &#39;20&#39;);
+INSERT INTO `user`.`user` (`id`, `name`, `age`) VALUES (&#39;d47561e885b011eba0e488d7f66fdab8&#39;, &#39;姚大秋&#39;, &#39;30&#39;);
+INSERT INTO `user`.`user` (`id`, `name`, `age`) VALUES (&#39;ef2741fe87f011eba0e488d7f66fdab8&#39;, &#39;周星驰&#39;, &#39;60&#39;);
+INSERT INTO `user`.`user` (`id`, `name`, `age`) VALUES (&#39;ff784f6b85b011eba0e488d7f66fdab8&#39;, &#39;李嘉晟&#39;, &#39;33&#39;);</code></pre>
+<p>建了表之后，再创建一个User实体类对应：</p>
+<pre><code class="java">//表名
+@TableName(&quot;user&quot;)
+public class User {
+    //主键
+    @TableId(type = IdType.UUID)
+    private String id;
+    //姓名
+    private String name;
+    //年龄
+    private Integer age;
+    //getter、setter方法
+}</code></pre>
+<p>接着创建UserMapper接口类,，然后继承BaseMapper：</p>
+<pre><code class="java">@Repository
+public interface UserMapper extends BaseMapper&lt;User&gt; {
+
+}</code></pre>
+<p>创建一个UserMapper.xml与UserMapper对应：</p>
+<pre><code class="xml">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot; ?&gt;
+&lt;!DOCTYPE mapper
+        PUBLIC &quot;-//mybatis.org//DTD Mapper 3.0//EN&quot;
+        &quot;http://mybatis.org/dtd/mybatis-3-mapper.dtd&quot;&gt;
+&lt;mapper namespace=&quot;com.yehongzhi.mydemo.mapper.UserMapper&quot;&gt;
+
+&lt;/mapper&gt;</code></pre>
+<p>最后我们写一个UserService接口，查询user表：</p>
+<pre><code class="java">@Service
+public class UserServiceImpl implements UserService {
+    @Resource
+    private UserMapper userMapper;
+
+    @Override
+    public List&lt;User&gt; getList() {
+        return userMapper.selectList(null);
+    }
+}</code></pre>
+<p>启动项目，测试是没问题的：</p>
+<p><img src="https://static.lovebilibili.com/mybatis-plus_01.png" srcset="/img/loading.gif" alt=""></p>
+<h1 id="二、CRUD操作"><a href="#二、CRUD操作" class="headerlink" title="二、CRUD操作"></a>二、CRUD操作</h1><p>整合完了之后，按照mybatis-plus的官方说明，是有简单的单表CRUD操作功能。</p>
+<p>这些单表的CRUD操作其实都放在BaseMapper里面了，所以当我们继承了BaseMapper类之后，就会获得mybatis-plus的增强特性，其中就包括单表的CRUD操作。</p>
+<h2 id="1、insert操作"><a href="#1、insert操作" class="headerlink" title="1、insert操作"></a>1、insert操作</h2><p>BaseMapper直接提供一个insert()方法，传一个实体类。</p>
+<pre><code class="java">@Service
+public class UserServiceImpl implements UserService {
+    @Resource
+    private UserMapper userMapper;
+
+    @Override
+    public int insertOne(User user) {
+        return userMapper.insert(user);
+    }
+}</code></pre>
+<p>接着在Controller调用，因为在User类上面贴了注解<code>@TableId</code>，所以会自动生成ID。</p>
+<pre><code class="java">@TableName(&quot;user&quot;)
+public class User {
+    @TableId(type = IdType.UUID)
+    private String id;
+    //省略...
+}</code></pre>
+<p>Controller层代码：</p>
+<pre><code class="java">@RequestMapping(&quot;/insert&quot;)
+public String insertUser(@RequestParam(name = &quot;name&quot;) String name,
+                         @RequestParam(name = &quot;age&quot;) Integer age) {
+    User user = new User();
+    user.setName(name);
+    user.setAge(age);
+    //在实体类使用了@TableId注解，ID会自动生成
+    int i = userService.insertOne(user);
+    return i == 1 ? &quot;success&quot; : &quot;fail&quot;;
+}</code></pre>
+<h2 id="2、update操作"><a href="#2、update操作" class="headerlink" title="2、update操作"></a>2、update操作</h2><p>BaseMapper直接提供一个updateById()方法，传一个实体类。</p>
+<pre><code class="java">@Override
+public int updateOne(User user) {
+    return userMapper.updateById(user);
+}</code></pre>
+<p>Controller层代码：</p>
+<pre><code class="java">@RequestMapping(&quot;/update&quot;)
+public String updateUser(@RequestParam(name = &quot;id&quot;) String id,
+                         @RequestParam(name = &quot;name&quot;,required = false) String name,
+                         @RequestParam(name = &quot;age&quot;,required = false) Integer age) {
+    User user = new User();
+    user.setId(id);
+    user.setName(name);
+    user.setAge(age);
+    int i = userService.updateOne(user);
+    return i == 1 ? &quot;success&quot; : &quot;fail&quot;;
+}</code></pre>
+<h2 id="3、delete操作"><a href="#3、delete操作" class="headerlink" title="3、delete操作"></a>3、delete操作</h2><p>BaseMapper直接提供一个deleteById()方法，传主键值。</p>
+<pre><code class="java">@Override
+public int deleteOne(String id) {
+    return userMapper.deleteById(id);
+}</code></pre>
+<p>Controller层代码：</p>
+<pre><code class="java">@RequestMapping(&quot;/delete&quot;)
+public String deleteUser(@RequestParam(name = &quot;id&quot;) String id) {
+    int i = userService.deleteOne(id);
+    return i == 1 ? &quot;success&quot; : &quot;fail&quot;;
+}</code></pre>
+<p>除此之外，还有批量删除deleteBatchIds方法，传主键值的集合：</p>
+<pre><code class="java">@Override
+public int deleteBatch(List&lt;String&gt; ids){
+    return userMapper.deleteBatchIds(ids);
+}</code></pre>
+<p>Controller层代码：</p>
+<pre><code class="java">@RequestMapping(&quot;/deleteBatch&quot;)
+public String deleteBatchUser(@RequestParam(name = &quot;ids&quot;) String ids) {
+    List&lt;String&gt; list = Arrays.asList(ids.split(&quot;,&quot;));
+    int i = userService.deleteBatch(list);
+    return i == list.size() ? &quot;success&quot; : &quot;fail&quot;;
+}</code></pre>
+<h1 id="三、条件构造器-Wrapper"><a href="#三、条件构造器-Wrapper" class="headerlink" title="三、条件构造器(Wrapper)"></a>三、条件构造器(Wrapper)</h1><p>条件构造器在Mybatis-plus各种方法中都有出现，比如：</p>
+<pre><code class="java">Integer selectCount(@Param(Constants.WRAPPER) Wrapper&lt;T&gt; queryWrapper);
+
+List&lt;T&gt; selectList(@Param(Constants.WRAPPER) Wrapper&lt;T&gt; queryWrapper);
+
+int update(@Param(Constants.ENTITY) T entity, @Param(Constants.WRAPPER) Wrapper&lt;T&gt; updateWrapper);
+
+int delete(@Param(Constants.WRAPPER) Wrapper&lt;T&gt; queryWrapper);</code></pre>
+<p>Wrapper通俗点理解就是定义where语句后面的查询条件，是Mybatis-Plus里功能比较强大的工具。Wrapper是一个抽象类，下面有很多子类，我们先看个类图混个眼熟。</p>
+<p><img src="https://static.lovebilibili.com/mybatis-plus_02.png" srcset="/img/loading.gif" alt=""></p>
+<p>常用的子类实现有四个，分别是：</p>
+<ul>
+<li>QueryWrapper</li>
+<li>UpdateWrapper</li>
+<li>LambdaQueryWrapper</li>
+<li>LambdaUpdateWrapper</li>
+</ul>
+<h2 id="QueryWrapper"><a href="#QueryWrapper" class="headerlink" title="QueryWrapper"></a>QueryWrapper</h2><p>主要用于生成where条件，举个例子，我们用name查询user表：</p>
+<pre><code class="java">public List&lt;User&gt; queryUserByName(String name) {
+    //相当于：SELECT * FROM user WHERE name = ?
+    QueryWrapper&lt;User&gt; queryWrapper = new QueryWrapper&lt;&gt;();
+    //eq()表示相等
+    queryWrapper.eq(&quot;name&quot;, name);
+    return userMapper.selectList(queryWrapper);
+}</code></pre>
+<p>我们看日志打印：</p>
+<pre><code class="java">==&gt;  Preparing: SELECT id,name,age FROM user WHERE name = ?
+==&gt; Parameters: 姚大秋(String)
+&lt;==    Columns: id, name, age
+&lt;==        Row: d47561e885b011eba0e488d7f66fdab8, 姚大秋, 30
+&lt;==      Total: 1</code></pre>
+<p>假如我们要like查询，可以这样写：</p>
+<pre><code class="java">public List&lt;User&gt; queryUserLikeName(String name) {
+    //相当于：SELECT * FROM user WHERE name like %#{name}%
+    QueryWrapper&lt;User&gt; queryWrapper = new QueryWrapper&lt;&gt;();
+    queryWrapper.like(&quot;name&quot;,name);
+    return userMapper.selectList(queryWrapper);
+}</code></pre>
+<p>假如要查询年龄大于30岁，可以这样：</p>
+<pre><code class="java">public List&lt;User&gt; queryUserGtByAge(int age) {
+    //相当于：SELECT * FROM user WHERE age &gt; ?
+    QueryWrapper&lt;User&gt; queryWrapper = new QueryWrapper&lt;&gt;();
+    queryWrapper.gt(&quot;age&quot;, age);
+    //小于是lt()
+    //大于等于是ge()
+    //小于等于是le()
+    //范围的话，则使用between()
+    return userMapper.selectList(queryWrapper);
+}</code></pre>
+<p>如果要查询某个字段不为空，可以这样：</p>
+<pre><code class="java">public List&lt;User&gt; queryUserByNameNotNull() {
+    //相当于：SELECT * FROM user WHERE name IS NOT NULL
+    QueryWrapper&lt;User&gt; queryWrapper = new QueryWrapper&lt;&gt;();
+    queryWrapper.isNotNull(&quot;name&quot;);
+    //查询某个字段为空，则使用isNull()
+    return userMapper.selectList(queryWrapper);
+}</code></pre>
+<p>如果使用IN查询，可以这样：</p>
+<pre><code class="java">public List&lt;User&gt; queryUserByIds(List&lt;String&gt; ids) {
+    //相当于：SELECT * FROM user WHERE name IN (&#39;id1&#39;,&#39;id2&#39;);
+    QueryWrapper&lt;User&gt; queryWrapper = new QueryWrapper&lt;&gt;();
+    queryWrapper.in(&quot;id&quot;, ids);
+    //相反也提供了notIn()方法
+    return userMapper.selectList(queryWrapper);
+}</code></pre>
+<p>如果需要排序，可以这样写：</p>
+<pre><code class="java">public List&lt;User&gt; queryUserOrderByAge() {
+    //相当于：SELECT * FROM user ORDER BY age ASC
+    QueryWrapper&lt;User&gt; queryWrapper = new QueryWrapper&lt;&gt;();
+    queryWrapper.orderByAsc(&quot;age&quot;);
+    //相反的，如果降序则使用orderByDesc()方法
+    return userMapper.selectList(queryWrapper);
+}</code></pre>
+<p>如果需要子查询，可以这样写：</p>
+<pre><code class="java">public List&lt;User&gt; queryUserInSql() {
+    //相当于：SELECT * FROM user WHERE id IN (SELECT id FROM user WHERE age &gt; 30)
+    QueryWrapper&lt;User&gt; queryWrapper = new QueryWrapper&lt;&gt;();
+    queryWrapper.inSql(&quot;id&quot;,&quot;select id from user where age &gt; 30&quot;);
+    return userMapper.selectList(queryWrapper);
+}</code></pre>
+<p>大部分的方法都是源自AbstractWrapper抽象类，除此之外还有很多功能，这里就不一一介绍下去了，有兴趣的可以到官网的<a href="https://mp.baomidou.com/guide/wrapper.html" target="_blank" rel="noopener">条件构造器</a>慢慢探索。</p>
+<h2 id="UpdateWrapper"><a href="#UpdateWrapper" class="headerlink" title="UpdateWrapper"></a>UpdateWrapper</h2><p>UpdateWrapper也是AbstractWrapper抽象类的子类实现，所以上述的设置条件的方法都有，不同的是，UpdateWrapper会有set()和setSql()设置更新的值。举个例子：</p>
+<pre><code class="java">public int updateUserNameById(String id, String name) {
+    //相当于：UPDATE user SET name = ? where id = ?
+    UpdateWrapper&lt;User&gt; userUpdateWrapper = new UpdateWrapper&lt;&gt;();
+    userUpdateWrapper.eq(&quot;id&quot;, id);
+    //设置set关键字后面的语句，相当于set name = #{name}
+    userUpdateWrapper.set(&quot;name&quot;, name);
+    return userMapper.update(new User(), userUpdateWrapper);
+}</code></pre>
+<p>setSql()就是设置SET关键字后面拼接的部分SQL语句，举个例子：</p>
+<pre><code class="java">public int updateUserBySql(String id, String name) {
+    //相当于：UPDATE user SET name = ? where id = ?
+    UpdateWrapper&lt;User&gt; userUpdateWrapper = new UpdateWrapper&lt;&gt;();
+    userUpdateWrapper.setSql(&quot;name = &#39;&quot; + name + &quot;&#39;&quot;);
+    userUpdateWrapper.eq(&quot;id&quot;, id);
+    return userMapper.update(new User(), userUpdateWrapper);
+}</code></pre>
+<p>setSql()就是纯粹的SQL语句拼接，我们可以看到SET后面接的是name=’大D’，而不是占位符会有SQL注入的风险。</p>
+<pre><code class="java">==&gt;  Preparing: UPDATE user SET name = &#39;大D&#39; WHERE id = ?
+==&gt; Parameters: d47561e885b011eba0e488d7f66fdab8(String)
+&lt;==    Updates: 1</code></pre>
+<h2 id="LambdaQueryWrapper"><a href="#LambdaQueryWrapper" class="headerlink" title="LambdaQueryWrapper"></a>LambdaQueryWrapper</h2><p>用LambdaQueryWrapper的好处在于消除硬编码，比如QueryWrapper在查询<code>name=?</code>时，需要这样写：</p>
+<pre><code class="java">QueryWrapper&lt;User&gt; queryWrapper = new QueryWrapper&lt;&gt;();
+//使用&quot;name&quot;字符串，就是硬编码
+queryWrapper.eq(&quot;name&quot;, name);</code></pre>
+<p>如果换成LambdaQueryWrapper就可以这样写：</p>
+<pre><code class="java">public List&lt;User&gt; lambdaQueryUserByName(String name) {
+    //相当于：SELECT id,name,age FROM user WHERE name = ?
+    LambdaQueryWrapper&lt;User&gt; lambdaQueryWrapper = new QueryWrapper&lt;User&gt;().lambda();
+    lambdaQueryWrapper.eq(User::getName, name);
+    return userMapper.selectList(lambdaQueryWrapper);
+}</code></pre>
+<p>再比如使用模糊查询，可以这样写：</p>
+<pre><code class="java">public List&lt;User&gt; lambdaQueryUserLikeName(String name) {
+    LambdaQueryWrapper&lt;User&gt; lambdaQueryWrapper = new QueryWrapper&lt;User&gt;().lambda();
+    lambdaQueryWrapper.like(User::getName, name);
+    return userMapper.selectList(lambdaQueryWrapper);
+}</code></pre>
+<h2 id="LambdaUpdateWrapper"><a href="#LambdaUpdateWrapper" class="headerlink" title="LambdaUpdateWrapper"></a>LambdaUpdateWrapper</h2><p>跟上面差不多，LambdaUpdateWrapper也可以消除硬编码：</p>
+<pre><code class="java">public int lambdaUpdateUserNameById(String id, String name) {
+    //相当于：UPDATE user SET name=? WHERE id = ?
+    LambdaUpdateWrapper&lt;User&gt; lambdaUpdateWrapper = new UpdateWrapper&lt;User&gt;().lambda();
+    lambdaUpdateWrapper.set(User::getName, name);
+    lambdaUpdateWrapper.eq(User::getId, id);
+    return userMapper.update(new User(), lambdaUpdateWrapper);
+}</code></pre>
+<h1 id="分页查询"><a href="#分页查询" class="headerlink" title="分页查询"></a>分页查询</h1><p>Mybatis-plus提供了分页插件支持分页查询，只需要几个步骤即可实现。</p>
+<p>首先添加一个配置类：</p>
+<pre><code class="java">@Configuration
+public class MybatisPlusConfig {
+    @Bean
+    public PaginationInterceptor paginationInterceptor() {
+        return new PaginationInterceptor();
+    }
+}</code></pre>
+<p>第二步，在UserMapper类里定义分页查询方法：</p>
+<pre><code class="java">@Repository
+public interface UserMapper extends BaseMapper&lt;User&gt; {
+    //分页查询方法
+    IPage&lt;User&gt; selectPageByName(Page&lt;User&gt; page, @Param(&quot;name&quot;) String name);
+}</code></pre>
+<p>对应的UserMapper.xml方法：</p>
+<pre><code class="xml">&lt;select id=&quot;selectPageByName&quot; parameterType=&quot;java.lang.String&quot; resultType=&quot;com.yehongzhi.mydemo.model.User&quot;&gt;
+    select * from `user` where name = #{name}
+&lt;/select&gt;</code></pre>
+<p>第三步，在userService里调用：</p>
+<pre><code class="java">public IPage&lt;User&gt; selectPageByName(long pageNo, long pageSize, String name) {
+    Page&lt;User&gt; page = new Page&lt;&gt;();
+    //设置当前页码
+    page.setCurrent(pageNo);
+    //设置每页显示数
+    page.setSize(pageSize);
+    return userMapper.selectPageByName(page, name);
+}</code></pre>
+<p>最后写个Controller接口测试：</p>
+<pre><code class="java">@RequestMapping(&quot;/queryPage/ByName&quot;)
+public IPage&lt;User&gt; selectPageByName(@RequestParam(&quot;pageNo&quot;) long pageNo,
+                                    @RequestParam(&quot;pageSize&quot;) long pageSize,
+                                    @RequestParam(&quot;name&quot;) String name) {
+    return userService.selectPageByName(pageNo, pageSize, name);
+}</code></pre>
+<p>查看控制台日志：</p>
+<pre><code class="java">==&gt;  Preparing: SELECT COUNT(1) FROM `user` WHERE name = ?
+==&gt; Parameters: 杜琪峰(String)
+&lt;==    Columns: COUNT(1)
+&lt;==        Row: 1
+==&gt;  Preparing: select * from `user` where name = ? LIMIT ?,?
+==&gt; Parameters: 杜琪峰(String), 0(Long), 10(Long)
+&lt;==    Columns: id, name, age
+&lt;==        Row: d47561e885b011eba0e488d7f66fdab8, 杜琪峰, 30
+&lt;==      Total: 1</code></pre>
+<p>分页查询成功！</p>
+<h1 id="自定义主键生成器"><a href="#自定义主键生成器" class="headerlink" title="自定义主键生成器"></a>自定义主键生成器</h1><p>有时在实际开发中，可能会遇到，Mybatis-plus提供的主键生成策略并不能满足，需要自定义主键ID生成策略，怎么设置呢？</p>
+<p>很简单，根据官网的说明，我们先定义一个主键生成器：</p>
+<p><img src="https://static.lovebilibili.com/mybatis-plus_03.png" srcset="/img/loading.gif" alt=""></p>
+<pre><code class="java">@Component
+public class SnowflakeKeyGenerator implements IdentifierGenerator {
+    //自己实现的一个雪花ID生成工具类
+    @Resource
+    private SnowflakeIdWorker snowflakeIdWorker;
+
+    @Override
+    public Number nextId(Object entity) {
+        //使用雪花ID生成器，生成一个雪花ID
+        long nextId = snowflakeIdWorker.nextId();
+        System.out.println(String.format(&quot;使用自定义ID生成器，生成雪花ID:%s&quot;, nextId));
+        return nextId;
+    }
+}</code></pre>
+<p>然后我们在需要使用该自定义ID生成器的实体类上面加上注解属性：</p>
+<pre><code class="java">@TableName(&quot;user&quot;)
+public class User {
+    //属性设置为：IdType.ASSIGN_ID
+    @TableId(type = IdType.ASSIGN_ID)
+    private String id;
+
+    //省略...
+}</code></pre>
+<p>接着测试一下，我们可以看到控制台有打印日志：</p>
+<p><img src="https://static.lovebilibili.com/mybatis-plus_04.png" srcset="/img/loading.gif" alt=""></p>
+<h1 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h1><p>除了上面介绍的功能之外，Mybatis-plus还有很多功能，比如：代码生成器、扩展等等。这里就不再一一介绍了，实际上我们掌握上面介绍的CRUD、条件构造器、分页查询、自定义主键策略，基本上已经足够日常的开发。</p>
+<p>当然如果你觉得会用还不够，还想要看懂框架的源码实现，那没问题。下一篇文章，我就讲讲框架的源码分析，敬请期待，</p>
+<p>非常感谢你的阅读，希望这篇文章能给到你帮助和启发。</p>
+<p><strong>觉得有用就点个赞吧，你的点赞是我创作的最大动力</strong>~</p>
+<p><strong>我是一个努力让大家记住的程序员。我们下期再见！！！</strong></p>
+<p><img src="https://static.lovebilibili.com/dashacha.png" srcset="/img/loading.gif" alt=""></p>
+<blockquote>
+<p>能力有限，如果有什么错误或者不当之处，请大家批评指正，一起学习交流！</p>
+</blockquote>
+
+            <hr>
+          </div>
+          <br>
+          <div>
+            <p>
+            
+            
+              <span>
+                <i class="iconfont icon-tag"></i>
+                
+                  <a class="hover-with-bg" href="/tags/Mybatis">Mybatis</a>
+                
+              </span>
+            
+            </p>
+            
+              <p class="note note-warning">本博客所有文章除特别声明外，均采用 <a href="https://zh.wikipedia.org/wiki/Wikipedia:CC_BY-SA_3.0%E5%8D%8F%E8%AE%AE%E6%96%87%E6%9C%AC" target="_blank" rel="nofollow noopener noopener">CC BY-SA 3.0协议</a> 。转载请注明出处！</p>
+            
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="d-none d-lg-block col-lg-2 toc-container">
+      
+  <div id="toc">
+    <p class="h4"><i class="far fa-list-alt"></i>&nbsp;目录</p>
+    <div id="tocbot"></div>
+  </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- custom -->
+
+
+<!-- Comments -->
+<div class="col-lg-7 mx-auto nopadding-md">
+  <div class="container comments mx-auto" id="comments">
+    
+  </div>
+</div>
+
+    
+  </main>
+
+  
+    <a class="z-depth-1" id="scroll-top-button" href="#" role="button">
+      <i class="fa fa-chevron-up scroll-top-arrow" aria-hidden="true"></i>
+    </a>
+  
+
+  
+    <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v"
+                 for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+  
+
+  <footer class="mt-5">
+  <div class="text-center py-3">
+    <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><b>Hexo</b></a>
+    <i class="iconfont icon-love"></i>
+    <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"> <b>Fluid</b></a>
+    <br>
+
+    
+  
+    <!-- 不蒜子统计PV -->
+    
+    &nbsp;<span id="busuanzi_container_site_pv"></span>总访问量 
+          <span id="busuanzi_value_site_pv"></span> 次&nbsp;
+  
+  
+    <!-- 不蒜子统计UV -->
+    
+    &nbsp;<span id="busuanzi_container_site_uv"></span>总访客数 
+            <span id="busuanzi_value_site_uv"></span> 人&nbsp;
+  
+  <br>
+
+
+
+    
+
+
+    <!-- cnzz Analytics icon -->
+    
+
+  </div>
+</footer>
+
+<!-- SCRIPTS -->
+<script src="/lib/jquery/jquery.min.js" ></script>
+<script src="/lib/popper/popper.min.js" ></script>
+<script src="/lib/bootstrap/js/bootstrap.min.js" ></script>
+<script src="/lib/mdbootstrap/js/mdb.min.js" ></script>
+<script src="/js/main.js" ></script>
+
+
+  <script src="/js/lazyload.js" ></script>
+
+
+
+  
+    <script src="/lib/tocbot/tocbot.min.js" ></script>
+  
+  <script src="/js/post.js" ></script>
+
+
+
+  <script src="/lib/smooth-scroll/smooth-scroll.min.js" ></script>
+
+
+
+  <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" ></script>
+
+
+<!-- Plugins -->
+
+
+  
+
+  
+
+  
+
+  
+
+  <!-- cnzz Analytics -->
+  
+
+
+
+  <script src="/lib/prettify/prettify.min.js" ></script>
+  <script>
+    $(document).ready(function () {
+      $('pre').addClass('prettyprint  linenums');
+      prettyPrint();
+    })
+  </script>
+
+
+
+  <script src="/lib/typed/typed.min.js" ></script>
+  <script>
+    var typed = new Typed('#subtitle', {
+      strings: [
+        '  ',
+        "Mybatis-plus，真香！&nbsp;",
+      ],
+      cursorChar: "_",
+      typeSpeed: 70,
+      loop: false,
+    });
+    typed.stop();
+    $(document).ready(function () {
+      $(".typed-cursor").addClass("h2");
+      typed.start();
+    });
+  </script>
+
+
+
+  <script src="/lib/anchor/anchor.min.js" ></script>
+  <script>
+    anchors.options = {
+      placement: "right",
+      visible: "false",
+      
+    };
+    var el = "h1,h2,h3,h4,h5,h6".split(",");
+    var res = [];
+    for (item of el) {
+      res.push(".markdown-body > " + item)
+    }
+    anchors.add(res.join(", "))
+  </script>
+
+
+
+  <script src="/js/local-search.js" ></script>
+  <script>
+    var path = "/local-search.xml";
+    var inputArea = document.querySelector("#local-search-input");
+    inputArea.onclick = function () {
+      getSearchFile(path);
+      this.onclick = null
+    }
+  </script>
+
+
+
+  <script src="/lib/fancybox/jquery.fancybox.min.js" ></script>
+  <script>
+    $("#post img:not(.no-zoom img, img[no-zoom])").each(
+      function () {
+        var element = document.createElement("a");
+        $(element).attr("data-fancybox", "images");
+        $(element).attr("href", $(this).attr("src"));
+        $(this).wrap(element);
+      }
+    );
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+</body>
+</html>

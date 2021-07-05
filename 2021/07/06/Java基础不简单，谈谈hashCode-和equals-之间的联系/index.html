@@ -1,0 +1,499 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/apple-touch-icon.png">
+  <link rel="icon" type="image/png" href="/img/favicon.png">
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="description" content="">
+  <meta name="author" content="Ye hongzhi">
+  <meta name="keywords" content="">
+  <title>Java基础不简单，谈谈hashCode()和equals()之间的联系 - 叶洪智的技术分享</title>
+
+  <link rel="stylesheet" href="/lib/font-awesome/css/all.min.css"  >
+<link rel="stylesheet" href="/lib/bootstrap/css/bootstrap.min.css"  >
+<link rel="stylesheet" href="/lib/mdbootstrap/css/mdb.min.css"  >
+<link rel="stylesheet" href="/lib/github-markdown/github-markdown.min.css"  >
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1067060_qzomjdt8bmp.css">
+
+
+
+  <link rel="stylesheet" href="/lib/prettify/tomorrow-night-eighties.min.css"  >
+
+<link rel="stylesheet" href="/css/main.css"  >
+
+
+  <link rel="stylesheet" href="/lib/fancybox/jquery.fancybox.min.css"  >
+
+
+<meta name="generator" content="Hexo 4.2.0"></head>
+
+
+<body>
+  <header style="height: 70vh;">
+    <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand"
+       href="/">&nbsp;<strong>YeHongzhi's Blog</strong>&nbsp;</a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+          <li class="nav-item">
+            <a class="nav-link" href="/">首页</a>
+          </li>
+        
+          
+          
+          
+          
+          <li class="nav-item">
+            <a class="nav-link" href="/archives/">归档</a>
+          </li>
+        
+          
+          
+          
+          
+          <li class="nav-item">
+            <a class="nav-link" href="/tags/">标签</a>
+          </li>
+        
+          
+          
+          
+          
+          <li class="nav-item">
+            <a class="nav-link" href="/about/">关于</a>
+          </li>
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" data-toggle="modal" data-target="#modalSearch">&nbsp;&nbsp;<i
+                class="iconfont icon-search"></i>&nbsp;&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+    <div class="view intro-2" id="background" false
+         style="background: url('/img/post.png')no-repeat center center;
+           background-size: cover;">
+      <div class="full-bg-img">
+        <div class="mask rgba-black-light flex-center">
+          <div class="container text-center white-text fadeInUp">
+            <span class="h2" id="subtitle">
+              
+            </span>
+
+            
+              <br>
+              
+                <p class="mt-3">
+                  <i class="fas fa-calendar-alt" aria-hidden="true"></i>&nbsp;
+                  星期二, 七月 6日 2021, 12:16 凌晨
+                </p>
+              
+
+              <p>
+                
+                  
+                  &nbsp;<i class="far fa-chart-bar"></i>
+                  <span class="post-count">
+                    1.2k 字
+                  </span>&nbsp;
+                
+
+                
+                  
+                  &nbsp;<i class="far fa-clock"></i>
+                  <span class="post-count">
+                      4 分钟
+                  </span>&nbsp;
+                
+
+                
+                  <!-- 不蒜子统计文章PV -->
+                  
+                  &nbsp;<i class="far fa-eye" aria-hidden="true"></i>&nbsp;
+                  <span id="busuanzi_container_page_pv">
+                    <span id="busuanzi_value_page_pv"></span> 次
+                  </span>&nbsp;
+                
+              </p>
+            
+          </div>
+
+          
+            <div class="scroll-down-bar">
+              <i class="fas fa-angle-down scroll-down-arrow"></i>
+            </div>
+          
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid">
+  <div class="row">
+    <div class="d-none d-lg-block col-lg-2"></div>
+    <div class="col-lg-8 nopadding-md">
+      <div class="py-5 z-depth-3" id="board">
+        <div class="post-content mx-auto" id="post">
+          <div class="markdown-body">
+            <blockquote>
+<p><strong>文章已收录Github精选，欢迎Star</strong>：<a href="https://github.com/yehongzhi/learningSummary" target="_blank" rel="noopener">https://github.com/yehongzhi/learningSummary</a></p>
+</blockquote>
+<h1 id="写在前面"><a href="#写在前面" class="headerlink" title="写在前面"></a>写在前面</h1><p>其实很早我就注意到阿里巴巴Java开发规范有一句话：<code>只要重写 equals，就必须重写 hashCode</code>。</p>
+<p><img src="https://static.lovebilibili.com/hashcode_equals_1.png" srcset="/img/loading.gif" alt=""></p>
+<p>我想很多人都会问为什么，所谓<code>知其然知其所以然</code>，对待知识不单止知道结论还得知道原因。</p>
+<h1 id="hashCode方法"><a href="#hashCode方法" class="headerlink" title="hashCode方法"></a>hashCode方法</h1><p>hashCode()方法的作用是获取哈希码，返回的是一个int整数</p>
+<p><img src="https://static.lovebilibili.com/hashcode_equals_2.png" srcset="/img/loading.gif" alt=""></p>
+<p>学过数据结构的都知道，哈希码的作用是确定对象在哈希表的索引下标。比如HashSet和HashMap就是使用了hashCode方法确定索引下标。如果两个对象返回的hashCode相同，就被称为“哈希冲突”。</p>
+<h1 id="equals方法"><a href="#equals方法" class="headerlink" title="equals方法"></a>equals方法</h1><p>equals()方法的作用很简单，就是判断两个对象是否相等，equals()方法是定义在Object类中，而所有的类的父类都是Object，所以如果不重写equals方法则会调用Object类的equals方法。</p>
+<p><img src="https://static.lovebilibili.com/hashcode_equals_3.png" srcset="/img/loading.gif" alt=""></p>
+<p>Object类的equals方法是用“==”号进行比较，在很多时候，因为==号比较的是两个对象的内存地址而不是实际的值，所以不是很符合业务要求。所以很多时候我们需要重写equals方法，去比较对象中每一个成员变量的值是否相等。</p>
+<h1 id="问题来了"><a href="#问题来了" class="headerlink" title="问题来了"></a>问题来了</h1><blockquote>
+<p> 重写equals()方法就可以比较两个对象是否相等，为什么还要重写hashcode()方法呢？</p>
+</blockquote>
+<p>因为HashSet、HashMap底层在添加元素时，会先判断对象的hashCode是否相等，如果hashCode相等才会用equals()方法比较是否相等。换句话说，HashSet和HashMap在判断两个元素是否相等时，<strong>会先判断hashCode，如果两个对象的hashCode不同则必定不相等</strong>。</p>
+<p><img src="https://static.lovebilibili.com/hashcode_equals_8.png" srcset="/img/loading.gif" alt=""></p>
+<p>下面我们做一个试验，有一个User类，只重写equals()方法，然后放到Set集合中去重。</p>
+<pre><code class="java">public class User {
+
+    private String id;
+
+    private String name;
+
+    private Integer age;
+
+    public User(String id, String name, Integer age) {
+        this.id = id;
+        this.name = name;
+        this.age = age;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        User user = (User) o;
+        return Objects.equals(id, user.id) &amp;&amp;
+            Objects.equals(name, user.name) &amp;&amp;
+            Objects.equals(age, user.age);
+    }
+
+    //getter、setter、toString方法
+}</code></pre>
+<p>然后我们循环创建10个成员变量的值都是一样的User对象，最后放到Set集合中去重。</p>
+<pre><code class="java">public static void main(String[] args) {
+    List&lt;User&gt; list = new ArrayList&lt;&gt;();
+    for (int i = 0; i &lt; 10; i++) {
+        User user = new User(&quot;1&quot;, &quot;张三&quot;, 18);
+        list.add(user);
+    }
+    Set&lt;User&gt; set = new HashSet&lt;&gt;(list);
+    for (User user : set) {
+        System.out.println(user);
+    }
+    List&lt;User&gt; users = list.stream().distinct().collect(Collectors.toList());
+    System.out.println(users);
+}</code></pre>
+<p>按道理我们预期会去重，只剩下一个“张三”的user，但实际上因为没有重写hashCode方法，所以没有去重。</p>
+<p><img src="https://static.lovebilibili.com/hashcode_equals_4.png" srcset="/img/loading.gif" alt=""></p>
+<p>接着我们在User类里面重写一些hashCode方法再试试，其他不变。</p>
+<pre><code class="java">public class User {
+    //其他不变
+
+    //重写hashCode方法
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, name, age);
+    }
+}</code></pre>
+<p>再运行，结果正确。</p>
+<p><img src="https://static.lovebilibili.com/hashcode_equals_5.png" srcset="/img/loading.gif" alt=""></p>
+<p>究其原因在于HashSet会先判断hashCode是否相等，如果hashCode不相等就直接认为两个对象不相等，不会再用equals()比较了。我们不妨看看重写hashCode方法和不重写hashCode方法的哈希码。</p>
+<p>这是不重写hashCode方法的情况，每个user对象的哈希码都不一样，所以HashSet会认为都不相等。</p>
+<p><img src="https://static.lovebilibili.com/hashcode_equals_6.png" srcset="/img/loading.gif" alt=""></p>
+<p>这是重写hashCode方法的情况，因为是用对象所有的成员变量的值计算出的哈希码，所以只要两个对象的成员变量都是相等的，则生成的哈希码是相同的。</p>
+<p><img src="https://static.lovebilibili.com/hashcode_equals_7.png" srcset="/img/loading.gif" alt=""></p>
+<p>那么有些人看到这里，就会问，如果两个对象返回的哈希码都是一样的话，是不是就<strong>一定相等</strong>？</p>
+<p>答案是不一定的，因为HashSet、HashMap判断哈希码相等后还会再用equals()方法判断。</p>
+<p>总而言之：</p>
+<ul>
+<li>哈希码不相等，则两个对象一定不相同。</li>
+<li>哈希码相等，两个对象不一定相同。</li>
+<li>两个对象相同，则哈希码和值都一定相等。</li>
+</ul>
+<h1 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h1><p>所以回到开头讲的那句，<code>只要重写 equals，就必须重写 hashCode</code>，这是一个很重要的细节，如果不注意的话，很容易发生业务上的错误。</p>
+<p>特别是有时候我们明明用了HashSet，distinct()去重，但是就是不生效，这时应该回头看看重写了equals()和hashCode()方法了吗？</p>
+<p>那么这篇文章就写到这里了，感谢大家的阅读。</p>
+<p><strong>觉得有用就点个赞吧，你的点赞是我创作的最大动力</strong>~</p>
+<p><strong>我是一个努力让大家记住的程序员。我们下期再见！！！</strong></p>
+<p><img src="https://static.lovebilibili.com/dashacha.png" srcset="/img/loading.gif" alt=""></p>
+<blockquote>
+<p>能力有限，如果有什么错误或者不当之处，请大家批评指正，一起学习交流！</p>
+</blockquote>
+
+            <hr>
+          </div>
+          <br>
+          <div>
+            <p>
+            
+            
+              <span>
+                <i class="iconfont icon-tag"></i>
+                
+                  <a class="hover-with-bg" href="/tags/Java%E5%9F%BA%E7%A1%80">Java基础</a>
+                
+              </span>
+            
+            </p>
+            
+              <p class="note note-warning">本博客所有文章除特别声明外，均采用 <a href="https://zh.wikipedia.org/wiki/Wikipedia:CC_BY-SA_3.0%E5%8D%8F%E8%AE%AE%E6%96%87%E6%9C%AC" target="_blank" rel="nofollow noopener noopener">CC BY-SA 3.0协议</a> 。转载请注明出处！</p>
+            
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="d-none d-lg-block col-lg-2 toc-container">
+      
+  <div id="toc">
+    <p class="h4"><i class="far fa-list-alt"></i>&nbsp;目录</p>
+    <div id="tocbot"></div>
+  </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- custom -->
+
+
+<!-- Comments -->
+<div class="col-lg-7 mx-auto nopadding-md">
+  <div class="container comments mx-auto" id="comments">
+    
+  </div>
+</div>
+
+    
+  </main>
+
+  
+    <a class="z-depth-1" id="scroll-top-button" href="#" role="button">
+      <i class="fa fa-chevron-up scroll-top-arrow" aria-hidden="true"></i>
+    </a>
+  
+
+  
+    <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v"
+                 for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+  
+
+  <footer class="mt-5">
+  <div class="text-center py-3">
+    <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><b>Hexo</b></a>
+    <i class="iconfont icon-love"></i>
+    <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"> <b>Fluid</b></a>
+    <br>
+
+    
+  
+    <!-- 不蒜子统计PV -->
+    
+    &nbsp;<span id="busuanzi_container_site_pv"></span>总访问量 
+          <span id="busuanzi_value_site_pv"></span> 次&nbsp;
+  
+  
+    <!-- 不蒜子统计UV -->
+    
+    &nbsp;<span id="busuanzi_container_site_uv"></span>总访客数 
+            <span id="busuanzi_value_site_uv"></span> 人&nbsp;
+  
+  <br>
+
+
+
+    
+
+
+    <!-- cnzz Analytics icon -->
+    
+
+  </div>
+</footer>
+
+<!-- SCRIPTS -->
+<script src="/lib/jquery/jquery.min.js" ></script>
+<script src="/lib/popper/popper.min.js" ></script>
+<script src="/lib/bootstrap/js/bootstrap.min.js" ></script>
+<script src="/lib/mdbootstrap/js/mdb.min.js" ></script>
+<script src="/js/main.js" ></script>
+
+
+  <script src="/js/lazyload.js" ></script>
+
+
+
+  
+    <script src="/lib/tocbot/tocbot.min.js" ></script>
+  
+  <script src="/js/post.js" ></script>
+
+
+
+  <script src="/lib/smooth-scroll/smooth-scroll.min.js" ></script>
+
+
+
+  <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" ></script>
+
+
+<!-- Plugins -->
+
+
+  
+
+  
+
+  
+
+  
+
+  <!-- cnzz Analytics -->
+  
+
+
+
+  <script src="/lib/prettify/prettify.min.js" ></script>
+  <script>
+    $(document).ready(function () {
+      $('pre').addClass('prettyprint  linenums');
+      prettyPrint();
+    })
+  </script>
+
+
+
+  <script src="/lib/typed/typed.min.js" ></script>
+  <script>
+    var typed = new Typed('#subtitle', {
+      strings: [
+        '  ',
+        "Java基础不简单，谈谈hashCode()和equals()之间的联系&nbsp;",
+      ],
+      cursorChar: "_",
+      typeSpeed: 70,
+      loop: false,
+    });
+    typed.stop();
+    $(document).ready(function () {
+      $(".typed-cursor").addClass("h2");
+      typed.start();
+    });
+  </script>
+
+
+
+  <script src="/lib/anchor/anchor.min.js" ></script>
+  <script>
+    anchors.options = {
+      placement: "right",
+      visible: "false",
+      
+    };
+    var el = "h1,h2,h3,h4,h5,h6".split(",");
+    var res = [];
+    for (item of el) {
+      res.push(".markdown-body > " + item)
+    }
+    anchors.add(res.join(", "))
+  </script>
+
+
+
+  <script src="/js/local-search.js" ></script>
+  <script>
+    var path = "/local-search.xml";
+    var inputArea = document.querySelector("#local-search-input");
+    inputArea.onclick = function () {
+      getSearchFile(path);
+      this.onclick = null
+    }
+  </script>
+
+
+
+  <script src="/lib/fancybox/jquery.fancybox.min.js" ></script>
+  <script>
+    $("#post img:not(.no-zoom img, img[no-zoom])").each(
+      function () {
+        var element = document.createElement("a");
+        $(element).attr("data-fancybox", "images");
+        $(element).attr("href", $(this).attr("src"));
+        $(this).wrap(element);
+      }
+    );
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+</body>
+</html>

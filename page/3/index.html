@@ -136,6 +136,110 @@
     
     
       <div class="col-12 col-md-4 m-auto">
+        <a href="/2021/01/01/4%E5%8D%83%E5%AD%97%E8%AF%A6%E7%BB%86%E8%AE%B2%E8%A7%A3JVM%E4%B8%AD%E7%9A%84%E5%9E%83%E5%9C%BE%E5%9B%9E%E6%94%B6/" target="_blank">
+          <img src="https://static.lovebilibili.com/jvm_gc_index.jpg" srcset="/img/loading.gif" alt="4千字详细讲解JVM中的垃圾回收" class="index-img img-fluid rounded index-thumbnails">
+        </a>
+      </div>
+    
+    <div class="col-12 col-md-8 mx-auto index-info">
+      <a href="/2021/01/01/4%E5%8D%83%E5%AD%97%E8%AF%A6%E7%BB%86%E8%AE%B2%E8%A7%A3JVM%E4%B8%AD%E7%9A%84%E5%9E%83%E5%9C%BE%E5%9B%9E%E6%94%B6/">
+        <p class="h4 index-header">4千字详细讲解JVM中的垃圾回收</p>
+      </a>
+
+      <a href="/2021/01/01/4%E5%8D%83%E5%AD%97%E8%AF%A6%E7%BB%86%E8%AE%B2%E8%A7%A3JVM%E4%B8%AD%E7%9A%84%E5%9E%83%E5%9C%BE%E5%9B%9E%E6%94%B6/">
+        
+        
+          
+        
+        <div class="index-excerpt" >
+          <div class="index-text mb-1">思维导图
+前言Java相对于C/C++语言来说，最明显的特点在于Java引入了自动垃圾回收。垃圾回收(Garbage Collection简称GC)可以使程序员不在需要关心JVM内存管理的问题，专注于写程序本身。平时程序员是很难感知到GC的存在，但是如果涉及到一些性能调优，线上的问题排查等等，深入地了解GC是必不可少的。往往通过一些JVM参数的设置能就使系统性能提高不少。
+一、JVM内存区域要深入了解GC，首先要明白GC会回收哪些数据，数据位于哪个区域。接着我们看一下JVM的内存区域。
+
+从图中可以看出，内存区域分为五个：
+
+虚拟机栈：线程私有，由一个个栈帧组成，每个栈帧对应着一个调用的方法，保存有方法的局部变量等信息。方法被调用时栈帧入栈，方法结束调用时栈帧出栈。入栈出栈的时机很清楚，所以不需要进行GC。
+本地方法栈：与虚拟机栈非常类似，本地方法栈与虚拟机栈的区别在于，虚拟机栈执行的是Java方法，本地方法栈执行的是本地方法(Native Method)。这块区域也不需要进行GC。
+程序计数器：线程私有的，它的作用可以看做是当前线程所执行的字节码的行号指示器。我们知道JVM的多线程是</div>
+        </div>
+      </a>
+
+      <div class="index-btm">
+        
+          <i class="iconfont icon-riqi2"></i>&nbsp;2021-01-01&nbsp;&nbsp;
+        
+        
+        
+          <i class="iconfont icon-tag"></i>
+          
+            <a href="/tags/JVM">JVM</a>&nbsp;
+          
+            <a href="/tags/%E5%9E%83%E5%9C%BE%E5%9B%9E%E6%94%B6">垃圾回收</a>&nbsp;
+          
+        
+      </div>
+    </div>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+      <div class="col-12 col-md-4 m-auto">
+        <a href="/2020/12/27/Spring%E7%94%A8%E4%BA%86%E5%93%AA%E4%BA%9B%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%EF%BC%8C%E8%83%BD%E8%AE%B2%E8%AE%B2%E5%90%97/" target="_blank">
+          <img src="https://static.lovebilibili.com/Spring_mode_index.jpg" srcset="/img/loading.gif" alt="Spring用了哪些设计模式，能讲讲吗" class="index-img img-fluid rounded index-thumbnails">
+        </a>
+      </div>
+    
+    <div class="col-12 col-md-8 mx-auto index-info">
+      <a href="/2020/12/27/Spring%E7%94%A8%E4%BA%86%E5%93%AA%E4%BA%9B%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%EF%BC%8C%E8%83%BD%E8%AE%B2%E8%AE%B2%E5%90%97/">
+        <p class="h4 index-header">Spring用了哪些设计模式，能讲讲吗</p>
+      </a>
+
+      <a href="/2020/12/27/Spring%E7%94%A8%E4%BA%86%E5%93%AA%E4%BA%9B%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%EF%BC%8C%E8%83%BD%E8%AE%B2%E8%AE%B2%E5%90%97/">
+        
+        
+          
+        
+        <div class="index-excerpt" >
+          <div class="index-text mb-1">思维导图
+
+文章已收录Github精选，欢迎Star：https://github.com/yehongzhi/learningSummary
+
+概述一个优秀的框架肯定离不开各种设计模式的运用，Spring框架也不例外。因为网上很多文章比较散乱，所以想总结一下在Spring中用到的设计模式，希望大家看完之后能对spring有更深层次的理解。
+工厂模式工厂模式我们都知道是把创建对象交给工厂，以此来降低类与类之间的耦合。工厂模式在Spring中的应用非常广泛，这里举的例子是ApplicationContext和BeanFactory，这也是Spring的IOC容器的基础。
+首先看BeanFactory，这是最底层的接口。
+public interface BeanFactory {
+    Object getBean(String name) throws BeansException;
+
+    &lt;T&gt; T getBean(String name, @Nullable Class&lt;T&gt; requiredType) throws BeansException;
+
+</div>
+        </div>
+      </a>
+
+      <div class="index-btm">
+        
+          <i class="iconfont icon-riqi2"></i>&nbsp;2020-12-27&nbsp;&nbsp;
+        
+        
+        
+          <i class="iconfont icon-tag"></i>
+          
+            <a href="/tags/java">java</a>&nbsp;
+          
+            <a href="/tags/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F">设计模式</a>&nbsp;
+          
+            <a href="/tags/spring">spring</a>&nbsp;
+          
+        
+      </div>
+    </div>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+      <div class="col-12 col-md-4 m-auto">
         <a href="/2020/12/06/5%E5%8D%83%E5%AD%97%E8%AF%A6%E7%BB%86%E8%AE%B2%E8%A7%A3JUC%E4%B8%AD%E9%87%8D%E8%A6%81%E7%9A%84AQS/" target="_blank">
           <img src="https://static.lovebilibili.com/aqs_index.jpg" srcset="/img/loading.gif" alt="5千字详细讲解JUC中重要的AQS" class="index-img img-fluid rounded index-thumbnails">
         </a>
@@ -546,126 +650,6 @@ OpenTracing通过提供平台无关、厂商无关的API，使得开发人员能
             <a href="/tags/%E5%88%86%E5%B8%83%E5%BC%8F">分布式</a>&nbsp;
           
             <a href="/tags/%E9%85%8D%E7%BD%AE%E4%B8%AD%E5%BF%83">配置中心</a>&nbsp;
-          
-        
-      </div>
-    </div>
-  </div>
-
-  <div class="row mx-auto index-card">
-    
-    
-      <div class="col-12 col-md-4 m-auto">
-        <a href="/2020/10/13/3%E5%8D%83%E5%AD%97%E8%AF%A6%E7%BB%86%E8%AE%B2%E8%A7%A3OpenFeign%E7%9A%84%E4%BD%BF%E7%94%A8%E5%A7%BF%E5%8A%BF/" target="_blank">
-          <img src="https://static.lovebilibili.com/fegin_index.jpg" srcset="/img/loading.gif" alt="3千字详细讲解OpenFeign的使用姿势" class="index-img img-fluid rounded index-thumbnails">
-        </a>
-      </div>
-    
-    <div class="col-12 col-md-8 mx-auto index-info">
-      <a href="/2020/10/13/3%E5%8D%83%E5%AD%97%E8%AF%A6%E7%BB%86%E8%AE%B2%E8%A7%A3OpenFeign%E7%9A%84%E4%BD%BF%E7%94%A8%E5%A7%BF%E5%8A%BF/">
-        <p class="h4 index-header">3千字详细讲解OpenFeign的使用姿势</p>
-      </a>
-
-      <a href="/2020/10/13/3%E5%8D%83%E5%AD%97%E8%AF%A6%E7%BB%86%E8%AE%B2%E8%A7%A3OpenFeign%E7%9A%84%E4%BD%BF%E7%94%A8%E5%A7%BF%E5%8A%BF/">
-        
-        
-          
-        
-        <div class="index-excerpt" >
-          <div class="index-text mb-1">思维导图
-
-文章已收录Github精选，欢迎Star：https://github.com/yehongzhi/learningSummary
-
-前言目前在SpringCloud技术栈中，调用服务用得最多的就是OpenFeign，所以这篇文章讲一下OpenFeign，希望对大家有所帮助。
-一、构建工程使用Nacos作为注册中心，不会搭建Nacos的话，可以参考上一篇注册中心的文章。
-首先父工程parent引入依赖。
-&lt;dependencyManagement&gt;
-    &lt;dependencies&gt;
-        &lt;dependency&gt;
-            &lt;groupId&gt;org.springframework.cloud&lt;/groupId&gt;
-            &lt;artifactId&gt;spring-cloud-dependencies&lt;/artifactId&gt;
-            &lt;version&gt;Finchley.SR1&lt;/version&gt;
-         </div>
-        </div>
-      </a>
-
-      <div class="index-btm">
-        
-          <i class="iconfont icon-riqi2"></i>&nbsp;2020-10-13&nbsp;&nbsp;
-        
-        
-        
-          <i class="iconfont icon-tag"></i>
-          
-            <a href="/tags/java">java</a>&nbsp;
-          
-            <a href="/tags/OpenFeign">OpenFeign</a>&nbsp;
-          
-            <a href="/tags/%E5%BE%AE%E6%9C%8D%E5%8A%A1">微服务</a>&nbsp;
-          
-        
-      </div>
-    </div>
-  </div>
-
-  <div class="row mx-auto index-card">
-    
-    
-      <div class="col-12 col-md-4 m-auto">
-        <a href="/2020/10/13/3%E5%8D%83%E5%AD%97%E5%B8%A6%E4%BD%A0%E6%90%9E%E6%87%82XXL-JOB%E4%BB%BB%E5%8A%A1%E8%B0%83%E5%BA%A6%E5%B9%B3%E5%8F%B0/" target="_blank">
-          <img src="https://static.lovebilibili.com/xxljob_index.jpg" srcset="/img/loading.gif" alt="3千字带你搞懂XXL-JOB任务调度平台" class="index-img img-fluid rounded index-thumbnails">
-        </a>
-      </div>
-    
-    <div class="col-12 col-md-8 mx-auto index-info">
-      <a href="/2020/10/13/3%E5%8D%83%E5%AD%97%E5%B8%A6%E4%BD%A0%E6%90%9E%E6%87%82XXL-JOB%E4%BB%BB%E5%8A%A1%E8%B0%83%E5%BA%A6%E5%B9%B3%E5%8F%B0/">
-        <p class="h4 index-header">3千字带你搞懂XXL-JOB任务调度平台</p>
-      </a>
-
-      <a href="/2020/10/13/3%E5%8D%83%E5%AD%97%E5%B8%A6%E4%BD%A0%E6%90%9E%E6%87%82XXL-JOB%E4%BB%BB%E5%8A%A1%E8%B0%83%E5%BA%A6%E5%B9%B3%E5%8F%B0/">
-        
-        
-          
-        
-        <div class="index-excerpt" >
-          <div class="index-text mb-1">思维导图
-
-文章已收录Github精选，欢迎Star：https://github.com/yehongzhi/learningSummary
-
-一、概述在平时的业务场景中，经常有一些场景需要使用定时任务，比如：
-
-时间驱动的场景：某个时间点发送优惠券，发送短信等等。
-批量处理数据：批量统计上个月的账单，统计上个月销售数据等等。
-固定频率的场景：每隔5分钟需要执行一次。
-
-所以定时任务在平时开发中并不少见，而且对于现在快速消费的时代，每天都需要发送各种推送，消息都需要依赖定时任务去完成，应用非常广泛。
-二、为什么需要任务调度平台在Java中，传统的定时任务实现方案，比如Timer，Quartz等都或多或少存在一些问题：
-
-不支持集群、不支持统计、没有管理平台、没有失败报警、没有监控等等
-
-而且在现在分布式的架构中，有一些场景需要分布式任务调度：
-
-同一个服务多个实例的任务存在互斥时，需要统一的调度。
-任务调度需要支持高可用、监控、故障告警。
-需要统一管理和追踪各个服务节点任务调度的结果，需要记录保存任务属性信息等。
-
-显然传统的定时任务已经不满足现在的分布式架构，所以需要一个分布式任务</div>
-        </div>
-      </a>
-
-      <div class="index-btm">
-        
-          <i class="iconfont icon-riqi2"></i>&nbsp;2020-10-13&nbsp;&nbsp;
-        
-        
-        
-          <i class="iconfont icon-tag"></i>
-          
-            <a href="/tags/java">java</a>&nbsp;
-          
-            <a href="/tags/%E5%88%86%E5%B8%83%E5%BC%8F">分布式</a>&nbsp;
-          
-            <a href="/tags/%E4%BB%BB%E5%8A%A1%E8%B0%83%E5%BA%A6%E5%B9%B3%E5%8F%B0">任务调度平台</a>&nbsp;
           
         
       </div>
