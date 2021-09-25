@@ -136,6 +136,106 @@
     
     
       <div class="col-12 col-md-4 m-auto">
+        <a href="/2021/09/25/%E9%87%8D%E6%B8%A9%E5%B9%B6%E5%8F%91%E7%9F%A5%E8%AF%86%E4%BB%8EThreadLocal%E5%BC%80%E5%A7%8B/" target="_blank">
+          <img src="https://static.lovebilibili.com/ThreadLocal_index.png" srcset="/img/loading.gif" alt="重温并发知识从ThreadLocal开始" class="index-img img-fluid rounded index-thumbnails">
+        </a>
+      </div>
+    
+    <div class="col-12 col-md-8 mx-auto index-info">
+      <a href="/2021/09/25/%E9%87%8D%E6%B8%A9%E5%B9%B6%E5%8F%91%E7%9F%A5%E8%AF%86%E4%BB%8EThreadLocal%E5%BC%80%E5%A7%8B/">
+        <p class="h4 index-header">重温并发知识从ThreadLocal开始</p>
+      </a>
+
+      <a href="/2021/09/25/%E9%87%8D%E6%B8%A9%E5%B9%B6%E5%8F%91%E7%9F%A5%E8%AF%86%E4%BB%8EThreadLocal%E5%BC%80%E5%A7%8B/">
+        
+        
+          
+        
+        <div class="index-excerpt" >
+          <div class="index-text mb-1">
+文章已收录Github精选，欢迎Star：https://github.com/yehongzhi/learningSummary
+
+什么是ThreadLocalThreadLocal提供线程的局部变量，这种变量与普通变量的区别在于，每个访问这种变量的线程都有自己的、独立的变量副本。用于解决多线程间的数据隔离问题。
+使用场景其实ThreadLocal在很多开源框架中都有应用：
+
+Spring中的事务管理器，比如TransactionSynchronizationManager等。
+Mybatis中的ErrorContext类，使用ThreadLocal实现线程安全的单例。
+存储session中的一些参数，比如用户信息等。
+
+APIThreadLocal提供了4个常用方法：
+
+set()方法，设置当前线程中变量的副本。
+
+get()方法，获取 ThreadLocal在当前线程中保存的变量副本。
+
+remove()方法，清空当前线程中变量的副本。
+
+initialValue()是一个 protected方法，一般是用来重写的，如果在没有set的时候就调用 get，会调用 initialV</div>
+        </div>
+      </a>
+
+      <div class="index-btm">
+        
+          <i class="iconfont icon-riqi2"></i>&nbsp;2021-09-25&nbsp;&nbsp;
+        
+        
+        
+          <i class="iconfont icon-tag"></i>
+          
+            <a href="/tags/%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B">并发编程</a>&nbsp;
+          
+        
+      </div>
+    </div>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+      <div class="col-12 col-md-4 m-auto">
+        <a href="/2021/09/25/BaseMapper%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/" target="_blank">
+          <img src="https://static.lovebilibili.com/mybatis-plus_source_index.png" srcset="/img/loading.gif" alt="BaseMapper源码分析" class="index-img img-fluid rounded index-thumbnails">
+        </a>
+      </div>
+    
+    <div class="col-12 col-md-8 mx-auto index-info">
+      <a href="/2021/09/25/BaseMapper%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/">
+        <p class="h4 index-header">BaseMapper源码分析</p>
+      </a>
+
+      <a href="/2021/09/25/BaseMapper%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/">
+        
+        
+          
+        
+        <div class="index-excerpt" >
+          <div class="index-text mb-1">抛出疑问Mybatis-plus的确能让我们写少很多重复代码，非常好用。那么其中最方便的就是Mapper接口继承BaseMapper就能获得增删改查的这个功能。那么这个功能的底层代码，究竟是怎么实现的呢？
+原生Mybatis配置的原理毕竟Mybatis-plus是Mybatis的加强，所以Mybatis-plus肯定是基于Mybatis原来的机制来扩展的，沿着这个思路，我们先搞清楚一个问题，就是原生的mapper.xml文件最后是怎么跟对应的Mapper接口产生联系的。
+既然是配置，那么在Mybatis里肯定有对应的配置类，这个类就是MappedStatement。最终在Configuration类中把MappedStatement对象添加进mappedStatements集合中进行管理。源码如下：
+public class Configuration {
+    protected final Map&lt;String, MappedStatement&gt; mappedStatements = new StrictMap&lt;MappedStatement&gt;(&quot</div>
+        </div>
+      </a>
+
+      <div class="index-btm">
+        
+          <i class="iconfont icon-riqi2"></i>&nbsp;2021-09-25&nbsp;&nbsp;
+        
+        
+        
+          <i class="iconfont icon-tag"></i>
+          
+            <a href="/tags/%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90">源码分析</a>&nbsp;
+          
+        
+      </div>
+    </div>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+      <div class="col-12 col-md-4 m-auto">
         <a href="/2021/07/06/Mybatis-plus%EF%BC%8C%E7%9C%9F%E9%A6%99%EF%BC%81/" target="_blank">
           <img src="https://static.lovebilibili.com/mybatis-plus_05.png" srcset="/img/loading.gif" alt="Mybatis-plus，真香！" class="index-img img-fluid rounded index-thumbnails">
         </a>
@@ -550,128 +650,6 @@ ReadViewRea</div>
       <div class="index-btm">
         
           <i class="iconfont icon-riqi2"></i>&nbsp;2021-04-21&nbsp;&nbsp;
-        
-        
-        
-          <i class="iconfont icon-tag"></i>
-          
-            <a href="/tags/MySQL">MySQL</a>&nbsp;
-          
-        
-      </div>
-    </div>
-  </div>
-
-  <div class="row mx-auto index-card">
-    
-    
-      <div class="col-12 col-md-4 m-auto">
-        <a href="/2021/04/06/%E8%B6%85%E8%AF%A6%E7%BB%86%E7%9A%84Sentinel%E5%85%A5%E9%97%A8/" target="_blank">
-          <img src="https://static.lovebilibili.com/Sentinel_index.jpg" srcset="/img/loading.gif" alt="超详细的Sentinel入门" class="index-img img-fluid rounded index-thumbnails">
-        </a>
-      </div>
-    
-    <div class="col-12 col-md-8 mx-auto index-info">
-      <a href="/2021/04/06/%E8%B6%85%E8%AF%A6%E7%BB%86%E7%9A%84Sentinel%E5%85%A5%E9%97%A8/">
-        <p class="h4 index-header">超详细的Sentinel入门</p>
-      </a>
-
-      <a href="/2021/04/06/%E8%B6%85%E8%AF%A6%E7%BB%86%E7%9A%84Sentinel%E5%85%A5%E9%97%A8/">
-        
-        
-          
-        
-        <div class="index-excerpt" >
-          <div class="index-text mb-1">
-文章已收录Github精选，欢迎Star：https://github.com/yehongzhi/learningSummary
-
-一、什么是SentinelSentinel定位是分布式系统的流量防卫兵。目前互联网应用基本上都使用微服务，微服务的稳定性是一个很重要的问题，而限流、熔断降级是微服务保持稳定的一个重要的手段。
-下面看官网的一张图，了解一下Sentinel的主要特性：
-
-在Sentinel之前其实就有Hystrix做熔断降级的事情，我们都知道出现新的事物肯定是原来的东西有不足的地方。
-
-那Hystrix有什么不足之处呢？
-
-
-Hystrix常用的线程池隔离会造成线程上下切换的overhead比较大。
-Hystrix没有监控平台，需要我们自己搭建。
-Hystrix支持的熔断降级维度较少，不够细粒，而且缺少管理控制台。
-
-
-Sentinel有哪些组成部分？
-
-
-核心库（Java 客户端）不依赖任何框架/库，能够运行于所有 Java 运行时环境，同时对 Dubbo / Spring Cloud 等框架也有较好的支持。
-控制台（Dashboard）基于 Spring Boot 开</div>
-        </div>
-      </a>
-
-      <div class="index-btm">
-        
-          <i class="iconfont icon-riqi2"></i>&nbsp;2021-04-06&nbsp;&nbsp;
-        
-        
-        
-          <i class="iconfont icon-tag"></i>
-          
-            <a href="/tags/Sentinel">Sentinel</a>&nbsp;
-          
-        
-      </div>
-    </div>
-  </div>
-
-  <div class="row mx-auto index-card">
-    
-    
-      <div class="col-12 col-md-4 m-auto">
-        <a href="/2021/03/21/MySQL%E4%B8%AD%E5%BF%85%E9%A1%BB%E4%BA%86%E8%A7%A3%E7%9A%84%E4%B8%89%E7%A7%8D%E6%97%A5%E5%BF%97/" target="_blank">
-          <img src="https://static.lovebilibili.com/mysql_log_index.jpg" srcset="/img/loading.gif" alt="MySQL中必须了解的三种日志" class="index-img img-fluid rounded index-thumbnails">
-        </a>
-      </div>
-    
-    <div class="col-12 col-md-8 mx-auto index-info">
-      <a href="/2021/03/21/MySQL%E4%B8%AD%E5%BF%85%E9%A1%BB%E4%BA%86%E8%A7%A3%E7%9A%84%E4%B8%89%E7%A7%8D%E6%97%A5%E5%BF%97/">
-        <p class="h4 index-header">MySQL中必须了解的三种日志</p>
-      </a>
-
-      <a href="/2021/03/21/MySQL%E4%B8%AD%E5%BF%85%E9%A1%BB%E4%BA%86%E8%A7%A3%E7%9A%84%E4%B8%89%E7%A7%8D%E6%97%A5%E5%BF%97/">
-        
-        
-          
-        
-        <div class="index-excerpt" >
-          <div class="index-text mb-1">
-文章已收录Github精选，欢迎Star：https://github.com/yehongzhi/learningSummary
-
-前言大家有没有想过为什么MySQL数据库可以实现主从复制，实现持久化，实现回滚的呢？其实关键在于MySQL里的三种log，分别是：
-
-binlog
-redo log
-undo log
-
-这三种log也是面试经常会问的问题，下面我们一起来探讨一下吧。
-一、binlogbinlog应该是日常中听的最多的关于mysql中的log。
-
-那么什么是binlog呢？
-
-binlog是用于记录数据库表结构和表数据变更的二进制日志，比如insert、update、delete、create、truncate等等操作，不会记录select、show操作，因为没有对数据本身发生变更。
-
-binlog文件长什么样子呢？
-
-使用mysqlbinlog命令可以查看。
-
-会记录下每条变更的sql语句，还有执行开始时间，结束时间，事务id等等信息。
-
-如何查看binlog是否打开，如果没打开怎么设置？
-
-使用命令show variables like &#39;%log_bin%&</div>
-        </div>
-      </a>
-
-      <div class="index-btm">
-        
-          <i class="iconfont icon-riqi2"></i>&nbsp;2021-03-21&nbsp;&nbsp;
         
         
         
